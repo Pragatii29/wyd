@@ -1,13 +1,14 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { Camera, Check, Loader2, RotateCcw, ShieldCheck } from "lucide-react";
+import { Camera, Check, ImageUp, Loader2, RotateCcw, ShieldCheck } from "lucide-react";
 import { btn, meta } from "@/lib/ui";
 
 type Phase = "idle" | "starting" | "live" | "captured" | "saving" | "done";
 
 // Live verification selfie: opens the front camera in the page, shows a face guide, captures a frame.
-// There is deliberately no file picker, so the photo has to be taken right now.
+// If the camera can't open (blocked, no camera, in-app browsers), a fallback lets people take or pick a
+// selfie with the device's own camera app; it's marked "upload" so the admin can tell the difference.
 // `onCapture` receives the JPEG; it uploads it and resolves to an error message, or null when saved.
 export function SelfieCamera({
   done,
@@ -15,14 +16,17 @@ export function SelfieCamera({
   error: outerError,
 }: {
   done: boolean;
-  onCapture: (jpeg: Blob) => Promise<string | null>;
+  onCapture: (jpeg: Blob, source: "live" | "upload") => Promise<string | null>;
   error?: string;
 }) {
   const video = useRef<HTMLVideoElement>(null);
   const stream = useRef<MediaStream | null>(null);
   const [phase, setPhase] = useState<Phase>(done ? "done" : "idle");
-  const [shot, setShot] = useState<{ url: string; blob: Blob } | null>(null);
+  const [shot, setShot] = useState<{ url: string; blob: Blob; source: "live" | "upload" } | null>(null);
   const [error, setError] = useState("");
+  // Offer the fallback once the live camera has failed.
+  const [cameraFailed, setCameraFailed] = useState(false);
+  const fileInput = useRef<HTMLInputElement>(null);
 
   function stop() {
     stream.current?.getTracks().forEach((t) => t.stop());
@@ -43,25 +47,33 @@ export function SelfieCamera({
   async function open() {
     setError("");
     if (!navigator.mediaDevices?.getUserMedia) {
-      return setError("This browser can't open the camera. Try Chrome or Safari on your phone.");
+      setCameraFailed(true);
+      return setError("This browser can't open the camera here. Use the button below, or open the site in Chrome or Safari.");
     }
     setPhase("starting");
     try {
-      const s = await navigator.mediaDevices.getUserMedia({
-        video: { facingMode: "user", width: { ideal: 1280 }, height: { ideal: 1280 } },
-        audio: false,
-      });
+      // Some in-app browsers never answer the camera request: give up after 10 seconds.
+      const s = await Promise.race([
+        navigator.mediaDevices.getUserMedia({
+          video: { facingMode: "user", width: { ideal: 1280 }, height: { ideal: 1280 } },
+          audio: false,
+        }),
+        new Promise<never>((_, reject) => setTimeout(() => reject(Object.assign(new Error("timeout"), { name: "TimeoutError" })), 10000)),
+      ]);
       stream.current = s;
       setPhase("live");
     } catch (err) {
       setPhase("idle");
+      setCameraFailed(true);
       const name = (err as { name?: string }).name;
       setError(
         name === "NotAllowedError"
-          ? "Camera access was blocked. Allow the camera for this site in your browser settings, then try again."
+          ? "Camera access is blocked here. Allow the camera for this site, or use the button below."
           : name === "NotFoundError"
-            ? "We couldn't find a camera on this device."
-            : "The camera couldn't start. Close other apps using it and try again.",
+            ? "We couldn't find a camera on this device. Use the button below instead."
+            : name === "TimeoutError"
+              ? "The camera didn't respond. Use the button below, or open the site in Chrome or Safari."
+              : "The camera couldn't start. Close other apps using it, or use the button below.",
       );
     }
   }
@@ -80,7 +92,7 @@ export function SelfieCamera({
       (blob) => {
         if (!blob) return setError("Couldn't capture the photo. Try again.");
         stop();
-        setShot({ url: URL.createObjectURL(blob), blob });
+        setShot({ url: URL.createObjectURL(blob), blob, source: "live" });
         setPhase("captured");
       },
       "image/jpeg",
@@ -91,7 +103,7 @@ export function SelfieCamera({
   async function confirm() {
     if (!shot) return;
     setPhase("saving");
-    const err = await onCapture(shot.blob);
+    const err = await onCapture(shot.blob, shot.source);
     if (err) {
       setError(err);
       setPhase("captured");
@@ -101,7 +113,30 @@ export function SelfieCamera({
   function retake() {
     if (shot) URL.revokeObjectURL(shot.url);
     setShot(null);
+    if (shot?.source === "upload" || cameraFailed) return fileInput.current?.click();
     open();
+  }
+
+  // Fallback: the device's camera app (phones) or a photo (computers), re-encoded to a square JPEG.
+  async function onFile(file: File | undefined) {
+    if (!file) return;
+    setError("");
+    if (!file.type.startsWith("image/")) return setError("Please use a photo.");
+    try {
+      const bitmap = await createImageBitmap(file);
+      const side = Math.min(bitmap.width, bitmap.height);
+      const canvas = document.createElement("canvas");
+      canvas.width = canvas.height = Math.min(side, 960);
+      canvas
+        .getContext("2d")!
+        .drawImage(bitmap, (bitmap.width - side) / 2, (bitmap.height - side) / 2, side, side, 0, 0, canvas.width, canvas.height);
+      const blob = await new Promise<Blob | null>((r) => canvas.toBlob(r, "image/jpeg", 0.88));
+      if (!blob) throw new Error("encode");
+      setShot({ url: URL.createObjectURL(blob), blob, source: "upload" });
+      setPhase("captured");
+    } catch {
+      setError("We couldn't read that photo. Try another one.");
+    }
   }
 
   const shownError = error || outerError;
@@ -124,7 +159,7 @@ export function SelfieCamera({
           </>
         ) : shot && phase !== "done" ? (
           // eslint-disable-next-line @next/next/no-img-element -- local blob preview, not an optimisable asset
-          <img src={shot.url} alt="Your verification selfie" className="size-full -scale-x-100 object-cover" />
+          <img src={shot.url} alt="Your verification selfie" className={`size-full object-cover ${shot.source === "live" ? "-scale-x-100" : ""}`} />
         ) : phase === "done" ? (
           <div className="flex size-full flex-col items-center justify-center gap-2 text-success">
             <ShieldCheck size={40} />
@@ -165,6 +200,25 @@ export function SelfieCamera({
         </button>
       )}
       {shownError && <p className="font-mono text-meta text-danger">{shownError}</p>}
+
+      <input
+        ref={fileInput}
+        type="file"
+        accept="image/*"
+        capture="user"
+        className="sr-only"
+        tabIndex={-1}
+        aria-hidden
+        onChange={(e) => {
+          onFile(e.target.files?.[0]);
+          e.target.value = "";
+        }}
+      />
+      {cameraFailed && phase === "idle" && (
+        <button type="button" onClick={() => fileInput.current?.click()} className={btn.secondary}>
+          <ImageUp size={18} /> Take or upload a selfie instead
+        </button>
+      )}
     </div>
   );
 }

@@ -113,12 +113,13 @@ export function ProfileForm({
   }
 
   // Uploads the live selfie to the private verifications bucket (only this user and the admin can read it).
-  async function uploadSelfie(jpeg: Blob): Promise<string | null> {
+  async function uploadSelfie(jpeg: Blob, source: "live" | "upload"): Promise<string | null> {
     if (preview) {
       setSelfiePath("preview");
       return null;
     }
-    const path = `${userId}/selfie-${Date.now()}.jpg`;
+    // "live" = taken in the page's camera; "upload" = the fallback (device camera app or a picked photo).
+    const path = `${userId}/selfie-${source}-${Date.now()}.jpg`;
     const { error } = await supabase.storage.from("verifications").upload(path, jpeg, { contentType: "image/jpeg" });
     if (error) return `Couldn't save your selfie: ${error.message}`;
     setSelfiePath(path);

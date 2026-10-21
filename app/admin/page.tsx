@@ -87,7 +87,7 @@ export default async function AdminPage() {
       <ul className="mt-4 flex flex-col gap-3">
         {pending?.map((p) => (
           <li key={p.id} className={`${card} flex flex-col gap-4`}>
-            <PhotoPair name={p.name} photo={p.photo_url} selfie={selfieUrl(p.private?.selfie_path)} />
+            <PhotoPair name={p.name} photo={p.photo_url} selfie={selfieUrl(p.private?.selfie_path)} path={p.private?.selfie_path} />
             <div className="flex flex-col gap-1">
               <p className="text-h2">
                 {p.name}, {ageFrom(p.dob)}
@@ -142,7 +142,7 @@ export default async function AdminPage() {
           <ul className="mt-4 flex flex-col gap-3">
             {recent?.map((p) => (
               <li key={p.id} className={`${card} flex flex-col gap-3`}>
-                <PhotoPair name={p.name} photo={p.photo_url} selfie={selfieUrl(p.private?.selfie_path)} />
+                <PhotoPair name={p.name} photo={p.photo_url} selfie={selfieUrl(p.private?.selfie_path)} path={p.private?.selfie_path} />
                 <div className="flex items-center justify-between gap-3">
                   <span className="text-label">
                     {p.name}, {ageFrom(p.dob)}
@@ -258,7 +258,7 @@ async function ReportTarget({ type, id }: { type: string; id: string }) {
 }
 
 // Profile photo (public) next to the live verification selfie (private, signed link).
-function PhotoPair({ name, photo, selfie }: { name: string; photo: string; selfie: string | null }) {
+function PhotoPair({ name, photo, selfie, path }: { name: string; photo: string; selfie: string | null; path?: string | null }) {
   return (
     <div className="grid grid-cols-2 gap-2">
       <figure className="flex flex-col gap-1">
@@ -276,7 +276,7 @@ function PhotoPair({ name, photo, selfie }: { name: string; photo: string; selfi
             <span className={`${meta} flex size-full items-center justify-center p-3 text-center`}>No selfie on file</span>
           )}
         </div>
-        <figcaption className={meta}>Live selfie · private</figcaption>
+        <figcaption className={meta}>{path?.includes("/selfie-upload-") ? "Uploaded selfie (camera unavailable)" : "Live selfie"} · private</figcaption>
       </figure>
     </div>
   );
