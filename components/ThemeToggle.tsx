@@ -10,15 +10,15 @@ const listeners = new Set<() => void>();
 function read(): ThemeChoice {
   try {
     const v = localStorage.getItem(KEY);
-    return v === "light" || v === "system" ? v : "dark";
+    return v === "dark" || v === "system" ? v : "light";
   } catch {
-    return "dark";
+    return "light";
   }
 }
 
 function apply(choice: ThemeChoice) {
   try {
-    if (choice === "dark") localStorage.removeItem(KEY);
+    if (choice === "light") localStorage.removeItem(KEY);
     else localStorage.setItem(KEY, choice);
   } catch {}
   document.documentElement.dataset.theme = choice;
@@ -32,11 +32,11 @@ function useTheme() {
       return () => listeners.delete(l);
     },
     read,
-    () => "dark" as ThemeChoice,
+    () => "light" as ThemeChoice,
   );
 }
 
-// Whether the page is dark right now (explicit choice, or the system setting). Night is the default.
+// Whether the page is dark right now (explicit choice, or the system setting). Light is the default.
 function useIsDark() {
   return useSyncExternalStore(
     (l) => {
@@ -52,7 +52,7 @@ function useIsDark() {
       const choice = read();
       return choice === "system" ? window.matchMedia("(prefers-color-scheme: dark)").matches : choice === "dark";
     },
-    () => true,
+    () => false,
   );
 }
 
@@ -70,12 +70,12 @@ export function ThemeIconButton({ className = "text-ink" }: { className?: string
   );
 }
 
-// Three-way control for settings: Night (default) · Light · System.
+// Three-way control for settings: Light (default) · Dark · System.
 export function ThemeSegmented() {
   const choice = useTheme();
   const options: { value: ThemeChoice; label: string; icon: typeof Sun }[] = [
-    { value: "dark", label: "Night", icon: Moon },
     { value: "light", label: "Light", icon: Sun },
+    { value: "dark", label: "Dark", icon: Moon },
     { value: "system", label: "System", icon: Monitor },
   ];
   return (

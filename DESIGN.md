@@ -318,3 +318,31 @@ regular weight, never faux-bold; Geist for UI and body; DM Mono for metadata and
 **Shapes:** 2px corners on cards, fields, sheets and photos; full pills for buttons and chips; avatars round.
 **Elevation:** none. Floating UI gets a 1px `--line` ring instead of a shadow.
 **Motion:** press `cubic-bezier(0.16, 1, 0.3, 1)` 120ms; sheets/reveals `cubic-bezier(0.32, 0.72, 0, 1)` 240–480ms.
+
+## 12. Airbnb direction (current)
+
+Supersedes §10–11 where they differ. Colour and type now follow Airbnb.
+
+**Colour:** white canvas, `#222222` text, a grey ladder, Rausch pink for the main action.
+
+| Token | Light (default) | Dark (option) |
+| --- | --- | --- |
+| `--canvas` / `--surface` | `#FFFFFF` / `#FFFFFF` | `#121212` / `#1C1C1C` |
+| `--surface-sunk` | `#F7F7F7` | `#262626` |
+| `--ink` / `--ink-2` / `--ink-3` | `#222222` / `#6A6A6A` / `#929292` | `#F7F7F7` / `#B0B0B0` / `#7A7A7A` |
+| `--line` | `#DDDDDD` | `#333333` |
+| `--coral` (Rausch, buttons) | `#E31C5F` | `#E31C5F` |
+| `--coral-text` (pink text/links) | `#E31C5F` | `#FF5A7E` |
+| `--candle` (soft pink highlight) | `#FFE8EE` | `#F9CFDA` |
+| `--on-coral` | `#FFFFFF` | `#FFFFFF` |
+
+Airbnb's brand pink `#FF385C` is too light for white text (about 3.5:1), so filled buttons use the deeper
+Rausch `#E31C5F` (about 4.6:1). Text on pink is always white; text on the soft pink highlight is always `#222`.
+
+**Type:** one family, DM Sans (free stand-in for Airbnb Cereal). Headlines bold and tight:
+`text-hero` 40/44 800, `text-display` 32/36 800, `text-title` 26/30 700. No serif, no mono.
+
+**Shapes:** 8px buttons and fields, 12px cards and photos, 24px sheets, pill chips and avatars.
+**Fields:** white with a `--ink-3` 1px border, `#222` border + ring on focus.
+**Elevation:** Airbnb's soft float `0 6px 16px rgba(0,0,0,0.12)` for floating UI only; lists stay flat with hairlines.
+**Theme switch:** Light (default) · Dark · System.

@@ -97,7 +97,7 @@ export function RequestDecision({
             <button
               disabled={pending}
               onClick={() => decide("accepted")}
-              className="flex h-14 items-center gap-2 rounded-pill bg-coral px-8 text-wyd text-on-light transition duration-fast ease-out active:scale-[0.97] disabled:opacity-60"
+              className="flex h-14 items-center gap-2 rounded-pill bg-coral px-8 text-wyd text-on-coral transition duration-fast ease-out active:scale-[0.97] disabled:opacity-60"
             >
               {pending && <Loader2 size={18} className="animate-spin" />} Accept
             </button>

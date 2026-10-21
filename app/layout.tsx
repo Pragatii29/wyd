@@ -1,23 +1,12 @@
 import type { Metadata } from "next";
-import { DM_Mono, Geist, Instrument_Serif } from "next/font/google";
+import { DM_Sans } from "next/font/google";
 import "./globals.css";
 
-// oddtables type system: an editorial serif for headlines (Instrument Serif, the closest free match
-// to their Swear Display), Geist for everything you read, DM Mono for small metadata.
-const instrument = Instrument_Serif({
-  subsets: ["latin"],
-  weight: "400",
-  style: ["normal", "italic"],
-  variable: "--font-display",
-});
-const geist = Geist({
+// Airbnb typography: one friendly geometric sans for everything. Airbnb Cereal isn't licensed for use,
+// so DM Sans is the free stand-in (headlines bold and tight, body regular).
+const dmSans = DM_Sans({
   subsets: ["latin"],
   variable: "--font-sans",
-});
-const dmMono = DM_Mono({
-  subsets: ["latin"],
-  weight: ["400", "500"],
-  variable: "--font-dm-mono",
 });
 
 export const metadata: Metadata = {
@@ -29,9 +18,9 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" data-theme="dark" className={`${instrument.variable} ${geist.variable} ${dmMono.variable}`} suppressHydrationWarning>
+    <html lang="en" data-theme="light" className={dmSans.variable} suppressHydrationWarning>
       <head>
-        {/* Apply the saved theme before first paint. Night (dark) is the default. */}
+        {/* Apply the saved theme before first paint. Light is the default. */}
         <script
           dangerouslySetInnerHTML={{
             __html: `try{var t=localStorage.getItem("wyd-theme");if(t==="light"||t==="dark"||t==="system")document.documentElement.dataset.theme=t}catch(e){}`,

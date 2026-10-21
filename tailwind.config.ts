@@ -18,29 +18,30 @@ const config: Config = {
         danger: "var(--danger)",
         "on-ink": "var(--on-ink)",
         "on-light": "var(--on-light)",
+        "on-coral": "var(--on-coral)",
       },
       fontFamily: {
-        display: ["var(--font-display)", "serif"],
+        // One family, Airbnb-style: "mono" metadata falls back to the same sans.
+        display: ["var(--font-sans)", "system-ui", "sans-serif"],
         sans: ["var(--font-sans)", "system-ui", "sans-serif"],
-        mono: ["var(--font-dm-mono)", "monospace"],
+        mono: ["var(--font-sans)", "system-ui", "sans-serif"],
       },
       fontSize: {
-        hero: ["60px", { lineHeight: "56px", fontWeight: "400", letterSpacing: "-0.02em" }],
-        display: ["44px", { lineHeight: "44px", fontWeight: "400", letterSpacing: "-0.01em" }],
-        title: ["32px", { lineHeight: "36px", fontWeight: "400" }],
+        hero: ["40px", { lineHeight: "44px", fontWeight: "800", letterSpacing: "-0.03em" }],
+        display: ["32px", { lineHeight: "36px", fontWeight: "800", letterSpacing: "-0.02em" }],
+        title: ["26px", { lineHeight: "30px", fontWeight: "700", letterSpacing: "-0.01em" }],
         h2: ["22px", { lineHeight: "28px", fontWeight: "600" }],
-        wyd: ["18px", { lineHeight: "26px", fontWeight: "500" }],
+        wyd: ["18px", { lineHeight: "26px", fontWeight: "500", letterSpacing: "-0.01em" }],
         body: ["16px", { lineHeight: "24px", fontWeight: "400" }],
         label: ["14px", { lineHeight: "20px", fontWeight: "600" }],
-        meta: ["12px", { lineHeight: "16px", fontWeight: "400" }],
-        eyebrow: ["12px", { lineHeight: "16px", fontWeight: "500", letterSpacing: "0.08em" }],
+        meta: ["13px", { lineHeight: "18px", fontWeight: "400" }],
+        eyebrow: ["13px", { lineHeight: "18px", fontWeight: "600" }],
       },
-      // oddtables shapes: near-square 2px corners for surfaces, full pills for buttons and chips.
-      borderRadius: { sm: "2px", field: "2px", card: "2px", sheet: "2px", pill: "999px" },
+      // Airbnb shapes: 8px buttons and fields, 12px cards and photos, 24px sheets, pill chips.
+      borderRadius: { sm: "4px", field: "8px", card: "12px", sheet: "24px", pill: "999px" },
       boxShadow: {
-        // No drop shadows: a hairline ring separates floating UI instead.
-        card: "0 0 0 0 transparent",
-        float: "0 0 0 1px var(--line)",
+        card: "0 1px 2px rgba(0,0,0,0.08)",
+        float: "0 6px 16px rgba(0,0,0,0.12)",
       },
       transitionTimingFunction: {
         spring: "cubic-bezier(0.32, 0.72, 0, 1)",
