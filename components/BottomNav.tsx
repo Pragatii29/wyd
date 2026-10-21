@@ -6,8 +6,21 @@ import { usePathname } from "next/navigation";
 import { Bell, House, MessageCircle, Plus } from "lucide-react";
 
 // Icon-only bottom bar (Home · Notifications · Chats · Profile) plus a floating "+" to drop a WYD.
-export function BottomNav({ unreadAlerts, photo, name, compose }: { unreadAlerts: number; photo: string; name: string; compose?: boolean }) {
-  const path = usePathname();
+export function BottomNav({
+  unreadAlerts,
+  photo,
+  name,
+  compose,
+  current,
+}: {
+  unreadAlerts: number;
+  photo: string;
+  name: string;
+  compose?: boolean;
+  current?: "/feed" | "/notifications" | "/chats" | "/profile";
+}) {
+  const realPath = usePathname();
+  const path = current ?? realPath;
   const items = [
     { href: "/feed", label: "Home", icon: House, active: path === "/feed" },
     { href: "/notifications", label: "Notifications", icon: Bell, active: path === "/notifications", dot: unreadAlerts > 0 },

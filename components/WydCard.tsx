@@ -27,6 +27,7 @@ export function WydCard({
   requestStatus,
   requestCount,
   linkBody = true,
+  preview,
 }: {
   wyd: FeedWyd;
   shared: string[];
@@ -34,6 +35,7 @@ export function WydCard({
   requestStatus: "pending" | "accepted" | "declined" | null;
   requestCount: number;
   linkBody?: boolean;
+  preview?: boolean;
 }) {
   const body = <p className={`${linkBody ? "line-clamp-4" : ""} text-wyd text-ink`}>{wyd.body}</p>;
   return (
@@ -84,7 +86,7 @@ export function WydCard({
               <Inbox size={16} /> {requestCount === 0 ? "No requests yet" : `${requestCount} request${requestCount > 1 ? "s" : ""}`}
             </Link>
           ) : (
-            <JoinButton threadId={wyd.id} status={requestStatus} compact />
+            <JoinButton threadId={wyd.id} status={requestStatus} compact preview={preview} />
           )}
         </div>
       </div>

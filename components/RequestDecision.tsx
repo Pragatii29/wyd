@@ -16,6 +16,7 @@ export function RequestDecision({
   planText,
   status: initialStatus,
   chatId,
+  preview,
 }: {
   requestId: string;
   threadId: string;
@@ -24,6 +25,7 @@ export function RequestDecision({
   planText: string;
   status: "pending" | "accepted" | "declined";
   chatId: string | null;
+  preview?: boolean;
 }) {
   const router = useRouter();
   const [status, setStatus] = useState(initialStatus);
@@ -34,12 +36,12 @@ export function RequestDecision({
   function decide(next: "accepted" | "declined") {
     start(async () => {
       setError("");
-      const res = await answerRequest(requestId, next);
+      const res = preview ? { ok: true as const } : await answerRequest(requestId, next);
       if (!res.ok) return setError(res.error);
       setStatus(next);
       if (next === "accepted") setConfirming(true);
       else {
-        router.push("/feed?tab=requests");
+        router.push(preview ? "/preview?screen=requests" : "/feed?tab=requests");
         router.refresh();
       }
     });
@@ -48,6 +50,7 @@ export function RequestDecision({
   function openChat() {
     start(async () => {
       setError("");
+      if (preview) return router.push("/preview?screen=chat");
       const res = await startChat(threadId, [requesterId]);
       if (!res.ok) return setError(res.error);
       router.push(`/chats/${res.chatId}`);

@@ -11,7 +11,7 @@ import { btn, input, label, meta } from "@/lib/ui";
 const MAX = 280;
 const IDEAS = ["Chai and a chat after work?", "Anyone up for a movie tonight?", "Looking for people to play cricket this evening."];
 
-export function Composer({ city: activeCity, area: defaultArea }: { city: string; area: string }) {
+export function Composer({ city: activeCity, area: defaultArea, preview }: { city: string; area: string; preview?: boolean }) {
   const router = useRouter();
   const [body, setBody] = useState("");
   const [audience, setAudience] = useState<Audience>("all");
@@ -26,6 +26,7 @@ export function Composer({ city: activeCity, area: defaultArea }: { city: string
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!body.trim()) return setError("Write your plan first.");
+    if (preview) return router.push("/preview?screen=home");
     setSaving(true);
     setError("");
     const res = await createWyd({ body, audience, city: city as City, area });

@@ -16,10 +16,12 @@ export function JoinButton({
   threadId,
   status,
   compact,
+  preview,
 }: {
   threadId: string;
   status: "pending" | "accepted" | "declined" | null;
   compact?: boolean;
+  preview?: boolean;
 }) {
   const router = useRouter();
   const [pending, start] = useTransition();
@@ -42,6 +44,7 @@ export function JoinButton({
         onClick={() =>
           start(async () => {
             setError("");
+            if (preview) return setOptimistic("pending");
             const res = await requestToJoin(threadId);
             if (res.ok) {
               setOptimistic("pending");
