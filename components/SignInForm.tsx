@@ -54,7 +54,7 @@ export function SignInForm({ initialError }: { initialError?: boolean }) {
       <button
         type="submit"
         disabled={state === "loading"}
-        className="flex h-13 items-center justify-center gap-2 rounded-pill bg-bone text-label text-ink transition duration-fast ease-out hover:opacity-90 active:scale-[0.97] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-bone disabled:bg-sunk disabled:text-ink-3"
+        className="flex h-13 items-center justify-center gap-2 rounded-pill bg-bone text-label text-on-light transition duration-fast ease-out hover:opacity-90 active:scale-[0.97] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-bone disabled:bg-sunk disabled:text-ink-3"
       >
         {state === "loading" ? <Loader2 className="animate-spin" size={18} /> : <Mail size={18} />}
         Send me a sign in link

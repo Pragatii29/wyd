@@ -34,7 +34,7 @@ export function ChatListItem(c: {
   return (
     <Link href={`/chats/${c.id}`} className="flex items-center gap-3 rounded-card bg-surface p-4 shadow-card focus-visible:outline-2 focus-visible:outline-ink">
       {c.isGroup ? (
-        <span className="flex size-12 shrink-0 items-center justify-center rounded-full bg-candle text-ink">
+        <span className="flex size-12 shrink-0 items-center justify-center rounded-full bg-candle text-on-light">
           <Users size={22} />
         </span>
       ) : (

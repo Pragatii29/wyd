@@ -57,7 +57,7 @@ export function WydCard({
         </p>
 
         {shared.length > 0 && !mine && (
-          <span className="inline-flex items-center gap-1 self-start rounded-pill bg-candle px-2.5 py-0.5 text-label text-ink">
+          <span className="inline-flex items-center gap-1 self-start rounded-pill bg-candle px-2.5 py-0.5 text-label text-on-light">
             <Sparkles size={12} /> Matches your interests
           </span>
         )}

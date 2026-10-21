@@ -43,7 +43,7 @@ export function ProfileCard({
       </div>
 
       {shared.length > 0 && (
-        <p className="flex items-center gap-2 rounded-card bg-candle px-4 py-3 text-label text-ink">
+        <p className="flex items-center gap-2 rounded-card bg-candle px-4 py-3 text-label text-on-light">
           <Sparkles size={16} /> You&apos;re both into {shared.slice(0, 3).map((t) => t.replace(/_/g, " ")).join(", ")}
         </p>
       )}

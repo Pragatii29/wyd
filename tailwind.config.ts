@@ -16,6 +16,8 @@ const config: Config = {
         bone: "var(--bone)",
         success: "var(--success)",
         danger: "var(--danger)",
+        "on-ink": "var(--on-ink)",
+        "on-light": "var(--on-light)",
       },
       fontFamily: {
         display: ["var(--font-fraunces)", "serif"],

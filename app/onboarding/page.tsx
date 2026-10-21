@@ -1,6 +1,8 @@
 import { redirect } from "next/navigation";
 import { getSession, homeFor } from "@/lib/profile";
 import { ProfileForm } from "@/components/ProfileForm";
+import { SignOutButton } from "@/components/SignOutButton";
+import { ThemeIconButton } from "@/components/ThemeToggle";
 import { page } from "@/lib/ui";
 
 // Sign-up in three steps: basics (name, phone, LinkedIn) → about + JPG photo → create profile.
@@ -15,7 +17,14 @@ export default async function OnboardingPage() {
     : { data: null };
 
   return (
-    <main className={`${page} pb-16 pt-10`}>
+    <main className={`${page} pb-16 pt-4`}>
+      <div className="mb-4 flex items-center justify-between">
+        <span className="font-mono text-meta text-ink-2">Signed in as {user.email}</span>
+        <div className="flex items-center">
+          <ThemeIconButton />
+          <SignOutButton compact />
+        </div>
+      </div>
       <h1 className="font-display text-title">{profile ? "Update your profile" : "Welcome to WYD?"}</h1>
       <p className="mt-2 text-body text-ink-2">
         Real people only. A person on our team checks every profile before you can post or join plans.

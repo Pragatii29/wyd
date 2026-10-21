@@ -6,6 +6,7 @@ import { PushToggle } from "@/components/PushToggle";
 import { CitySwitcher } from "@/components/CitySwitcher";
 import { BlockedList } from "@/components/BlockedList";
 import { SignOutButton } from "@/components/SignOutButton";
+import { ThemeSegmented } from "@/components/ThemeToggle";
 import { btn, card, meta, page } from "@/lib/ui";
 
 export default async function MyProfilePage({ searchParams }: { searchParams: Promise<{ welcome?: string }> }) {
@@ -23,7 +24,7 @@ export default async function MyProfilePage({ searchParams }: { searchParams: Pr
           <PartyPopper size={28} className="text-candle" aria-hidden />
           <h1 className="font-display text-title">You&apos;re in, {profile.name.split(" ")[0]}!</h1>
           <p className="text-body">This is your profile. It&apos;s how people near {profile.area || profile.city} will see you when you post or ask to join a plan.</p>
-          <Link href="/feed" className="inline-flex h-13 w-full items-center justify-center gap-2 rounded-pill bg-bone px-6 text-label text-ink transition duration-fast ease-out active:scale-[0.97] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-bone">
+          <Link href="/feed" className="inline-flex h-13 w-full items-center justify-center gap-2 rounded-pill bg-bone px-6 text-label text-on-light transition duration-fast ease-out active:scale-[0.97] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-bone">
             See plans near you <ArrowRight size={18} />
           </Link>
         </section>
@@ -63,6 +64,15 @@ export default async function MyProfilePage({ searchParams }: { searchParams: Pr
             Open admin
           </Link>
         )}
+      </section>
+
+      <section className={`${card} mt-4 flex flex-col gap-4`}>
+        <h2 className="text-h2">Account</h2>
+        <div className="flex flex-col gap-2">
+          <p className="text-label">Appearance</p>
+          <ThemeSegmented />
+        </div>
+        <p className={meta}>Signed in as {user.email}</p>
         <SignOutButton />
       </section>
     </main>

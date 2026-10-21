@@ -114,7 +114,7 @@ export function Composer({ city: activeCity, area: defaultArea, preview }: { cit
               aria-checked={audience === value}
               onClick={() => setAudience(value)}
               className={`flex h-11 flex-1 items-center justify-center gap-1 rounded-pill text-label transition duration-base ease-out focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink ${
-                audience === value ? "bg-ink text-bone" : "text-ink"
+                audience === value ? "bg-ink text-on-ink" : "text-ink"
               }`}
             >
               <Icon size={16} aria-hidden /> {text}

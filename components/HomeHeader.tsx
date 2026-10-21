@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Avatar } from "@/components/Avatar";
 import { RefreshButton } from "@/components/RefreshButton";
+import { ThemeIconButton } from "@/components/ThemeToggle";
 
 // Sticky home header: your photo, the wordmark, refresh, then the For you / Requests tabs.
 export function HomeHeader({
@@ -23,7 +24,10 @@ export function HomeHeader({
           <Avatar src={photo} name={name} size={40} />
         </Link>
         <span className="font-display text-title">WYD?</span>
-        <RefreshButton />
+        <div className="flex items-center">
+          <ThemeIconButton />
+          <RefreshButton />
+        </div>
       </div>
       <nav className="grid grid-cols-2" aria-label="Home tabs">
         {[
@@ -38,7 +42,7 @@ export function HomeHeader({
           >
             {t.label}
             {!!t.count && (
-              <span className="flex h-5 min-w-5 items-center justify-center rounded-pill bg-coral px-1.5 font-mono text-meta text-ink">{t.count}</span>
+              <span className="flex h-5 min-w-5 items-center justify-center rounded-pill bg-coral px-1.5 font-mono text-meta text-on-light">{t.count}</span>
             )}
             {t.active && <span className="absolute bottom-0 h-1 w-16 rounded-pill bg-ink" aria-hidden />}
           </Link>

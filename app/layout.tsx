@@ -27,7 +27,15 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className={`${fraunces.variable} ${manrope.variable} ${dmMono.variable}`}>
+    <html lang="en" className={`${fraunces.variable} ${manrope.variable} ${dmMono.variable}`} suppressHydrationWarning>
+      <head>
+        {/* Apply the saved theme before first paint so there's no light/dark flash. */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `try{var t=localStorage.getItem("wyd-theme");if(t==="light"||t==="dark")document.documentElement.dataset.theme=t}catch(e){}`,
+          }}
+        />
+      </head>
       <body className="font-sans text-body antialiased">{children}</body>
     </html>
   );

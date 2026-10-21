@@ -14,8 +14,8 @@ Do not copy any reference's logo, wordmark, illustrations or copy. WYD's identit
 ## 1. Visual theme and atmosphere
 
 - Feels like an invite from a friend, not a dating app: warm, calm, safe, a little playful.
-- Light mode only for the prototype (cream canvas). Dark "night" surfaces are used only for
-  the landing hero and toasts.
+- Light (cream canvas) by default, with an optional dark theme (night canvas) the user picks:
+  Light · Dark · System (Profile → Account, or the sun/moon icon). See "Dark theme" in section 2.
 - People first: profile photos are large and real. Plans are short and readable.
 - One clear action per screen. Lots of breathing room, never dense.
 - Safety is visible: verified badge and audience label on every WYD.
@@ -40,6 +40,25 @@ Use these tokens only. Never hardcode hex values in components.
 | `--bone` | `#F5F1EA` | Text on night / ink |
 | `--success` | `#1F6F4A` | Accepted, verified |
 | `--danger` | `#B3261E` | Errors, destructive actions, report |
+
+### Dark theme (user option)
+
+Same token names, different values. Saved per device; "System" follows the OS setting.
+
+| Token | Dark value |
+| --- | --- |
+| `--canvas` | `#0A0908` |
+| `--surface` | `#171513` |
+| `--surface-sunk` | `#25221F` |
+| `--ink` / `--ink-2` / `--ink-3` | `#F5F1EA` / `#B9B2A8` / `#7E776E` |
+| `--line` | `#2F2B27` |
+| `--coral-text` | `#FF8F70` |
+| `--night` | `#1E1B18` (raised so hero/toast cards still stand out) |
+| `--success` / `--danger` | `#5BC48D` / `#FF7A70` |
+
+Two helper tokens keep contrast right in both themes:
+- `--on-ink`: text on an `--ink` fill (primary buttons, selected chips, my chat bubbles). Bone in light, `#111111` in dark.
+- `--on-light`: text on always-light fills (coral, candle, bone). Always `#111111`.
 
 ### Contrast rules (checked)
 
@@ -211,7 +230,7 @@ Warm, short, like a friend texting. Second person. No pressure, no dating langua
 - Don't put white text on coral, or coral text on cream.
 - Don't colour-code gender.
 - Don't use more than 3 font families or add fonts outside this file.
-- Don't use dark mode for app screens in the prototype.
+- Don't hardcode light-only colours: use the tokens so both themes work.
 - Don't use emoji as icons; use one icon set (lucide-react).
 
 ## 9. Implementation (Tailwind)

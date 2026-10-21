@@ -45,7 +45,7 @@ export default function AuthCallback() {
         <>
           <h1 className="font-display text-title">That link didn&apos;t work</h1>
           <p className="text-body">{error}</p>
-          <Link href="/" className="inline-flex h-13 w-full items-center justify-center gap-2 rounded-pill bg-bone px-6 text-label text-ink transition duration-fast ease-out active:scale-[0.97] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-bone">
+          <Link href="/" className="inline-flex h-13 w-full items-center justify-center gap-2 rounded-pill bg-bone px-6 text-label text-on-light transition duration-fast ease-out active:scale-[0.97] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-bone">
             Get a new link
           </Link>
         </>

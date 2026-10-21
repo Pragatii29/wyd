@@ -2,6 +2,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { getSession, homeFor } from "@/lib/profile";
 import { SignInForm } from "@/components/SignInForm";
+import { ThemeIconButton } from "@/components/ThemeToggle";
 
 const EXAMPLES = [
   "New to Bangalore, 22F. Anyone up for exploring cafes today?",
@@ -16,7 +17,10 @@ export default async function Landing({ searchParams }: { searchParams: Promise<
 
   return (
     <main className="mx-auto flex min-h-dvh max-w-[480px] flex-col gap-10 bg-night px-4 py-10 text-bone">
-      <p className="font-display text-title">WYD?</p>
+      <div className="flex items-center justify-between">
+        <p className="font-display text-title">WYD?</p>
+        <ThemeIconButton className="text-bone" />
+      </div>
 
       <div className="flex flex-col gap-3">
         <h1 className="font-display text-display">Got a plan? Find someone who&apos;s up for it.</h1>
@@ -29,7 +33,7 @@ export default async function Landing({ searchParams }: { searchParams: Promise<
         {EXAMPLES.map((e, i) => (
           <li
             key={e}
-            className={`rounded-card px-4 py-3 text-wyd ${i === 1 ? "self-end bg-coral text-ink" : i === 2 ? "bg-candle text-ink" : "bg-bone text-ink"}`}
+            className={`rounded-card px-4 py-3 text-wyd ${i === 1 ? "self-end bg-coral text-on-light" : i === 2 ? "bg-candle text-on-light" : "bg-bone text-on-light"}`}
           >
             {e}
           </li>

@@ -21,7 +21,7 @@ export default async function AdminPage() {
   const { data: setting } = await (await createClient()).from("app_settings").select("value").eq("key", "auto_approve").maybeSingle();
   const demoMode = setting?.value === true;
   const demoNote = (
-    <p className={`mt-3 rounded-card px-4 py-3 text-label ${demoMode ? "bg-candle text-ink" : "bg-sunk text-ink"}`}>
+    <p className={`mt-3 rounded-card px-4 py-3 text-label ${demoMode ? "bg-candle text-on-light" : "bg-sunk text-on-light"}`}>
       {demoMode
         ? "Demo mode is on: new sign-ups are approved instantly. You can still reject or suspend anyone here."
         : "Manual review is on: new sign-ups wait here until you approve them."}

@@ -359,12 +359,12 @@ export function ProfileForm({
                 <p className={meta}>Tap the ones that are really you. Nothing is added until you do.</p>
                 <div className="flex flex-wrap gap-2">
                   {suggested.map((t) => (
-                    <button key={t} type="button" onClick={() => confirmSuggestion(t)} className="inline-flex h-8 items-center gap-1 rounded-pill bg-candle px-3 text-label text-ink">
+                    <button key={t} type="button" onClick={() => confirmSuggestion(t)} className="inline-flex h-8 items-center gap-1 rounded-pill bg-candle px-3 text-label text-on-light">
                       <Plus size={14} /> {tagLabel(t)}
                     </button>
                   ))}
                   {suggestedArea && (
-                    <button type="button" onClick={() => { setArea(suggestedArea); setSuggestedArea(null); }} className="inline-flex h-8 items-center gap-1 rounded-pill bg-candle px-3 text-label text-ink">
+                    <button type="button" onClick={() => { setArea(suggestedArea); setSuggestedArea(null); }} className="inline-flex h-8 items-center gap-1 rounded-pill bg-candle px-3 text-label text-on-light">
                       <Plus size={14} /> Area: {suggestedArea}
                     </button>
                   )}

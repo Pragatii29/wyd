@@ -6,6 +6,31 @@
   --ink:#111111; --ink-2:#595959; --ink-3:#8E8E93; --line:#E5E1DA;
   --coral:#FF6B47; --coral-text:#C2410C; --candle:#F7C873;
   --night:#0A0908; --bone:#F5F1EA; --success:#1F6F4A; --danger:#B3261E;
+  /* Text on an --ink fill (primary buttons, selected chips, my chat bubbles). */
+  --on-ink:#F5F1EA;
+  /* Text on always-light fills (coral, candle, bone) in both themes. */
+  --on-light:#111111;
+  color-scheme: light;
+}
+
+/* Dark theme: night canvas, bone text. Chosen explicitly, or following the system when no choice is saved. */
+:root[data-theme="dark"] {
+  --canvas:#0A0908; --surface:#171513; --surface-sunk:#25221F;
+  --ink:#F5F1EA; --ink-2:#B9B2A8; --ink-3:#7E776E; --line:#2F2B27;
+  --coral:#FF6B47; --coral-text:#FF8F70; --candle:#F7C873;
+  --night:#1E1B18; --bone:#F5F1EA; --success:#5BC48D; --danger:#FF7A70;
+  --on-ink:#111111;
+  color-scheme: dark;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --canvas:#0A0908; --surface:#171513; --surface-sunk:#25221F;
+    --ink:#F5F1EA; --ink-2:#B9B2A8; --ink-3:#7E776E; --line:#2F2B27;
+    --coral:#FF6B47; --coral-text:#FF8F70; --candle:#F7C873;
+    --night:#1E1B18; --bone:#F5F1EA; --success:#5BC48D; --danger:#FF7A70;
+    --on-ink:#111111;
+    color-scheme: dark;
+  }
 }
 
 body {

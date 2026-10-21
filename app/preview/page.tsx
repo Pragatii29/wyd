@@ -1,11 +1,12 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowLeft, ArrowUp } from "lucide-react";
+import { ArrowLeft, ArrowUp, LogIn, LogOut } from "lucide-react";
 import { Avatar } from "@/components/Avatar";
 import { BottomNav } from "@/components/BottomNav";
 import { ChatListItem } from "@/components/ChatListItem";
 import { Composer } from "@/components/Composer";
 import { PreviewLinkGuard } from "@/components/PreviewLinkGuard";
+import { ThemeSegmented } from "@/components/ThemeToggle";
 import { CitySwitcher } from "@/components/CitySwitcher";
 import { HomeHeader } from "@/components/HomeHeader";
 import { ProfileCard } from "@/components/ProfileCard";
@@ -85,10 +86,10 @@ export default async function Preview({ searchParams }: { searchParams: Promise<
   return (
     <div className="min-h-dvh pb-[calc(80px+env(safe-area-inset-bottom))]">
       <PreviewLinkGuard />
-      <nav className="flex gap-1 overflow-x-auto bg-candle px-2 py-1.5 text-label text-ink" aria-label="Preview screens">
+      <nav className="flex gap-1 overflow-x-auto bg-candle px-2 py-1.5 text-label text-on-light" aria-label="Preview screens">
         <span className="shrink-0 px-2 py-1">Preview:</span>
         {SCREENS.map((s) => (
-          <Link key={s} href={`/preview?screen=${s}`} className={`shrink-0 rounded-pill px-3 py-1 ${s === screen ? "bg-ink text-bone" : ""}`}>
+          <Link key={s} href={`/preview?screen=${s}`} className={`shrink-0 rounded-pill px-3 py-1 ${s === screen ? "bg-ink text-on-ink" : ""}`}>
             {s}
           </Link>
         ))}
@@ -192,7 +193,7 @@ export default async function Preview({ searchParams }: { searchParams: Promise<
               const mine = m.from === "ria";
               return (
                 <li key={m.body} className={`flex flex-col ${mine ? "items-end" : "items-start"}`}>
-                  <p className={`max-w-[78%] rounded-[20px] px-3.5 py-2.5 text-body ${mine ? "bg-ink text-bone" : "bg-surface text-ink shadow-card"}`}>{m.body}</p>
+                  <p className={`max-w-[78%] rounded-[20px] px-3.5 py-2.5 text-body ${mine ? "bg-ink text-on-ink" : "bg-surface text-ink shadow-card"}`}>{m.body}</p>
                   <span className={`${meta} mt-0.5 px-2`}>{timeAgo(ago(m.mins))}</span>
                 </li>
               );
@@ -210,6 +211,25 @@ export default async function Preview({ searchParams }: { searchParams: Promise<
       {screen === "profile" && (
         <main className={`${page} pt-6`}>
           <ProfileCard profile={shown} sharedWith={shown.id === ME.id ? [] : ME.interests} />
+          {shown.id === ME.id && (
+            <section className={`${card} mt-4 flex flex-col gap-4`}>
+              <h2 className="text-h2">Account</h2>
+              <div className="flex flex-col gap-2">
+                <p className="text-label">Appearance</p>
+                <ThemeSegmented />
+              </div>
+              <p className={meta}>Preview account · sample data</p>
+              <Link
+                href="/"
+                className="inline-flex h-13 w-full items-center justify-center gap-2 rounded-pill border border-danger bg-surface text-label text-danger transition duration-fast ease-out active:scale-[0.97]"
+              >
+                <LogOut size={16} /> Sign out
+              </Link>
+              <Link href="/" className="inline-flex h-13 w-full items-center justify-center gap-2 rounded-pill bg-ink text-label text-on-ink">
+                <LogIn size={16} /> Sign in with your real account
+              </Link>
+            </section>
+          )}
           {shown.id !== ME.id && (
             <div className={`${card} mt-4`}>
               <Link href="/preview?screen=home" className="text-label text-coral-text">Back to For you</Link>

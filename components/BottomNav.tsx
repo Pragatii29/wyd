@@ -34,7 +34,7 @@ export function BottomNav({
         <Link
           href="/wyd/new"
           aria-label="Drop a WYD"
-          className="fixed bottom-[calc(80px+env(safe-area-inset-bottom))] right-[max(16px,calc(50%-224px))] z-30 flex size-14 items-center justify-center rounded-full bg-coral text-ink shadow-float transition duration-fast ease-out active:scale-[0.97] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink"
+          className="fixed bottom-[calc(80px+env(safe-area-inset-bottom))] right-[max(16px,calc(50%-224px))] z-30 flex size-14 items-center justify-center rounded-full bg-coral text-on-light shadow-float transition duration-fast ease-out active:scale-[0.97] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink"
         >
           <Plus size={28} strokeWidth={2.5} />
         </Link>
