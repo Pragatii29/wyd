@@ -13,7 +13,7 @@ export default async function OnboardingPage() {
   if (profile && profile.status !== "rejected") redirect(homeFor(profile));
 
   const { data: priv } = profile
-    ? await supabase.from("profile_private").select("phone").eq("id", user.id).maybeSingle()
+    ? await supabase.from("profile_private").select("phone, selfie_path").eq("id", user.id).maybeSingle()
     : { data: null };
 
   return (
@@ -41,6 +41,7 @@ export default async function OnboardingPage() {
           userId={user.id}
           initial={profile}
           initialPhone={priv?.phone ?? ""}
+          hasSelfie={!!priv?.selfie_path}
           submitLabel={profile ? "Resubmit for review" : "Create my profile"}
           next="/profile?welcome=1"
         />

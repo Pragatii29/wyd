@@ -5,6 +5,7 @@ import { BadgeCheck, CircleAlert, ExternalLink } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient, hasServiceRole } from "@/lib/supabase/admin";
 import { ageFrom, isAdminEmail } from "@/lib/profile";
+import { isoHoursAgo } from "@/lib/time";
 import { approveProfile, approveWyd, blockWyd, rejectProfile, resolveReport, suspendProfile } from "@/app/actions/admin";
 import { AudienceChip } from "@/components/AudienceChip";
 import { btn, card, chip, input, meta, page, tagLabel, timeAgo } from "@/lib/ui";
@@ -42,8 +43,9 @@ export default async function AdminPage() {
   }
 
   const admin = createAdminClient();
-  const [{ data: pending }, { data: review }, { data: reports }, { count: approvedCount }] = await Promise.all([
-    admin.from("profiles").select("*, private:profile_private(phone)").eq("status", "pending").order("created_at"),
+  const since = isoHoursAgo(7 * 24);
+  const [{ data: pending }, { data: review }, { data: reports }, { count: approvedCount }, { data: recent }] = await Promise.all([
+    admin.from("profiles").select("*, private:profile_private(phone, selfie_path)").eq("status", "pending").order("created_at"),
     admin
       .from("threads")
       .select("*, author:profiles!threads_author_id_fkey(name)")
@@ -51,7 +53,23 @@ export default async function AdminPage() {
       .order("created_at"),
     admin.from("reports").select("*").order("created_at", { ascending: false }).limit(50),
     admin.from("profiles").select("*", { count: "exact", head: true }).eq("status", "approved"),
+    // Real sign-ups in the last week (demo users have no selfie), newest first.
+    admin
+      .from("profiles")
+      .select("*, private:profile_private!inner(phone, selfie_path)")
+      .eq("status", "approved")
+      .not("private.selfie_path", "is", null)
+      .gt("created_at", since)
+      .order("created_at", { ascending: false })
+      .limit(30),
   ]);
+
+  // Verification selfies live in a private bucket: hand the admin short-lived signed links.
+  const selfiePaths = [...(pending ?? []), ...(recent ?? [])].map((p) => p.private?.selfie_path).filter((x): x is string => !!x);
+  const { data: signed } = selfiePaths.length
+    ? await admin.storage.from("verifications").createSignedUrls(selfiePaths, 60 * 60)
+    : { data: [] };
+  const selfieUrl = (path: string | null | undefined) => (path ? signed?.find((s) => s.path === path)?.signedUrl ?? null : null);
 
   return (
     <main className={`${page} pb-16 pt-10`}>
@@ -69,9 +87,7 @@ export default async function AdminPage() {
       <ul className="mt-4 flex flex-col gap-3">
         {pending?.map((p) => (
           <li key={p.id} className={`${card} flex flex-col gap-4`}>
-            <div className="relative aspect-[4/5] w-full overflow-hidden rounded-card bg-sunk">
-              <Image src={p.photo_url} alt={`Photo of ${p.name}`} fill sizes="448px" className="object-cover" />
-            </div>
+            <PhotoPair name={p.name} photo={p.photo_url} selfie={selfieUrl(p.private?.selfie_path)} />
             <div className="flex flex-col gap-1">
               <p className="text-h2">
                 {p.name}, {ageFrom(p.dob)}
@@ -117,6 +133,31 @@ export default async function AdminPage() {
           </li>
         ))}
       </ul>
+
+      {demoMode && (
+        <>
+          <h2 className="mt-10 text-h2">Recent sign-ups ({recent?.length ?? 0})</h2>
+          <p className={`${meta} mt-1`}>Approved instantly in demo mode. Compare the live selfie with the profile photo; suspend anyone who doesn&apos;t match.</p>
+          {!recent?.length && <p className="mt-2 text-body text-ink-2">No new sign-ups this week.</p>}
+          <ul className="mt-4 flex flex-col gap-3">
+            {recent?.map((p) => (
+              <li key={p.id} className={`${card} flex flex-col gap-3`}>
+                <PhotoPair name={p.name} photo={p.photo_url} selfie={selfieUrl(p.private?.selfie_path)} />
+                <div className="flex items-center justify-between gap-3">
+                  <span className="text-label">
+                    {p.name}, {ageFrom(p.dob)}
+                    {p.gender === "female" ? "F" : "M"} <span className={meta}>· {p.private?.phone} · {timeAgo(p.created_at)}</span>
+                  </span>
+                  <form action={suspendProfile}>
+                    <input type="hidden" name="id" value={p.id} />
+                    <button className={btn.ghost}>Suspend</button>
+                  </form>
+                </div>
+              </li>
+            ))}
+          </ul>
+        </>
+      )}
 
       <h2 className="mt-10 text-h2">WYDs in review ({review?.length ?? 0})</h2>
       {!review?.length && <p className="mt-2 text-body text-ink-2">Nothing waiting.</p>}
@@ -212,6 +253,31 @@ async function ReportTarget({ type, id }: { type: string; id: string }) {
           <button className={btn.ghost}>Suspend sender</button>
         </form>
       )}
+    </div>
+  );
+}
+
+// Profile photo (public) next to the live verification selfie (private, signed link).
+function PhotoPair({ name, photo, selfie }: { name: string; photo: string; selfie: string | null }) {
+  return (
+    <div className="grid grid-cols-2 gap-2">
+      <figure className="flex flex-col gap-1">
+        <div className="relative aspect-[4/5] w-full overflow-hidden rounded-card bg-sunk">
+          <Image src={photo} alt={`Profile photo of ${name}`} fill sizes="224px" className="object-cover" />
+        </div>
+        <figcaption className={meta}>Profile photo</figcaption>
+      </figure>
+      <figure className="flex flex-col gap-1">
+        <div className="relative aspect-[4/5] w-full overflow-hidden rounded-card bg-sunk">
+          {selfie ? (
+            // eslint-disable-next-line @next/next/no-img-element -- short-lived signed URL from a private bucket
+            <img src={selfie} alt={`Live verification selfie of ${name}`} className="size-full object-cover" />
+          ) : (
+            <span className={`${meta} flex size-full items-center justify-center p-3 text-center`}>No selfie on file</span>
+          )}
+        </div>
+        <figcaption className={meta}>Live selfie · private</figcaption>
+      </figure>
     </div>
   );
 }

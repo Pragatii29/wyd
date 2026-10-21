@@ -14,18 +14,19 @@ import { isValidPhone, normalizePhone } from "@/lib/phone";
 import { ageOn } from "@/lib/time";
 import { clearDraft, type SignupDraft } from "@/lib/draft";
 import { StepHeader } from "@/components/StepHeader";
+import { SelfieCamera } from "@/components/SelfieCamera";
 import type { Tables } from "@/lib/database.types";
 import { btn, chip, input, label, meta, tagLabel } from "@/lib/ui";
 
 const MAX_WORDS = 250;
 const STEPS = [
   { title: "The basics", blurb: "So people know who they're meeting, and we can check you're real." },
-  { title: "About you", blurb: "A few lines and a clear photo go a long way." },
-  { title: "Create your profile", blurb: "Pick what you're into so we can show you the right plans." },
+  { title: "Photos", blurb: "A live selfie so we know it's really you, then the photo people will see." },
+  { title: "Create your profile", blurb: "A few lines about you, and what you're into." },
 ];
 // Which step each field lives on, so server errors can send the user back to the right place.
 const FIELD_STEP: Record<string, number> = {
-  name: 0, phone: 0, social_url: 0, photo_url: 1, bio: 1, dob: 2, gender: 2, city: 2, area: 2, interests: 2, form: 2,
+  name: 0, phone: 0, social_url: 0, selfie_path: 1, photo_url: 1, bio: 2, dob: 2, gender: 2, city: 2, area: 2, interests: 2, form: 2,
 };
 
 function maxDob() {
@@ -47,6 +48,7 @@ export function ProfileForm({
   wizard = false,
   draft = null,
   preview = false,
+  hasSelfie = false,
 }: {
   userId: string;
   initial: Tables<"profiles"> | null;
@@ -58,6 +60,8 @@ export function ProfileForm({
   wizard?: boolean;
   // Local click-through without an account: nothing is uploaded or saved.
   preview?: boolean;
+  // A verification selfie is already on file (e.g. resubmitting a rejected profile).
+  hasSelfie?: boolean;
 }) {
   const router = useRouter();
   const supabase = createClient();
@@ -68,6 +72,8 @@ export function ProfileForm({
   const [phone, setPhone] = useState(initialPhone ? initialPhone.replace(/^\+91/, "") : draft?.phone ?? "");
   const [socialUrl, setSocialUrl] = useState(initial?.social_url ?? draft?.social_url ?? "");
   const [photoUrl, setPhotoUrl] = useState(initial?.photo_url ?? "");
+  const [selfiePath, setSelfiePath] = useState("");
+  const selfieDone = hasSelfie || !!selfiePath;
   const [bio, setBio] = useState(initial?.bio ?? "");
   const [dob, setDob] = useState(initial?.dob ?? "");
   const [gender, setGender] = useState<"female" | "male" | "">(initial?.gender ?? "");
@@ -106,6 +112,20 @@ export function ProfileForm({
     setUploading(false);
   }
 
+  // Uploads the live selfie to the private verifications bucket (only this user and the admin can read it).
+  async function uploadSelfie(jpeg: Blob): Promise<string | null> {
+    if (preview) {
+      setSelfiePath("preview");
+      return null;
+    }
+    const path = `${userId}/selfie-${Date.now()}.jpg`;
+    const { error } = await supabase.storage.from("verifications").upload(path, jpeg, { contentType: "image/jpeg" });
+    if (error) return `Couldn't save your selfie: ${error.message}`;
+    setSelfiePath(path);
+    setErrors((e) => ({ ...e, selfie_path: undefined }));
+    return null;
+  }
+
   async function suggest(text: string) {
     setSuggesting(true);
     setErrors({});
@@ -137,11 +157,12 @@ export function ProfileForm({
       if (!isHttpsUrl(socialUrl)) e.social_url = "Paste your full LinkedIn link, starting with https://";
     }
     if (s === 1) {
+      if (wizard && !selfieDone) e.selfie_path = "Take a live selfie to continue";
       if (!photoUrl) e.photo_url = "Add a clear JPG photo of just you";
-      if (!bio.trim()) e.bio = "Tell us a little about yourself";
-      else if (words(bio) > MAX_WORDS) e.bio = "Keep it to 250 words or less";
     }
     if (s === 2) {
+      if (!bio.trim()) e.bio = "Tell us a little about yourself";
+      else if (words(bio) > MAX_WORDS) e.bio = "Keep it to 250 words or less";
       if (!dob) e.dob = "Add your date of birth";
       else if (dob > maxDob()) e.dob = "You must be 18 or older to use WYD?";
       if (!gender) e.gender = "Pick one";
@@ -170,6 +191,7 @@ export function ProfileForm({
     const res = await saveProfile({
       name, phone, dob, gender: gender as "female", photo_url: photoUrl, social_url: socialUrl.trim(),
       city: city as "Bengaluru", area, bio, interests,
+      selfie_path: selfiePath || undefined,
     });
     if (!res.ok) {
       setSaving(false);
@@ -241,9 +263,29 @@ export function ProfileForm({
         </section>
       )}
 
-      {/* Step 2 — about you and a photo */}
+      {/* Step 2 — live verification selfie + profile photo */}
       {show(1) && (
-        <section className="animate-fade-in flex flex-col gap-6">
+        <section className="animate-fade-in flex flex-col gap-8">
+          {wizard && (
+            <div id="field-selfie_path" className="flex flex-col gap-3">
+              <div className="flex items-center justify-between gap-2">
+                <h3 className="text-h2">Verification selfie</h3>
+                <span className="inline-flex items-center gap-1 rounded-pill bg-sunk px-2.5 py-0.5 text-meta text-ink-2">
+                  <Lock size={12} /> Private
+                </span>
+              </div>
+              <p className={meta}>Taken live with your camera. Only our team sees it, to check it matches your profile photo. It never appears on your profile.</p>
+              <SelfieCamera done={selfieDone} onCapture={uploadSelfie} error={errors.selfie_path} />
+            </div>
+          )}
+
+          <div className="flex flex-col gap-3">
+            {wizard && (
+              <div>
+                <h3 className="text-h2">Profile photo</h3>
+                <p className={`${meta} mt-1`}>This is what people see on your profile and plans.</p>
+              </div>
+            )}
           <div id="field-photo_url" className="flex flex-col items-center gap-3">
             <label
               htmlFor="photo"
@@ -264,7 +306,13 @@ export function ProfileForm({
             <p className={meta}>{photoUrl ? "Tap to change" : "JPG only · a clear, recent photo of just you · under 5 MB"}</p>
             {errors.photo_url && <FieldError msg={errors.photo_url} />}
           </div>
+          </div>
+        </section>
+      )}
 
+      {/* Step 3 — create the profile */}
+      {show(2) && (
+        <section className="animate-fade-in flex flex-col gap-6">
           <Field id="bio" text="Tell us about yourself in 250 words or less." error={errors.bio}>
             <textarea
               id="bio"
@@ -279,12 +327,6 @@ export function ProfileForm({
               {words(bio)}/{MAX_WORDS} words
             </span>
           </Field>
-        </section>
-      )}
-
-      {/* Step 3 — create the profile */}
-      {show(2) && (
-        <section className="animate-fade-in flex flex-col gap-6">
           {wizard && photoUrl && (
             <div className="flex items-center gap-3 rounded-card bg-surface p-3 shadow-card">
               <span className="relative size-14 shrink-0 overflow-hidden rounded-full bg-sunk">

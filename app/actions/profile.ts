@@ -58,6 +58,8 @@ const profileSchema = z.object({
     .min(1, "Tell us a little about yourself")
     .refine((v) => wordCount(v) <= 250, "Keep it to 250 words or less"),
   interests: z.array(z.enum(TAGS)).max(15),
+  // Path of the live verification selfie in the private "verifications" bucket.
+  selfie_path: z.string().max(200).optional(),
 });
 
 export type ProfileInput = z.input<typeof profileSchema>;
@@ -92,13 +94,18 @@ export async function saveProfile(input: ProfileInput): Promise<{ ok: true } | {
     }
     return { ok: false, errors };
   }
-  const { phone, ...data } = parsed.data;
+  const { phone, selfie_path, ...data } = parsed.data;
+  if (selfie_path && !selfie_path.startsWith(`${user.id}/selfie-`)) {
+    return { ok: false, errors: { selfie_path: "Take your selfie again." } };
+  }
 
   // Photos must live in this user's own folder of our avatars bucket.
   const photoPrefix = `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/avatars/${user.id}/`;
   if (!data.photo_url.startsWith(photoPrefix)) return { ok: false, errors: { photo_url: "Upload your photo again." } };
 
   const { data: existing } = await supabase.from("profiles").select("status, photo_url").eq("id", user.id).maybeSingle();
+  // New sign-ups must include a live verification selfie.
+  if (!existing && !selfie_path) return { ok: false, errors: { selfie_path: "Take a live selfie to continue" } };
   const row = { ...data, id: user.id };
   const { error } = existing
     ? await supabase.from("profiles").update(row).eq("id", user.id)
@@ -109,7 +116,9 @@ export async function saveProfile(input: ProfileInput): Promise<{ ok: true } | {
   }
 
   // Phone lives in a private table only this user and the admin can read.
-  const { error: phoneError } = await supabase.from("profile_private").upsert({ id: user.id, phone, updated_at: new Date().toISOString() });
+  const { error: phoneError } = await supabase
+    .from("profile_private")
+    .upsert({ id: user.id, phone, updated_at: new Date().toISOString(), ...(selfie_path ? { selfie_path } : {}) });
   if (phoneError) return { ok: false, errors: { phone: "Couldn't save your phone number. Try again." } };
 
   if (hasServiceRole()) {

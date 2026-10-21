@@ -10,6 +10,7 @@ export function OnboardingWizard(props: {
   userId: string;
   initial: Tables<"profiles"> | null;
   initialPhone: string;
+  hasSelfie?: boolean;
   submitLabel: string;
   next: string;
 }) {
