@@ -86,14 +86,6 @@ export default async function Preview({ searchParams }: { searchParams: Promise<
   return (
     <div className="min-h-dvh pb-[calc(80px+env(safe-area-inset-bottom))]">
       <PreviewLinkGuard />
-      <nav className="flex gap-1 overflow-x-auto bg-candle px-2 py-1.5 text-label text-on-light" aria-label="Preview screens">
-        <span className="shrink-0 px-2 py-1">Preview:</span>
-        {SCREENS.map((s) => (
-          <Link key={s} href={`/preview?screen=${s}`} className={`shrink-0 rounded-pill px-3 py-1 ${s === screen ? "bg-ink text-on-ink" : ""}`}>
-            {s}
-          </Link>
-        ))}
-      </nav>
 
       {(screen === "home" || screen === "requests") && (
         <main className="mx-auto w-full max-w-[480px]">
