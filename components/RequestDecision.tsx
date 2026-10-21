@@ -3,8 +3,8 @@
 import { useState, useTransition } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Loader2, MessageCircle } from "lucide-react";
-import { answerRequest, startChat } from "@/app/actions/social";
+import { Loader2, MessageCircle, Users } from "lucide-react";
+import { answerRequest, groupChatForPlan, startChat } from "@/app/actions/social";
 import { btn } from "@/lib/ui";
 
 // Floating Pass / Accept for one request. Accepting asks the poster to confirm before a chat opens.
@@ -16,6 +16,8 @@ export function RequestDecision({
   planText,
   status: initialStatus,
   chatId,
+  group = null,
+  othersAccepted = 0,
   preview,
 }: {
   requestId: string;
@@ -25,6 +27,10 @@ export function RequestDecision({
   planText: string;
   status: "pending" | "accepted" | "declined";
   chatId: string | null;
+  // This plan's group chat, if the poster has made one.
+  group?: { id: string; members: string[] } | null;
+  // How many other people are already accepted for this plan.
+  othersAccepted?: number;
   preview?: boolean;
 }) {
   const router = useRouter();
@@ -44,6 +50,22 @@ export function RequestDecision({
         router.push(preview ? "/preview?screen=requests" : "/feed?tab=requests");
         router.refresh();
       }
+    });
+  }
+
+  const inGroup = !!group?.members.includes(requesterId);
+  // A group makes sense once someone else is accepted too, or one already exists.
+  const canGroup = othersAccepted > 0 || !!group;
+  const groupLabel = inGroup ? "Open the group chat" : group ? `Add ${firstName} to the group chat` : `Group chat with all ${othersAccepted + 1} accepted`;
+
+  function openGroup() {
+    start(async () => {
+      setError("");
+      if (preview) return router.push("/preview?screen=chat");
+      if (inGroup) return router.push(`/chats/${group!.id}`);
+      const res = await groupChatForPlan(threadId);
+      if (!res.ok) return setError(res.error);
+      router.push(`/chats/${res.chatId}`);
     });
   }
 
@@ -69,14 +91,22 @@ export function RequestDecision({
           >
             <h2 className="text-h2">You accepted {firstName}!</h2>
             <p className="mt-2 text-body text-ink-2">
-              Start a chat to fix the time and place for “{planText}”. Only you and {firstName} can read it.
+              {canGroup
+                ? `Chat with ${firstName} alone, or bring everyone you've accepted for “${planText}” into one group chat.`
+                : `Start a chat to fix the time and place for “${planText}”. Only you and ${firstName} can read it.`}
             </p>
-            <div className="mt-6 flex gap-2">
-              <button className={btn.secondary} onClick={() => setConfirming(false)}>
-                Not now
+            <div className="mt-6 flex flex-col gap-2">
+              {canGroup && (
+                <button className={btn.primary} disabled={pending} onClick={openGroup}>
+                  {pending ? <Loader2 size={16} className="animate-spin" /> : <Users size={18} />} {groupLabel}
+                </button>
+              )}
+              <button className={canGroup ? btn.secondary : btn.primary} disabled={pending} onClick={chatId ? () => router.push(`/chats/${chatId}`) : openChat}>
+                {pending && !canGroup ? <Loader2 size={16} className="animate-spin" /> : <MessageCircle size={18} />}{" "}
+                {chatId ? `Open 1:1 chat with ${firstName}` : canGroup ? `1:1 chat with ${firstName}` : "Start chat"}
               </button>
-              <button className={btn.primary} disabled={pending} onClick={openChat}>
-                {pending && <Loader2 size={16} className="animate-spin" />} Start chat
+              <button className={btn.ghost} onClick={() => setConfirming(false)}>
+                Not now
               </button>
             </div>
             {error && <p className="mt-2 font-mono text-meta text-danger">{error}</p>}
@@ -102,6 +132,10 @@ export function RequestDecision({
               {pending && <Loader2 size={18} className="animate-spin" />} Accept
             </button>
           </div>
+        ) : status === "accepted" && canGroup ? (
+          <button onClick={() => setConfirming(true)} className={`${btn.primary} max-w-xs shadow-float`}>
+            <MessageCircle size={18} /> Chat with {firstName}
+          </button>
         ) : status === "accepted" ? (
           chatId ? (
             <Link href={`/chats/${chatId}`} className={`${btn.primary} max-w-xs shadow-float`}>

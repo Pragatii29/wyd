@@ -24,3 +24,20 @@ export async function loadIncomingRequests(supabase: SupabaseClient<Database>, u
     .map((r) => ({ ...r, requester: r.requester! }))
     .sort((a, b) => Number(b.status === "pending") - Number(a.status === "pending"));
 }
+
+// Each plan's group chat (the one the poster made), keyed by plan id, with its member ids.
+export async function loadPlanGroups(supabase: SupabaseClient<Database>, userId: string, threadIds: string[]) {
+  const groups = new Map<string, { id: string; members: string[] }>();
+  if (threadIds.length === 0) return groups;
+  const { data } = await supabase
+    .from("chats")
+    .select("id, thread_id, chat_members(user_id)")
+    .eq("is_group", true)
+    .eq("created_by", userId)
+    .in("thread_id", threadIds)
+    .order("created_at");
+  for (const c of data ?? []) {
+    if (c.thread_id && !groups.has(c.thread_id)) groups.set(c.thread_id, { id: c.id, members: c.chat_members.map((m) => m.user_id) });
+  }
+  return groups;
+}

@@ -7,6 +7,7 @@ import { Check, ExternalLink, Loader2, MessageCircle, Users, X } from "lucide-re
 import { answerRequest, startChat } from "@/app/actions/social";
 import { Avatar } from "@/components/Avatar";
 import { InterestChip } from "@/components/InterestChip";
+import { PlanGroupChat } from "@/components/PlanGroupChat";
 import { btn, card, meta, timeAgo } from "@/lib/ui";
 import { olderThanHours } from "@/lib/time";
 
@@ -167,10 +168,21 @@ function WydGroup({ wyd }: { wyd: BoardWyd }) {
         </ul>
       )}
 
+      {wyd.requests.length + wyd.chats.filter((c) => c.is_group).length > 1 && waiting + accepted.length > 0 && (
+        <div className="mt-3">
+          <PlanGroupChat
+            threadId={wyd.id}
+            waiting={waiting}
+            accepted={accepted.map((r) => r.requester.id)}
+            group={wyd.chats.find((c) => c.is_group) ?? null}
+          />
+        </div>
+      )}
+
       {accepted.length > 0 && (
         <div className="mt-3 flex flex-col gap-2">
           <div className="flex items-center justify-between gap-2 px-1">
-            <p className={meta}>Tick 1 person for a 1:1 chat, or several for a group chat.</p>
+            <p className={meta}>Or tick people for a 1:1 chat or a smaller group.</p>
             {accepted.length > 1 && (
               <button
                 type="button"
@@ -184,7 +196,7 @@ function WydGroup({ wyd }: { wyd: BoardWyd }) {
             )}
           </div>
           {!confirming ? (
-            <button className={btn.primary} disabled={picked.length === 0 || pending} onClick={() => setConfirming(true)}>
+            <button className={btn.secondary} disabled={picked.length === 0 || pending} onClick={() => setConfirming(true)}>
               {picked.length > 1 ? <Users size={18} /> : <MessageCircle size={18} />}
               {picked.length === 0
                 ? "Tick accepted people to start a chat"

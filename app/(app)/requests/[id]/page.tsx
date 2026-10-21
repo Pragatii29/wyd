@@ -38,8 +38,17 @@ export default async function RequestPage({ params }: { params: Promise<{ id: st
     .from("chats")
     .select("id, is_group, chat_members(user_id)")
     .eq("thread_id", req.thread.id)
-    .eq("is_group", false);
-  const chatId = chats?.find((c) => c.chat_members.some((m) => m.user_id === req.requester!.id))?.id ?? null;
+    .eq("created_by", user.id);
+  const chatId = chats?.find((c) => !c.is_group && c.chat_members.some((m) => m.user_id === req.requester!.id))?.id ?? null;
+  const groupChat = chats?.find((c) => c.is_group);
+  const group = groupChat ? { id: groupChat.id, members: groupChat.chat_members.map((m) => m.user_id) } : null;
+  // Others already accepted for this plan: together with this person they can make a group chat.
+  const { count: othersAccepted } = await supabase
+    .from("requests")
+    .select("id", { count: "exact", head: true })
+    .eq("thread_id", req.thread.id)
+    .eq("status", "accepted")
+    .neq("requester_id", req.requester.id);
   const firstName = req.requester.name.split(" ")[0];
 
   return (
@@ -71,6 +80,8 @@ export default async function RequestPage({ params }: { params: Promise<{ id: st
         planText={req.thread.body}
         status={req.status}
         chatId={chatId}
+        group={group}
+        othersAccepted={othersAccepted ?? 0}
       />
     </main>
   );

@@ -83,6 +83,64 @@ export async function startChat(threadId: string, userIds: string[]): Promise<Ac
   return { ok: true, chatId: chat.id };
 }
 
+// One group chat per plan. Creates it with everyone you've accepted, or adds newly accepted people to
+// the existing one. With acceptAll, everyone still waiting is accepted first ("Accept all & group chat").
+export async function groupChatForPlan(
+  threadId: string,
+  opts: { acceptAll?: boolean } = {},
+): Promise<ActionResult<{ chatId: string; added: number }>> {
+  const s = await approvedUser();
+  if ("error" in s) return { error: s.error! };
+  if (!uuid.safeParse(threadId).success) return { error: "Unknown plan." };
+
+  const { data: thread } = await s.supabase.from("threads").select("author_id").eq("id", threadId).maybeSingle();
+  if (thread?.author_id !== s.user.id) return { error: "Only the poster can make the group chat." };
+
+  if (opts.acceptAll) {
+    // RLS: only the plan's author can change request status.
+    const { error } = await s.supabase.from("requests").update({ status: "accepted" }).eq("thread_id", threadId).eq("status", "pending");
+    if (error) return { error: error.message };
+  }
+
+  const blocked = await getBlockedIds(s.user.id);
+  const { data: accepted } = await s.supabase.from("requests").select("requester_id").eq("thread_id", threadId).eq("status", "accepted");
+  const people = (accepted ?? []).map((r) => r.requester_id).filter((id) => !blocked.has(id));
+  if (people.length === 0) return { error: "Accept at least one person first." };
+
+  const { data: existing } = await s.supabase
+    .from("chats")
+    .select("id, chat_members(user_id)")
+    .eq("thread_id", threadId)
+    .eq("is_group", true)
+    .eq("created_by", s.user.id)
+    .order("created_at")
+    .limit(1)
+    .maybeSingle();
+
+  let chatId = existing?.id;
+  if (!chatId) {
+    const { data: chat, error } = await s.supabase
+      .from("chats")
+      .insert({ thread_id: threadId, created_by: s.user.id, is_group: true })
+      .select("id")
+      .single();
+    if (error) return { error: error.message };
+    chatId = chat.id;
+  }
+  const already = new Set((existing?.chat_members ?? []).map((m) => m.user_id));
+  const toAdd = [s.user.id, ...people].filter((id) => !already.has(id));
+  if (toAdd.length) {
+    // RLS: the creator can only add themselves and accepted requesters of this plan.
+    const { error } = await s.supabase.from("chat_members").insert(toAdd.map((user_id) => ({ chat_id: chatId!, user_id })));
+    if (error) return { error: error.message };
+  }
+
+  revalidatePath("/chats");
+  revalidatePath("/wyds");
+  revalidatePath("/feed");
+  return { ok: true, chatId, added: toAdd.filter((id) => id !== s.user.id).length };
+}
+
 // Members only (RLS). In a 1:1 chat, a block in either direction stops new messages.
 export async function sendMessage(chatId: string, body: string): Promise<ActionResult> {
   const s = await approvedUser();
