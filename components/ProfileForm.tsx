@@ -25,6 +25,11 @@ const STEPS = [
   { title: "Create your profile", blurb: "A few lines about you, and what you're into." },
 ];
 // Which step each field lives on, so server errors can send the user back to the right place.
+const FIELD_LABEL: Record<string, string> = {
+  name: "Full name", phone: "Phone number", social_url: "LinkedIn link", selfie_path: "Verification selfie",
+  photo_url: "Profile photo", bio: "About you", dob: "Date of birth", gender: "Gender", city: "City",
+  area: "Area", interests: "Interests",
+};
 const FIELD_STEP: Record<string, number> = {
   name: 0, phone: 0, social_url: 0, selfie_path: 1, photo_url: 1, bio: 2, dob: 2, gender: 2, city: 2, area: 2, interests: 2, form: 2,
 };
@@ -171,34 +176,47 @@ export function ProfileForm({
     return e;
   }
 
+  // Show problems where the user can see them: scroll to the first field that needs fixing.
+  function showErrors(e: ProfileErrors) {
+    setErrors(e);
+    const first = Object.keys(e).find((k) => k !== "form");
+    if (first) requestAnimationFrame(() => document.getElementById(`field-${first}`)?.scrollIntoView({ behavior: "smooth", block: "center" }));
+  }
+
   function goNext() {
     const e = checkStep(step);
-    setErrors(e);
-    if (Object.keys(e).length === 0) {
-      setStep((s) => s + 1);
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    }
+    if (Object.keys(e).length) return showErrors(e);
+    setErrors({});
+    setStep((s) => s + 1);
+    window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
   async function onSubmit(ev: React.FormEvent) {
     ev.preventDefault();
     if (wizard && step < STEPS.length - 1) return goNext();
     const local = wizard ? checkStep(step) : { ...checkStep(0), ...checkStep(1), ...checkStep(2) };
-    if (Object.keys(local).length) return setErrors(local);
+    if (Object.keys(local).length) return showErrors(local);
 
     if (preview) return setPreviewDone(true);
     setSaving(true);
     setErrors({});
-    const res = await saveProfile({
-      name, phone, dob, gender: gender as "female", photo_url: photoUrl, social_url: socialUrl.trim(),
-      city: city as "Bengaluru", area, bio, interests,
-      selfie_path: selfiePath || undefined,
-    });
+    let res: Awaited<ReturnType<typeof saveProfile>>;
+    try {
+      res = await saveProfile({
+        name, phone, dob, gender: gender as "female", photo_url: photoUrl, social_url: socialUrl.trim(),
+        city: city as "Bengaluru", area, bio, interests,
+        selfie_path: selfiePath || undefined,
+      });
+    } catch {
+      // Network blip, or the app was updated while this page was open: never leave the button spinning.
+      setSaving(false);
+      return setErrors({ form: "We couldn't save your profile. Check your connection and tap the button again (refresh the page if it keeps failing)." });
+    }
     if (!res.ok) {
       setSaving(false);
-      setErrors(res.errors);
       const first = Object.keys(res.errors)[0];
       if (wizard) setStep(FIELD_STEP[first] ?? 2);
+      showErrors(res.errors);
       return;
     }
     clearDraft();
@@ -444,6 +462,15 @@ export function ProfileForm({
       )}
 
       {errors.form && <FieldError msg={errors.form} />}
+      {Object.keys(errors).some((k) => k !== "form" && errors[k as keyof ProfileErrors]) && (
+        <p role="alert" className="rounded-field border border-danger px-4 py-3 text-label text-danger">
+          Fix {Object.keys(errors).filter((k) => k !== "form" && errors[k as keyof ProfileErrors]).length > 1 ? "these" : "this"} to continue:{" "}
+          {Object.keys(errors)
+            .filter((k) => k !== "form" && errors[k as keyof ProfileErrors])
+            .map((k) => FIELD_LABEL[k] ?? k)
+            .join(", ")}
+        </p>
+      )}
       {previewDone && (
         <p className="animate-fade-in rounded-card border border-success bg-surface p-4 text-body text-ink" role="status">
           All 3 steps are filled in. This is a preview, so nothing was saved. Sign in on the home page to create your real profile.
