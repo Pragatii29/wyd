@@ -1,4 +1,5 @@
-import { TAGS, type Tag } from "@/lib/tags";
+// Relative .ts import so `node --test lib/fallback.test.ts` can run this file directly.
+import { TAGS, type Tag } from "./tags.ts";
 
 // Rule-based fallback used whenever the Gemini path fails. Works with zero keys.
 
@@ -59,6 +60,61 @@ export function fallbackTags(text: string, max: number): Tag[] {
 
 export function fallbackArea(text: string): string | null {
   return BENGALURU_AREAS.find((area) => has(text, area)) ?? null;
+}
+
+// WYD safety: unsafe blocklist first, then ambiguous phrases for review, else safe.
+
+export type Verdict = "safe" | "unsafe" | "review";
+
+const UNSAFE: { reason: string; words: string[] }[] = [
+  {
+    reason: "Please keep plans free of sexual content.",
+    words: [
+      "sex", "sexy", "hookup", "hook up", "nudes", "nude", "naked", "nsfw", "fwb",
+      "one night stand", "horny", "escort", "sugar daddy", "sugar baby", "onlyfans", "massage at",
+    ],
+  },
+  {
+    reason: "Please keep it kind. No abuse or slurs.",
+    words: [
+      "fuck", "fucking", "bitch", "bastard", "slut", "whore", "asshole", "chutiya",
+      "madarchod", "behenchod", "bhenchod", "randi", "harami",
+    ],
+  },
+  {
+    reason: "Drugs aren't allowed on WYD?.",
+    words: ["weed", "ganja", "cocaine", "mdma", "lsd", "molly", "drugs", "charas", "hash", "stoned", "joint"],
+  },
+  {
+    reason: "Please don't ask for money or payments.",
+    words: ["pay", "upi", "send money", "paytm", "gpay", "phonepe", "bank details", "transfer money", "investment"],
+  },
+  { reason: "That venue isn't OK for a WYD.", words: ["brothel", "strip club", "red light", "spa happy ending"] },
+  { reason: "Please keep it peaceful.", words: ["beat up", "gun", "knife", "fight someone"] },
+  { reason: "WYD? is for adults only.", words: ["minor", "underage", "school girl", "schoolgirl", "school boy"] },
+];
+
+// House number followed by a road, cross or main ("42, 5th cross", "#12 3rd main", "flat 304").
+const ADDRESS_PATTERN =
+  /(#\s*\d{1,4})|\b(no\.?|house no\.?|flat)\s*\d{1,4}\b|\b\d{1,4}[a-z]?\s*[,/]\s*\d{1,2}(st|nd|rd|th)?\s+(cross|main|road)\b/i;
+
+const REVIEW_PHRASES = [
+  "come alone", "my place", "my room", "just us two", "no questions", "late night only", "hotel room",
+];
+
+export function fallbackSafety(text: string): { verdict: Verdict; reason: string } {
+  for (const group of UNSAFE) {
+    if (group.words.some((w) => has(text, w))) return { verdict: "unsafe", reason: group.reason };
+  }
+  if (ADDRESS_PATTERN.test(text)) return { verdict: "unsafe", reason: "Please don't share a home address." };
+  if (REVIEW_PHRASES.some((p) => has(text, p))) {
+    return { verdict: "review", reason: "We'll take a quick look before this goes live." };
+  }
+  return { verdict: "safe", reason: "Looks like a fun plan." };
+}
+
+export function fallbackWyd(text: string) {
+  return { ...fallbackSafety(text), tags: fallbackTags(text, 3) };
 }
 
 export function fallbackProfile(bio: string) {

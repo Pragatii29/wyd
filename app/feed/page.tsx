@@ -1,4 +1,6 @@
+import Link from "next/link";
 import { redirect } from "next/navigation";
+import { Plus } from "lucide-react";
 import { getSession, homeFor } from "@/lib/profile";
 import { SignOutButton } from "@/components/SignOutButton";
 
@@ -15,6 +17,12 @@ export default async function FeedPage() {
         <p className="text-body text-ink-2">No plans nearby yet. Be the first — drop a WYD.</p>
       </div>
       <SignOutButton />
+      <Link
+        href="/wyd/new"
+        className="fixed bottom-[calc(24px+env(safe-area-inset-bottom))] right-4 inline-flex h-14 items-center gap-2 rounded-pill bg-coral px-6 text-label text-ink shadow-float transition duration-fast ease-out active:scale-[0.97] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink"
+      >
+        <Plus size={20} /> Drop a WYD
+      </Link>
     </main>
   );
 }

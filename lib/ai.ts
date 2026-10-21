@@ -2,7 +2,7 @@ import "server-only";
 import { GoogleGenAI, type ContentListUnion } from "@google/genai";
 import { z } from "zod";
 import { TAGS } from "@/lib/tags";
-import { fallbackProfile } from "@/lib/fallback";
+import { fallbackProfile, fallbackTags, fallbackWyd } from "@/lib/fallback";
 
 const TIMEOUT_MS = 5000;
 const TAG_LIST = TAGS.join(", ");
@@ -83,6 +83,50 @@ export async function extractProfile(bio: string) {
   const path: AiPath = result ? "ai" : "fallback";
   console.log(`[ai] profile extract path=${path}`);
   return { ...(result ?? fallbackProfile(bio)), path };
+}
+
+// 3. WYD safety + tags
+
+const wydSchema = z.object({
+  verdict: z.enum(["safe", "unsafe", "review"]),
+  reason: z.string(),
+  tags: z.array(z.string()).transform((tags) =>
+    tags.filter((t): t is z.infer<typeof tagSchema> => tagSchema.safeParse(t).success).slice(0, 3),
+  ),
+});
+
+const WYD_PROMPT = `You screen posts for WYD?, an app where verified adults (18+) in Indian cities post everyday
+plans (chai, cafés, walks, movies, sports, trips) and nearby people ask to join.
+Return JSON only:
+{"verdict": "safe" | "unsafe" | "review", "reason": string, "tags": string[]}
+- unsafe: sexual content or solicitation, vulgar or abusive language, hate, drugs, violence,
+  scams or money requests, a private home address, or a venue that is unsafe or adult
+  (e.g. brothel, strip club), or anything involving minors.
+- review: ambiguous intent (e.g. "just us two at my place", "come alone"), or you are unsure.
+- safe: a normal social plan. House parties, pubs and bars are fine if nothing else is wrong.
+- reason: one short sentence the user can read.
+- tags: 1 to 3 tags from this list only: ${TAG_LIST}. Map meaning
+  ("stroll at Cubbon after work" -> walking, exploring_city).`;
+
+export async function screenWyd(text: string) {
+  const result = await generateJson({
+    schema: wydSchema,
+    jsonSchema: {
+      type: "object",
+      properties: {
+        verdict: { type: "string", enum: ["safe", "unsafe", "review"] },
+        reason: { type: "string" },
+        tags: { type: "array", items: { type: "string", enum: [...TAGS] } },
+      },
+      required: ["verdict", "reason", "tags"],
+    },
+    systemInstruction: WYD_PROMPT,
+    contents: text,
+  });
+  const path: AiPath = result ? "ai" : "fallback";
+  console.log(`[ai] wyd screen path=${path} verdict=${(result ?? fallbackWyd(text)).verdict}`);
+  if (!result) return { ...fallbackWyd(text), path };
+  return { ...result, tags: result.tags.length ? result.tags : fallbackTags(text, 3), path };
 }
 
 // 2. Photo pre-check (a helper for the admin, never auto-approves)
