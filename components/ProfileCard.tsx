@@ -20,9 +20,9 @@ export function ProfileCard({
     <article className="flex flex-col gap-4">
       <header className="flex items-start justify-between gap-3">
         <div className="min-w-0">
-          <h1 className="flex flex-wrap items-center gap-x-2 text-title font-bold text-ink">
+          <h1 className="flex flex-wrap items-baseline gap-x-2 font-display text-display text-ink">
             <span className="truncate">{profile.name}</span>
-            <span className="font-normal">{ageFrom(profile.dob)}</span>
+            <span className="text-ink-2">{ageFrom(profile.dob)}</span>
             {verified && <BadgeCheck size={26} className="text-success" aria-label="Verified" />}
           </h1>
           <p className="mt-1 flex items-center gap-1 text-body text-ink-2">
@@ -52,7 +52,7 @@ export function ProfileCard({
         {profile.bio && (
           <div className="flex flex-col gap-3">
             <PenLine size={24} className="text-coral-text" aria-hidden />
-            <h2 className="font-display text-h2">Bio</h2>
+            <h2 className="font-display text-title">Bio</h2>
             <p className="whitespace-pre-line text-body text-ink">{profile.bio}</p>
           </div>
         )}
@@ -60,7 +60,7 @@ export function ProfileCard({
           <>
             {profile.bio && <hr className="border-line" />}
             <div className="flex flex-col gap-3">
-              <h2 className="font-display text-h2">Interests</h2>
+              <h2 className="font-display text-title">Interests</h2>
               <div className="flex flex-wrap gap-2">
                 {profile.interests.map((t) => (
                   <InterestChip key={t} tag={t} highlight={sharedWith.includes(t)} />

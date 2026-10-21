@@ -20,25 +20,27 @@ const config: Config = {
         "on-light": "var(--on-light)",
       },
       fontFamily: {
-        display: ["var(--font-fraunces)", "serif"],
-        sans: ["var(--font-manrope)", "system-ui", "sans-serif"],
+        display: ["var(--font-display)", "serif"],
+        sans: ["var(--font-sans)", "system-ui", "sans-serif"],
         mono: ["var(--font-dm-mono)", "monospace"],
       },
       fontSize: {
-        hero: ["44px", { lineHeight: "46px", fontWeight: "600", letterSpacing: "-0.02em" }],
-        display: ["36px", { lineHeight: "40px", fontWeight: "600", letterSpacing: "-0.01em" }],
-        title: ["28px", { lineHeight: "34px", fontWeight: "600" }],
-        h2: ["22px", { lineHeight: "28px", fontWeight: "700" }],
+        hero: ["60px", { lineHeight: "56px", fontWeight: "400", letterSpacing: "-0.02em" }],
+        display: ["44px", { lineHeight: "44px", fontWeight: "400", letterSpacing: "-0.01em" }],
+        title: ["32px", { lineHeight: "36px", fontWeight: "400" }],
+        h2: ["22px", { lineHeight: "28px", fontWeight: "600" }],
         wyd: ["18px", { lineHeight: "26px", fontWeight: "500" }],
         body: ["16px", { lineHeight: "24px", fontWeight: "400" }],
         label: ["14px", { lineHeight: "20px", fontWeight: "600" }],
         meta: ["12px", { lineHeight: "16px", fontWeight: "400" }],
         eyebrow: ["12px", { lineHeight: "16px", fontWeight: "500", letterSpacing: "0.08em" }],
       },
-      borderRadius: { sm: "8px", field: "16px", card: "24px", sheet: "32px", pill: "999px" },
+      // oddtables shapes: near-square 2px corners for surfaces, full pills for buttons and chips.
+      borderRadius: { sm: "2px", field: "2px", card: "2px", sheet: "2px", pill: "999px" },
       boxShadow: {
-        card: "0 1px 2px rgba(0,0,0,0.04)",
-        float: "0 20px 45px rgba(0,0,0,0.08)",
+        // No drop shadows: a hairline ring separates floating UI instead.
+        card: "0 0 0 0 transparent",
+        float: "0 0 0 1px var(--line)",
       },
       transitionTimingFunction: {
         spring: "cubic-bezier(0.32, 0.72, 0, 1)",

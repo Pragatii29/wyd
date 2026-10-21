@@ -290,3 +290,31 @@ Rules from the pass:
 - One mono context line per post: area · audience · up to two #tags. Women/Men only stays visible in `--ink`.
 - Secondary actions are outline pills; only the main step CTA is a filled ink pill.
 - Sentence case everywhere, including mono labels (no all-caps).
+
+## 11. oddtables direction (current)
+
+The app now follows oddtables' colour theory and type. This section overrides earlier colour, font and shape rules where they differ.
+
+**Colour theory:** night-first. The canvas is night, text is bone, and coral + candle are rare accents
+(the floating "+", Accept, the location pin, "for you" tags, the plan ticker). Everything else is a ladder of warm greys.
+
+| Token | Night (default) | Light / bone (option) |
+| --- | --- | --- |
+| `--canvas` | `#0A0908` | `#F5F1EA` |
+| `--surface` | `#13110F` | `#FBF9F5` |
+| `--surface-sunk` | `#1C1916` | `#ECE6DC` |
+| `--ink` / `--ink-2` / `--ink-3` | `#F5F1EA` / `#A8A198` / `#6E6860` | `#0A0908` / `#5E5850` / `#8E8880` |
+| `--line` | `#2A2622` | `#E2DCD1` |
+| `--coral` / `--coral-text` | `#FF6B47` / `#FF8A6B` | `#FF6B47` / `#B83A14` |
+| `--candle` | `#F7C873` | `#F7C873` |
+| `--on-ink` | `#0A0908` | `#F5F1EA` |
+
+Theme switch: Night (default) · Light · System. Saved per device.
+
+**Type:** Instrument Serif (free stand-in for oddtables' Swear Display) for all headlines at a single
+regular weight, never faux-bold; Geist for UI and body; DM Mono for metadata and eyebrows.
+`text-hero` 60/56, `text-display` 44/44, `text-title` 32/36.
+
+**Shapes:** 2px corners on cards, fields, sheets and photos; full pills for buttons and chips; avatars round.
+**Elevation:** none. Floating UI gets a 1px `--line` ring instead of a shadow.
+**Motion:** press `cubic-bezier(0.16, 1, 0.3, 1)` 120ms; sheets/reveals `cubic-bezier(0.32, 0.72, 0, 1)` 240–480ms.

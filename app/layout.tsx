@@ -1,16 +1,18 @@
 import type { Metadata } from "next";
-import { DM_Mono, Fraunces, Manrope } from "next/font/google";
+import { DM_Mono, Geist, Instrument_Serif } from "next/font/google";
 import "./globals.css";
 
-const fraunces = Fraunces({
+// oddtables type system: an editorial serif for headlines (Instrument Serif, the closest free match
+// to their Swear Display), Geist for everything you read, DM Mono for small metadata.
+const instrument = Instrument_Serif({
   subsets: ["latin"],
-  weight: ["400", "600"],
-  variable: "--font-fraunces",
+  weight: "400",
+  style: ["normal", "italic"],
+  variable: "--font-display",
 });
-const manrope = Manrope({
+const geist = Geist({
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
-  variable: "--font-manrope",
+  variable: "--font-sans",
 });
 const dmMono = DM_Mono({
   subsets: ["latin"],
@@ -27,12 +29,12 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className={`${fraunces.variable} ${manrope.variable} ${dmMono.variable}`} suppressHydrationWarning>
+    <html lang="en" data-theme="dark" className={`${instrument.variable} ${geist.variable} ${dmMono.variable}`} suppressHydrationWarning>
       <head>
-        {/* Apply the saved theme before first paint so there's no light/dark flash. */}
+        {/* Apply the saved theme before first paint. Night (dark) is the default. */}
         <script
           dangerouslySetInnerHTML={{
-            __html: `try{var t=localStorage.getItem("wyd-theme");if(t==="light"||t==="dark")document.documentElement.dataset.theme=t}catch(e){}`,
+            __html: `try{var t=localStorage.getItem("wyd-theme");if(t==="light"||t==="dark"||t==="system")document.documentElement.dataset.theme=t}catch(e){}`,
           }}
         />
       </head>

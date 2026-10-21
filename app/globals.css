@@ -1,42 +1,46 @@
 @import "tailwindcss";
 @config "../tailwind.config.ts";
 
-:root {
-  --canvas:#F7F3ED; --surface:#FFFFFF; --surface-sunk:#EFE8DE;
-  --ink:#111111; --ink-2:#595959; --ink-3:#8E8E93; --line:#E5E1DA;
-  --coral:#FF6B47; --coral-text:#C2410C; --candle:#F7C873;
-  --night:#0A0908; --bone:#F5F1EA; --success:#1F6F4A; --danger:#B3261E;
-  /* Text on an --ink fill (primary buttons, selected chips, my chat bubbles). */
-  --on-ink:#F5F1EA;
-  /* Text on always-light fills (coral, candle, bone) in both themes. */
-  --on-light:#111111;
-  color-scheme: light;
-}
-
-/* Dark theme: night canvas, bone text. Chosen explicitly, or following the system when no choice is saved. */
+/* oddtables colour theory: night canvas, bone text, coral + candle as rare accents.
+   Night is the default; "light" (bone canvas) and "system" are opt-in from the theme switch. */
+:root,
 :root[data-theme="dark"] {
-  --canvas:#0A0908; --surface:#171513; --surface-sunk:#25221F;
-  --ink:#F5F1EA; --ink-2:#B9B2A8; --ink-3:#7E776E; --line:#2F2B27;
-  --coral:#FF6B47; --coral-text:#FF8F70; --candle:#F7C873;
-  --night:#1E1B18; --bone:#F5F1EA; --success:#5BC48D; --danger:#FF7A70;
-  --on-ink:#111111;
+  --canvas:#0A0908; --surface:#13110F; --surface-sunk:#1C1916;
+  --ink:#F5F1EA; --ink-2:#A8A198; --ink-3:#6E6860; --line:#2A2622;
+  --coral:#FF6B47; --coral-text:#FF8A6B; --candle:#F7C873;
+  --night:#1C1916; --bone:#F5F1EA; --success:#5BC48D; --danger:#FF7A70;
+  --on-ink:#0A0908; --on-light:#0A0908;
   color-scheme: dark;
 }
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
-    --canvas:#0A0908; --surface:#171513; --surface-sunk:#25221F;
-    --ink:#F5F1EA; --ink-2:#B9B2A8; --ink-3:#7E776E; --line:#2F2B27;
-    --coral:#FF6B47; --coral-text:#FF8F70; --candle:#F7C873;
-    --night:#1E1B18; --bone:#F5F1EA; --success:#5BC48D; --danger:#FF7A70;
-    --on-ink:#111111;
-    color-scheme: dark;
+:root[data-theme="light"] {
+  --canvas:#F5F1EA; --surface:#FBF9F5; --surface-sunk:#ECE6DC;
+  --ink:#0A0908; --ink-2:#5E5850; --ink-3:#8E8880; --line:#E2DCD1;
+  --coral:#FF6B47; --coral-text:#B83A14; --candle:#F7C873;
+  --night:#0A0908; --bone:#F5F1EA; --success:#1F6F4A; --danger:#B3261E;
+  --on-ink:#F5F1EA; --on-light:#0A0908;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: light) {
+  :root[data-theme="system"] {
+    --canvas:#F5F1EA; --surface:#FBF9F5; --surface-sunk:#ECE6DC;
+  --ink:#0A0908; --ink-2:#5E5850; --ink-3:#8E8880; --line:#E2DCD1;
+  --coral:#FF6B47; --coral-text:#B83A14; --candle:#F7C873;
+  --night:#0A0908; --bone:#F5F1EA; --success:#1F6F4A; --danger:#B3261E;
+  --on-ink:#F5F1EA; --on-light:#0A0908;
+  color-scheme: light;
   }
 }
 
 body {
   background: var(--canvas);
   color: var(--ink);
-  font-family: var(--font-manrope), system-ui, sans-serif;
+  font-family: var(--font-sans), system-ui, sans-serif;
+}
+
+/* Instrument Serif ships one weight; keep headlines at it instead of faux-bolding. */
+.font-display {
+  font-weight: 400 !important;
+  letter-spacing: -0.01em;
 }
 
 @keyframes toast-in {
