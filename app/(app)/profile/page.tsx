@@ -1,6 +1,6 @@
 import Link from "next/link";
-import { ArrowRight, PartyPopper, Pencil, Shield } from "lucide-react";
-import { isAdminEmail, requireApproved } from "@/lib/profile";
+import { ArrowRight, KeyRound, PartyPopper, Pencil, Shield } from "lucide-react";
+import { requireApproved } from "@/lib/profile";
 import { ProfileCard } from "@/components/ProfileCard";
 import { PushToggle } from "@/components/PushToggle";
 import { CitySwitcher } from "@/components/CitySwitcher";
@@ -59,11 +59,9 @@ export default async function MyProfilePage({ searchParams }: { searchParams: Pr
         <Link href="/privacy" className={`${btn.ghost} justify-start px-0`}>
           <Shield size={16} /> Privacy notice
         </Link>
-        {isAdminEmail(user.email) && (
-          <Link href="/admin" className={btn.secondary}>
-            Open admin
-          </Link>
-        )}
+        <Link href="/admin" className={`${btn.ghost} justify-start px-0`}>
+          <KeyRound size={16} /> Admin
+        </Link>
       </section>
 
       <section className={`${card} mt-4 flex flex-col gap-4`}>

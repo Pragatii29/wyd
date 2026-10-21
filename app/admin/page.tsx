@@ -1,25 +1,23 @@
 import Image from "next/image";
 import Link from "next/link";
-import { notFound, redirect } from "next/navigation";
 import { BadgeCheck, CircleAlert, ExternalLink } from "lucide-react";
-import { createClient } from "@/lib/supabase/server";
 import { createAdminClient, hasServiceRole } from "@/lib/supabase/admin";
-import { ageFrom, isAdminEmail } from "@/lib/profile";
+import { ageFrom } from "@/lib/profile";
+import { isAdmin } from "@/lib/admin";
+import { AdminUnlock } from "@/components/AdminUnlock";
 import { isoHoursAgo } from "@/lib/time";
-import { approveProfile, approveWyd, blockWyd, rejectProfile, resolveReport, suspendProfile } from "@/app/actions/admin";
+import { approveProfile, approveWyd, blockWyd, lockAdmin, rejectProfile, resolveReport, suspendProfile } from "@/app/actions/admin";
 import { AudienceChip } from "@/components/AudienceChip";
 import { btn, card, chip, input, meta, page, tagLabel, timeAgo } from "@/lib/ui";
 
 type PhotoCheck = { one_real_face?: boolean; reason?: string; skipped?: boolean; path?: string } | null;
 
 export default async function AdminPage() {
-  const {
-    data: { user },
-  } = await (await createClient()).auth.getUser();
-  if (!user) redirect("/");
-  if (!isAdminEmail(user.email)) notFound();
+  if (!(await isAdmin())) return <AdminUnlock />;
 
-  const { data: setting } = await (await createClient()).from("app_settings").select("value").eq("key", "auto_approve").maybeSingle();
+  const { data: setting } = hasServiceRole()
+    ? await createAdminClient().from("app_settings").select("value").eq("key", "auto_approve").maybeSingle()
+    : { data: null };
   const demoMode = setting?.value === true;
   const demoNote = (
     <p className={`mt-3 rounded-card px-4 py-3 text-label ${demoMode ? "bg-candle text-on-light" : "bg-sunk text-on-light"}`}>
@@ -33,7 +31,6 @@ export default async function AdminPage() {
     return (
       <main className={`${page} pt-10`}>
         <h1 className="font-display text-title">Admin</h1>
-        {demoNote}
         <p className="mt-4 rounded-card border border-danger bg-surface p-4 text-body text-ink">
           Add <code className="font-mono">SUPABASE_SERVICE_ROLE_KEY</code> to <code className="font-mono">.env.local</code> and restart the
           server to review profiles, WYDs and reports.
@@ -75,9 +72,14 @@ export default async function AdminPage() {
     <main className={`${page} pb-16 pt-10`}>
       <div className="flex items-center justify-between">
         <h1 className="font-display text-title">Admin</h1>
-        <Link href="/feed" className={btn.ghost}>
-          Back to app
-        </Link>
+        <div className="flex items-center">
+          <Link href="/feed" className={btn.ghost}>
+            Back to app
+          </Link>
+          <form action={lockAdmin}>
+            <button className={btn.ghost}>Lock</button>
+          </form>
+        </div>
       </div>
       <p className={`${meta} mt-1`}>{approvedCount ?? 0} approved members</p>
       {demoNote}

@@ -2,17 +2,29 @@
 
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
-import { createClient } from "@/lib/supabase/server";
+import { cookies } from "next/headers";
 import { createAdminClient, hasServiceRole } from "@/lib/supabase/admin";
-import { isAdminEmail } from "@/lib/profile";
+import { ADMIN_COOKIE, adminToken, isAdmin, passcodeMatches } from "@/lib/admin";
 import { notifyMatches } from "@/lib/notify";
 
-// Every admin action re-checks the signed-in email against ADMIN_EMAILS on the server.
+// Unlock /admin on this device with ADMIN_PASSCODE. Returns an error message, or null when unlocked.
+export async function unlockAdmin(_prev: string | null, formData: FormData): Promise<string | null> {
+  const token = adminToken();
+  if (!token) return "Admin isn't set up yet: add ADMIN_PASSCODE to the server environment.";
+  if (!passcodeMatches(String(formData.get("passcode") ?? ""))) return "That passcode isn't right.";
+  (await cookies()).set(ADMIN_COOKIE, token, { httpOnly: true, sameSite: "lax", secure: process.env.NODE_ENV === "production", path: "/", maxAge: 60 * 60 * 12 });
+  revalidatePath("/admin");
+  return null;
+}
+
+export async function lockAdmin() {
+  (await cookies()).delete(ADMIN_COOKIE);
+  revalidatePath("/admin");
+}
+
+// Every admin action re-checks admin access (passcode cookie or ADMIN_EMAILS) on the server.
 async function adminClient() {
-  const {
-    data: { user },
-  } = await (await createClient()).auth.getUser();
-  if (!isAdminEmail(user?.email)) throw new Error("Not allowed");
+  if (!(await isAdmin())) throw new Error("Not allowed");
   if (!hasServiceRole()) throw new Error("Add SUPABASE_SERVICE_ROLE_KEY to .env.local to use admin actions.");
   return createAdminClient();
 }
