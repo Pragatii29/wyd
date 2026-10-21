@@ -32,7 +32,7 @@ export default async function AdminPage() {
 
   const admin = createAdminClient();
   const [{ data: pending }, { data: review }, { data: reports }, { count: approvedCount }] = await Promise.all([
-    admin.from("profiles").select("*").eq("status", "pending").order("created_at"),
+    admin.from("profiles").select("*, private:profile_private(phone)").eq("status", "pending").order("created_at"),
     admin
       .from("threads")
       .select("*, author:profiles!threads_author_id_fkey(name)")
@@ -67,6 +67,9 @@ export default async function AdminPage() {
               </p>
               <p className={meta}>
                 {[p.area, p.city].filter(Boolean).join(", ")} · DOB {p.dob} · submitted {timeAgo(p.created_at)}
+              </p>
+              <p className="text-label">
+                Phone: <span className="font-mono">{p.private?.phone ?? "not given"}</span>
               </p>
               <a href={p.social_url} target="_blank" rel="noreferrer noopener" className={`${btn.ghost} self-start px-0`}>
                 <ExternalLink size={16} /> {p.social_url.replace(/^https?:\/\/(www\.)?/, "")}

@@ -7,6 +7,7 @@ import { createAdminClient, hasServiceRole } from "@/lib/supabase/admin";
 import { checkPhoto, extractProfile } from "@/lib/ai";
 import { CITIES } from "@/lib/cities";
 import { TAGS } from "@/lib/tags";
+import { isValidPhone, normalizePhone } from "@/lib/phone";
 import type { Json } from "@/lib/database.types";
 
 export type ActionResult<T = object> = ({ ok: true } & T) | { ok?: false; error: string };
@@ -25,9 +26,18 @@ function eighteenYearsAgo() {
 
 const profileSchema = z.object({
   name: z.string().trim().min(1, "Add your name").max(60),
+  phone: z
+    .string()
+    .trim()
+    .min(1, "Add your phone number")
+    .transform(normalizePhone)
+    .refine(isValidPhone, "Enter a valid mobile number, e.g. 98765 43210"),
   dob: z.iso.date("Add your date of birth").refine((v) => v <= eighteenYearsAgo(), "You must be 18 or older to use WYD?"),
   gender: z.enum(["female", "male"], { message: "Pick one" }),
-  photo_url: z.string().url("Add a clear photo of your face"),
+  photo_url: z
+    .string()
+    .url("Add a clear photo of your face")
+    .refine((v) => /\.jpe?g$/i.test(v), "Your photo must be a JPG"),
   social_url: z
     .string()
     .trim()
@@ -39,7 +49,7 @@ const profileSchema = z.object({
       } catch {
         return false;
       }
-    }, "Use an Instagram, LinkedIn, X, Facebook, GitHub or Behance link"),
+    }, "Use a LinkedIn link (or Instagram, X, Facebook, GitHub, Behance)"),
   city: z.enum(CITIES, { message: "Pick your city" }),
   area: z.string().trim().max(60),
   bio: z
@@ -82,7 +92,7 @@ export async function saveProfile(input: ProfileInput): Promise<{ ok: true } | {
     }
     return { ok: false, errors };
   }
-  const data = parsed.data;
+  const { phone, ...data } = parsed.data;
 
   // Photos must live in this user's own folder of our avatars bucket.
   const photoPrefix = `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/avatars/${user.id}/`;
@@ -97,6 +107,10 @@ export async function saveProfile(input: ProfileInput): Promise<{ ok: true } | {
     const msg = error.message.includes("18 or older") ? "You must be 18 or older to use WYD?" : error.message;
     return { ok: false, errors: { form: msg } };
   }
+
+  // Phone lives in a private table only this user and the admin can read.
+  const { error: phoneError } = await supabase.from("profile_private").upsert({ id: user.id, phone, updated_at: new Date().toISOString() });
+  if (phoneError) return { ok: false, errors: { phone: "Couldn't save your phone number. Try again." } };
 
   if (hasServiceRole()) {
     const admin = createAdminClient();

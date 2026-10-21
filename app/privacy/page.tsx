@@ -7,7 +7,7 @@ export const metadata = { title: "Privacy · WYD?" };
 const SECTIONS = [
   {
     title: "Manual verification",
-    body: "A person on our team looks at your name, photo, social link and About to check you're real. We never ask for government IDs or social media passwords. Verification lowers the risk of fake profiles but is not an identity guarantee.",
+    body: "A person on our team looks at your name, phone number, photo, LinkedIn (or other social) link and About to check you're real. Your phone number is private: only you and our team can see it, and it's never shown on your profile. We never ask for government IDs or social media passwords. Verification lowers the risk of fake profiles but is not an identity guarantee.",
   },
   {
     title: "AI suggestions",
@@ -15,7 +15,7 @@ const SECTIONS = [
   },
   {
     title: "What others see",
-    body: "Other verified people see your first name, age, photo, About, interests, city and broad area. They never see your birthday, email or exact location. Your social link is only shown to our team and to people whose plans you ask to join.",
+    body: "Other verified people see your first name, age, photo, About, interests, city and broad area. They never see your phone number, birthday, email or exact location. Your social link is only shown to our team and to people whose plans you ask to join.",
   },
   {
     title: "Location",

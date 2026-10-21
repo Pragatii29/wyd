@@ -58,6 +58,14 @@ export type Database = {
           { foreignKeyName: "notifications_user_id_fkey"; columns: ["user_id"]; isOneToOne: false; referencedRelation: "profiles"; referencedColumns: ["id"] },
         ]
       }
+      profile_private: {
+        Row: { id: string; phone: string; updated_at: string }
+        Insert: { id: string; phone: string; updated_at?: string }
+        Update: { id?: string; phone?: string; updated_at?: string }
+        Relationships: [
+          { foreignKeyName: "profile_private_id_fkey"; columns: ["id"]; isOneToOne: true; referencedRelation: "profiles"; referencedColumns: ["id"] },
+        ]
+      }
       profiles: {
         Row: {
           area: string
