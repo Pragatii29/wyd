@@ -14,7 +14,20 @@ body {
   font-family: var(--font-manrope), system-ui, sans-serif;
 }
 
+@keyframes toast-in {
+  from { transform: translateY(-120%); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+.animate-toast-in { animation: toast-in 240ms cubic-bezier(0.32, 0.72, 0, 1); }
+
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: none; }
+}
+.animate-fade-in { animation: fade-in 240ms cubic-bezier(0, 0, 0.2, 1); }
+
 @media (prefers-reduced-motion: reduce) {
+  .animate-toast-in { animation-name: fade-in; }
   * {
     animation-duration: 0.01ms !important;
     transition-duration: 0.01ms !important;

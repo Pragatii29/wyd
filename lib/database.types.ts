@@ -13,6 +13,15 @@ export type Database = {
   }
   public: {
     Tables: {
+      blocks: {
+        Row: { blocked_id: string; blocker_id: string; created_at: string }
+        Insert: { blocked_id: string; blocker_id: string; created_at?: string }
+        Update: { blocked_id?: string; blocker_id?: string; created_at?: string }
+        Relationships: [
+          { foreignKeyName: "blocks_blocked_id_fkey"; columns: ["blocked_id"]; isOneToOne: false; referencedRelation: "profiles"; referencedColumns: ["id"] },
+          { foreignKeyName: "blocks_blocker_id_fkey"; columns: ["blocker_id"]; isOneToOne: false; referencedRelation: "profiles"; referencedColumns: ["id"] },
+        ]
+      }
       chat_members: {
         Row: { chat_id: string; user_id: string }
         Insert: { chat_id: string; user_id: string }
@@ -64,6 +73,7 @@ export type Database = {
           name: string
           photo_check: Json | null
           photo_url: string
+          rejection_reason: string | null
           social_url: string
           status: Database["public"]["Enums"]["profile_status_t"]
         }
@@ -81,6 +91,7 @@ export type Database = {
           name: string
           photo_check?: Json | null
           photo_url: string
+          rejection_reason?: string | null
           social_url: string
           status?: Database["public"]["Enums"]["profile_status_t"]
         }
@@ -98,10 +109,19 @@ export type Database = {
           name?: string
           photo_check?: Json | null
           photo_url?: string
+          rejection_reason?: string | null
           social_url?: string
           status?: Database["public"]["Enums"]["profile_status_t"]
         }
         Relationships: []
+      }
+      push_subscriptions: {
+        Row: { auth: string; created_at: string; endpoint: string; p256dh: string; user_id: string }
+        Insert: { auth: string; created_at?: string; endpoint: string; p256dh: string; user_id: string }
+        Update: { auth?: string; created_at?: string; endpoint?: string; p256dh?: string; user_id?: string }
+        Relationships: [
+          { foreignKeyName: "push_subscriptions_user_id_fkey"; columns: ["user_id"]; isOneToOne: false; referencedRelation: "profiles"; referencedColumns: ["id"] },
+        ]
       }
       reports: {
         Row: { created_at: string; id: string; reason: string | null; reporter_id: string; target_id: string; target_type: string }
