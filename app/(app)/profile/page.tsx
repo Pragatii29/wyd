@@ -72,7 +72,7 @@ export default async function MyProfilePage({ searchParams }: { searchParams: Pr
           <p className="text-label">Appearance</p>
           <ThemeSegmented />
         </div>
-        <p className={meta}>Signed in as {user.email}</p>
+        <p className={meta}>{user.email ? `Signed in as ${user.email}` : "Test account on this device. Signing out ends it."}</p>
         <SignOutButton />
       </section>
     </main>

@@ -19,7 +19,7 @@ export default async function OnboardingPage() {
   return (
     <main className={`${page} pb-16 pt-4`}>
       <div className="mb-4 flex items-center justify-between">
-        <span className="font-mono text-meta text-ink-2">Signed in as {user.email}</span>
+        <span className="font-mono text-meta text-ink-2">{user.email ? `Signed in as ${user.email}` : "Test account on this device"}</span>
         <div className="flex items-center">
           <ThemeIconButton />
           <SignOutButton compact />
