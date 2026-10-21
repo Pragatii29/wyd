@@ -27,7 +27,7 @@ export default async function OnboardingPage() {
       </div>
       <h1 className="font-display text-title">{profile ? "Update your profile" : "Welcome to WYD?"}</h1>
       <p className="mt-2 text-body text-ink-2">
-        Real people only. A person on our team checks every profile before you can post or join plans.
+        Almost there: two quick steps and you’re in.
       </p>
       {profile?.rejection_reason && (
         <p className="mt-4 rounded-card border border-danger bg-surface p-4 text-body text-ink">
