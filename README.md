@@ -54,6 +54,15 @@ The admin must have a profile only to use the app itself; `/admin` works as soon
 
 Notifications use the same rules, at most 5 per person per day, one per WYD (primary key), and go out via Supabase Realtime (in-app toast + bell) and Web Push (closed tab).
 
+## Demo data
+
+8 approved demo users (5 Bengaluru, 2 Mumbai, 1 Delhi; mixed genders; two Women only WYDs) each with one live WYD.
+They use `@example.com` emails with no password (nobody can sign in as them) and generated initials avatars in `public/demo/`.
+Seeding sends no notifications. Re-running refreshes them.
+
+- With the service role key: `npm run seed:demo`
+- Without it: run `supabase/seed/demo.sql` in the Supabase SQL editor.
+
 ## Demo script
 
 Use two browsers (e.g. Chrome + Chrome incognito, or Chrome + Firefox) with two different emails.
