@@ -18,10 +18,21 @@ export default async function AdminPage() {
   if (!user) redirect("/");
   if (!isAdminEmail(user.email)) notFound();
 
+  const { data: setting } = await (await createClient()).from("app_settings").select("value").eq("key", "auto_approve").maybeSingle();
+  const demoMode = setting?.value === true;
+  const demoNote = (
+    <p className={`mt-3 rounded-card px-4 py-3 text-label ${demoMode ? "bg-candle text-ink" : "bg-sunk text-ink"}`}>
+      {demoMode
+        ? "Demo mode is on: new sign-ups are approved instantly. You can still reject or suspend anyone here."
+        : "Manual review is on: new sign-ups wait here until you approve them."}
+    </p>
+  );
+
   if (!hasServiceRole()) {
     return (
       <main className={`${page} pt-10`}>
         <h1 className="font-display text-title">Admin</h1>
+        {demoNote}
         <p className="mt-4 rounded-card border border-danger bg-surface p-4 text-body text-ink">
           Add <code className="font-mono">SUPABASE_SERVICE_ROLE_KEY</code> to <code className="font-mono">.env.local</code> and restart the
           server to review profiles, WYDs and reports.
@@ -51,6 +62,7 @@ export default async function AdminPage() {
         </Link>
       </div>
       <p className={`${meta} mt-1`}>{approvedCount ?? 0} approved members</p>
+      {demoNote}
 
       <h2 className="mt-8 text-h2">Profiles to verify ({pending?.length ?? 0})</h2>
       {!pending?.length && <p className="mt-2 text-body text-ink-2">All caught up.</p>}

@@ -5,7 +5,6 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Loader2 } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
-import { btn } from "@/lib/ui";
 
 // Finishes magic link sign in. Handles both link styles:
 // #access_token=… (implicit, works on any browser) and ?code=… (PKCE, same browser only).
@@ -46,7 +45,7 @@ export default function AuthCallback() {
         <>
           <h1 className="font-display text-title">That link didn&apos;t work</h1>
           <p className="text-body">{error}</p>
-          <Link href="/" className={`${btn.primary} bg-bone text-ink`}>
+          <Link href="/" className="inline-flex h-13 w-full items-center justify-center gap-2 rounded-pill bg-bone px-6 text-label text-ink transition duration-fast ease-out active:scale-[0.97] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-bone">
             Get a new link
           </Link>
         </>

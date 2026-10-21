@@ -31,7 +31,7 @@ export default async function OnboardingPage() {
         initial={profile}
         initialPhone={priv?.phone ?? ""}
         submitLabel={profile ? "Resubmit for review" : "Create my profile"}
-        next="/pending"
+        next="/profile?welcome=1"
         wizard
       />
     </main>

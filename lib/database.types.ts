@@ -13,6 +13,12 @@ export type Database = {
   }
   public: {
     Tables: {
+      app_settings: {
+        Row: { key: string; updated_at: string; value: Json }
+        Insert: { key: string; updated_at?: string; value: Json }
+        Update: { key?: string; updated_at?: string; value?: Json }
+        Relationships: []
+      }
       blocks: {
         Row: { blocked_id: string; blocker_id: string; created_at: string }
         Insert: { blocked_id: string; blocker_id: string; created_at?: string }
