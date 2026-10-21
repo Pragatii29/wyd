@@ -50,7 +50,7 @@ export function SignInForm({ initialError }: { initialError?: boolean }) {
           error ? "border-danger" : "border-line"
         }`}
       />
-      {error && <p className="text-meta font-mono text-bone">{error}</p>}
+      {error && <p className="font-mono text-meta text-bone">{error}</p>}
       <button
         type="submit"
         disabled={state === "loading"}
