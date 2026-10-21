@@ -2,7 +2,7 @@
 
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { Check, Loader2 } from "lucide-react";
+import { Check, Loader2, Plus } from "lucide-react";
 import { requestToJoin } from "@/app/actions/social";
 import { btn } from "@/lib/ui";
 
@@ -29,6 +29,13 @@ export function JoinButton({
   const [optimistic, setOptimistic] = useState(status);
   const size = compact ? "w-auto self-start" : "";
 
+  if (optimistic && compact) {
+    return (
+      <span className={`inline-flex h-10 items-center gap-1.5 text-label ${optimistic === "accepted" ? "text-success" : "text-ink-2"}`}>
+        {optimistic !== "declined" && <Check size={16} />} {STATUS_LABEL[optimistic]}
+      </span>
+    );
+  }
   if (optimistic) {
     return (
       <button disabled className={`${compact ? btn.smallPrimary : btn.primary} ${size} ${optimistic === "accepted" ? "disabled:bg-success/15 disabled:text-success" : ""}`}>
@@ -39,7 +46,7 @@ export function JoinButton({
   return (
     <div className="flex flex-col gap-1">
       <button
-        className={`${compact ? btn.smallPrimary : btn.primary} ${size}`}
+        className={`${compact ? btn.small : btn.primary} ${size}`}
         disabled={pending}
         onClick={() =>
           start(async () => {
@@ -53,7 +60,7 @@ export function JoinButton({
           })
         }
       >
-        {pending && <Loader2 className="animate-spin" size={16} />}
+        {pending ? <Loader2 className="animate-spin" size={16} /> : compact && <Plus size={16} />}
         Ask to join
       </button>
       {error && <p className="font-mono text-meta text-danger">{error}</p>}

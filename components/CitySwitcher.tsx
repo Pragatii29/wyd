@@ -7,10 +7,39 @@ import { setActiveCity } from "@/app/actions/profile";
 import { CITIES } from "@/lib/cities";
 
 // Shows the active city and lets the user switch it. The feed and notifications follow it.
-export function CitySwitcher({ city }: { city: string }) {
+export function CitySwitcher({ city, area, inline }: { city: string; area?: string; inline?: boolean }) {
   const router = useRouter();
   const [pending, start] = useTransition();
   const [error, setError] = useState("");
+
+  if (inline) {
+    return (
+      <label className="relative inline-flex min-h-11 max-w-full items-center gap-1.5 text-label text-ink focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-ink">
+        {pending ? <Loader2 size={16} className="shrink-0 animate-spin" /> : <MapPin size={16} className="shrink-0 text-coral-text" aria-hidden />}
+        {area && <span className="truncate text-ink-2">{area},</span>}
+        <span className="sr-only">Active city</span>
+        <select
+          value={city}
+          disabled={pending}
+          onChange={(e) =>
+            start(async () => {
+              setError("");
+              const res = await setActiveCity(e.target.value);
+              if (!res.ok) setError(res.error);
+              router.refresh();
+            })
+          }
+          className="shrink-0 appearance-none bg-transparent pr-5 text-label text-ink underline decoration-line underline-offset-4 focus:outline-none"
+        >
+          {CITIES.map((c) => (
+            <option key={c}>{c}</option>
+          ))}
+        </select>
+        <ChevronDown size={14} className="pointer-events-none -ml-5 shrink-0" aria-hidden />
+        {error && <span className="ml-2 font-mono text-meta text-danger">{error}</span>}
+      </label>
+    );
+  }
 
   return (
     <div className="flex flex-col">

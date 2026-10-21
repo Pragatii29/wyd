@@ -18,7 +18,6 @@ export default async function FeedPage({ searchParams }: { searchParams: Promise
     loadIncomingRequests(supabase, user.id),
   ]);
   const waiting = incoming.filter((r) => r.status === "pending").length;
-  const place = [profile.area, profile.city].filter(Boolean).join(", ");
 
   return (
     <main className="mx-auto w-full max-w-[480px]">
@@ -49,9 +48,9 @@ export default async function FeedPage({ searchParams }: { searchParams: Promise
         </section>
       ) : (
         <section aria-label="For you">
-          <div className="flex items-center justify-between gap-2 border-b border-line px-4 py-2">
-            <p className="min-w-0 truncate font-mono text-meta text-ink-2">Near {place} · last 24h</p>
-            <CitySwitcher city={profile.city} />
+          <div className="flex items-center justify-between gap-3 border-b border-line px-5 py-1.5">
+            <CitySwitcher city={profile.city} area={profile.area} inline />
+            <span className="shrink-0 font-mono text-meta text-ink-3">last 24h</span>
           </div>
           {items.length === 0 ? (
             <Empty

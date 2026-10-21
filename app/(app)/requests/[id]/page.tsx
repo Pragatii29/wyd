@@ -44,7 +44,7 @@ export default async function RequestPage({ params }: { params: Promise<{ id: st
 
   return (
     <main className={`${page} pb-32`}>
-      <header className="sticky top-0 z-20 -mx-4 grid h-14 grid-cols-[44px_1fr_44px] items-center bg-canvas/90 px-4 backdrop-blur">
+      <header className="sticky top-0 z-20 -mx-5 grid h-14 grid-cols-[44px_1fr_44px] items-center bg-canvas/90 px-5 backdrop-blur">
         <Link href="/feed?tab=requests" className="inline-flex size-11 items-center justify-center rounded-full text-ink" aria-label="Back to requests">
           <ArrowLeft size={24} />
         </Link>
@@ -52,9 +52,9 @@ export default async function RequestPage({ params }: { params: Promise<{ id: st
         <span />
       </header>
 
-      <Link href={`/wyd/${req.thread.id}`} className="mb-4 mt-2 block rounded-card bg-night px-4 py-3 text-bone">
-        <span className="font-mono text-meta text-bone">Wants to join · {timeAgo(req.created_at)}</span>
-        <span className="mt-1 line-clamp-2 block text-wyd">{req.thread.body}</span>
+      <Link href={`/wyd/${req.thread.id}`} className="mb-6 mt-2 block rounded-card border border-line bg-surface px-5 py-4 transition duration-base ease-out hover:bg-sunk">
+        <span className="font-mono text-eyebrow text-ink-2">wants to join your plan · {timeAgo(req.created_at)}</span>
+        <span className="mt-1.5 line-clamp-2 block font-display text-h2 text-ink">“{req.thread.body}”</span>
       </Link>
 
       <ProfileCard

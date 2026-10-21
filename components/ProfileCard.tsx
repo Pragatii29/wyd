@@ -48,11 +48,11 @@ export function ProfileCard({
         </p>
       )}
 
-      <section className="flex flex-col gap-5 rounded-sheet bg-surface p-6 shadow-card">
+      <section className="flex flex-col gap-5 rounded-sheet border border-line bg-surface p-6">
         {profile.bio && (
           <div className="flex flex-col gap-3">
             <PenLine size={24} className="text-coral-text" aria-hidden />
-            <h2 className="text-h2">Bio</h2>
+            <h2 className="font-display text-h2">Bio</h2>
             <p className="whitespace-pre-line text-body text-ink">{profile.bio}</p>
           </div>
         )}
@@ -60,7 +60,7 @@ export function ProfileCard({
           <>
             {profile.bio && <hr className="border-line" />}
             <div className="flex flex-col gap-3">
-              <h2 className="text-h2">Interests</h2>
+              <h2 className="font-display text-h2">Interests</h2>
               <div className="flex flex-wrap gap-2">
                 {profile.interests.map((t) => (
                   <InterestChip key={t} tag={t} highlight={sharedWith.includes(t)} />

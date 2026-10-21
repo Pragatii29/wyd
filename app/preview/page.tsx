@@ -67,7 +67,7 @@ const NAV_CURRENT: Partial<Record<Screen, "/feed" | "/notifications" | "/chats" 
 
 function Back({ to, title }: { to: Screen; title: string }) {
   return (
-    <header className="sticky top-0 z-20 -mx-4 grid h-14 grid-cols-[44px_1fr_44px] items-center bg-canvas/90 px-4 backdrop-blur">
+    <header className="sticky top-0 z-20 -mx-5 grid h-14 grid-cols-[44px_1fr_44px] items-center bg-canvas/90 px-5 backdrop-blur">
       <Link href={`/preview?screen=${to}`} className="inline-flex size-11 items-center justify-center rounded-full text-ink" aria-label="Back">
         <ArrowLeft size={24} />
       </Link>
@@ -100,9 +100,9 @@ export default async function Preview({ searchParams }: { searchParams: Promise<
           <HomeHeader photo={ME.photo_url} name={ME.name} onRequests={screen === "requests"} waiting={1} base="/preview" />
           {screen === "home" ? (
             <>
-              <div className="flex items-center justify-between gap-2 border-b border-line px-4 py-2">
-                <p className="min-w-0 truncate font-mono text-meta text-ink-2">Near {ME.area}, {ME.city} · last 24h</p>
-                <CitySwitcher city={ME.city} />
+              <div className="flex items-center justify-between gap-3 border-b border-line px-5 py-1.5">
+                <CitySwitcher city={ME.city} area={ME.area} inline />
+                <span className="shrink-0 font-mono text-meta text-ink-3">last 24h</span>
               </div>
               <ul>
                 {FEED.map((item) => (
@@ -127,9 +127,9 @@ export default async function Preview({ searchParams }: { searchParams: Promise<
       {screen === "request" && (
         <main className={`${page} pb-32`}>
           <Back to="requests" title="Chat request" />
-          <div className="mb-4 mt-2 rounded-card bg-night px-4 py-3 text-bone">
-            <span className="font-mono text-meta text-bone">Wants to join · 4 min ago</span>
-            <span className="mt-1 line-clamp-2 block text-wyd">{FEED[3].wyd.body}</span>
+          <div className="mb-6 mt-2 rounded-card border border-line bg-surface px-5 py-4">
+            <span className="font-mono text-eyebrow text-ink-2">wants to join your plan · 4 min ago</span>
+            <span className="mt-1.5 line-clamp-2 block font-display text-h2 text-ink">“{FEED[3].wyd.body}”</span>
           </div>
           <ProfileCard profile={ARJUN} sharedWith={ME.interests} />
           <RequestDecision requestId="preview" threadId="preview" requesterId="preview" firstName="Arjun" planText={FEED[3].wyd.body} status="pending" chatId={null} preview />

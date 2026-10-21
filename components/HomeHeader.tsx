@@ -19,7 +19,7 @@ export function HomeHeader({
 }) {
   return (
     <header className="sticky top-0 z-20 border-b border-line bg-canvas/90 backdrop-blur">
-      <div className="flex h-14 items-center justify-between px-4">
+      <div className="flex h-14 items-center justify-between px-5">
         <Link href="/profile" aria-label="Your profile" className="rounded-full focus-visible:outline-2 focus-visible:outline-ink">
           <Avatar src={photo} name={name} size={40} />
         </Link>

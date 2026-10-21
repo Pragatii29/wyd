@@ -51,8 +51,16 @@ body {
 }
 .animate-fade-in { animation: fade-in 240ms cubic-bezier(0, 0, 0.2, 1); }
 
+/* Scrolling strip of example plans on the welcome page (Timeleft-style marquee). */
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+.animate-marquee { animation: marquee 32s linear infinite; }
+
 @media (prefers-reduced-motion: reduce) {
   .animate-toast-in { animation-name: fade-in; }
+  .animate-marquee { animation: none; }
   * {
     animation-duration: 0.01ms !important;
     transition-duration: 0.01ms !important;

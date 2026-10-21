@@ -13,6 +13,7 @@ import { CITIES } from "@/lib/cities";
 import { isValidPhone, normalizePhone } from "@/lib/phone";
 import { ageOn } from "@/lib/time";
 import { clearDraft, type SignupDraft } from "@/lib/draft";
+import { StepHeader } from "@/components/StepHeader";
 import type { Tables } from "@/lib/database.types";
 import { btn, chip, input, label, meta, tagLabel } from "@/lib/ui";
 
@@ -187,23 +188,8 @@ export function ProfileForm({
   const age = dob ? ageOn(dob) : null;
 
   return (
-    <form onSubmit={onSubmit} className="mt-6 flex flex-col gap-8" noValidate>
-      {wizard && (
-        <div className="flex flex-col gap-3">
-          <div className="flex gap-2" aria-hidden>
-            {STEPS.map((_, i) => (
-              <span key={i} className={`h-1.5 flex-1 rounded-pill transition duration-base ease-out ${i <= step ? "bg-ink" : "bg-sunk"}`} />
-            ))}
-          </div>
-          <p className={meta}>
-            Step {step + 1} of {STEPS.length}
-          </p>
-          <div>
-            <h2 className="text-h2">{STEPS[step].title}</h2>
-            <p className="mt-1 text-body text-ink-2">{STEPS[step].blurb}</p>
-          </div>
-        </div>
-      )}
+    <form onSubmit={onSubmit} className="mt-6 flex flex-col gap-7" noValidate>
+      {wizard && <StepHeader step={step + 1} total={STEPS.length} title={STEPS[step].title} blurb={STEPS[step].blurb} />}
 
       {/* Step 1 — the basics */}
       {show(0) && (

@@ -85,9 +85,9 @@ function WydGroup({ wyd }: { wyd: BoardWyd }) {
 
   return (
     <li id={`wyd-${wyd.id}`} className="scroll-mt-6">
-      <Link href={`/wyd/${wyd.id}`} className="block rounded-card bg-night p-4 text-bone">
-        <span className="line-clamp-2 text-wyd">{wyd.body}</span>
-        <span className="mt-1 block font-mono text-meta text-bone">
+      <Link href={`/wyd/${wyd.id}`} className="block rounded-card border border-line bg-surface p-4">
+        <span className="line-clamp-2 font-display text-h2">{wyd.body}</span>
+        <span className="mt-1 block font-mono text-meta text-ink-2">
           {timeAgo(wyd.created_at)} · {wyd.requests.length} request{wyd.requests.length === 1 ? "" : "s"}
           {waiting > 0 && ` · ${waiting} waiting`}
           {wyd.status !== "live" && ` · ${wyd.status}`}

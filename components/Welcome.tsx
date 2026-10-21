@@ -8,9 +8,12 @@ import { createClient } from "@/lib/supabase/client";
 import { isValidPhone, normalizePhone } from "@/lib/phone";
 import { saveDraft } from "@/lib/draft";
 import { ThemeIconButton } from "@/components/ThemeToggle";
-import { btn, input, label, meta, page } from "@/lib/ui";
+import { btn, eyebrow, input, label, meta } from "@/lib/ui";
+import { PlanTicker } from "@/components/PlanTicker";
+import { StepHeader } from "@/components/StepHeader";
 
 const isHttpsUrl = (v: string) => /^https:\/\/[^\s]+\.[^\s]+/.test(v.trim());
+const withHttps = (v: string) => (v.trim() && !/^https?:\/\//.test(v.trim()) ? `https://${v.trim()}` : v.trim());
 
 type Errors = Partial<Record<"name" | "phone" | "social_url" | "form", string>>;
 
@@ -29,12 +32,12 @@ export function Welcome() {
     const next: Errors = {};
     if (!name.trim()) next.name = "Add your name";
     if (!isValidPhone(normalizePhone(phone))) next.phone = "Enter a valid mobile number, e.g. 98765 43210";
-    if (!isHttpsUrl(socialUrl)) next.social_url = "Paste your full LinkedIn link, starting with https://";
+    if (!isHttpsUrl(withHttps(socialUrl))) next.social_url = "Paste your full LinkedIn link, starting with https://";
     setErrors(next);
     if (Object.keys(next).length) return;
 
     setBusy(true);
-    saveDraft({ email: "", name: name.trim(), phone, social_url: socialUrl.trim() });
+    saveDraft({ email: "", name: name.trim(), phone, social_url: withHttps(socialUrl) });
     const supabase = createClient();
     const { data } = await supabase.auth.getSession();
     if (!data.session) {
@@ -53,55 +56,59 @@ export function Welcome() {
   }
 
   return (
-    <main className={`${page} flex min-h-dvh flex-col pb-10 pt-4`}>
-      <div className="flex items-center justify-between">
+    <main className="mx-auto flex min-h-dvh w-full max-w-[480px] flex-col">
+      <div className="flex items-center justify-between px-5 pt-4">
         <span className="font-display text-title">WYD?</span>
         <ThemeIconButton />
       </div>
 
-      <form onSubmit={onSubmit} noValidate className="mt-6 flex flex-col gap-6">
-        <div>
-          <h1 className="font-display text-title">Welcome to WYD?</h1>
-          <p className="mt-2 text-body text-ink-2">Real people only. Find company nearby for chai, walks, movies and more.</p>
-        </div>
+      <section className="px-5 pt-8">
+        <p className={eyebrow}>Bengaluru · Mumbai · Delhi · and more</p>
+        <h1 className="mt-3 font-display text-hero text-ink">
+          Got a plan?
+          <br />
+          Find your people.
+        </h1>
+        <p className="mt-3 text-body text-ink-2">Post what you&apos;re up to. Verified people nearby who are into the same things ask to join.</p>
+      </section>
 
-        <div className="flex flex-col gap-3">
-          <div className="flex gap-2" aria-hidden>
-            <span className="h-1.5 flex-1 rounded-pill bg-ink" />
-            <span className="h-1.5 flex-1 rounded-pill bg-sunk" />
-            <span className="h-1.5 flex-1 rounded-pill bg-sunk" />
-          </div>
-          <p className={meta}>Step 1 of 3</p>
-          <div>
-            <h2 className="text-h2">The basics</h2>
-            <p className="mt-1 text-body text-ink-2">So people know who they&apos;re meeting.</p>
-          </div>
-        </div>
+      <div className="mt-6">
+        <PlanTicker />
+      </div>
+
+      <form onSubmit={onSubmit} noValidate className="mt-6 flex flex-1 flex-col gap-6 rounded-t-sheet border-t border-line bg-surface px-5 pb-10 pt-7">
+        <StepHeader step={1} title="The basics" blurb="So people know who they're meeting." />
 
         <Field id="name" text="Full name" error={errors.name}>
           <input id="name" className={input} value={name} onChange={(e) => setName(e.target.value)} aria-invalid={!!errors.name} autoComplete="name" placeholder="Ria Sharma" />
         </Field>
 
-        <Field id="phone" text="Phone number" hint="Never shown on your profile." error={errors.phone}>
+        <Field
+          id="phone"
+          text="Phone number"
+          badge={
+            <span className="inline-flex items-center gap-1 rounded-pill bg-sunk px-2 py-0.5 font-mono text-meta text-ink-2">
+              <Lock size={11} /> Private
+            </span>
+          }
+          error={errors.phone}
+        >
           <div className="flex gap-2">
-            <span className="flex h-12 shrink-0 items-center rounded-sm border border-line bg-sunk px-3 text-body text-ink">+91</span>
+            <span className="flex h-13 shrink-0 items-center rounded-field bg-sunk px-4 text-body text-ink-2">+91</span>
             <input id="phone" type="tel" inputMode="tel" autoComplete="tel-national" placeholder="98765 43210" className={input} value={phone} onChange={(e) => setPhone(e.target.value)} aria-invalid={!!errors.phone} />
           </div>
-          <p className={`${meta} flex items-center gap-1`}>
-            <Lock size={12} /> Private
-          </p>
         </Field>
 
-        <Field id="social_url" text="LinkedIn profile" hint="No LinkedIn? Instagram, X, GitHub or Behance also work." error={errors.social_url}>
+        <Field id="social_url" text="LinkedIn profile" hint="Or Instagram, X, GitHub, Behance." error={errors.social_url}>
           <div className="relative">
-            <Link2 size={18} className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-ink-2" aria-hidden />
-            <input id="social_url" type="url" inputMode="url" placeholder="https://linkedin.com/in/yourname" className={`${input} pl-11`} value={socialUrl} onChange={(e) => setSocialUrl(e.target.value)} aria-invalid={!!errors.social_url} />
+            <Link2 size={18} className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-ink-3" aria-hidden />
+            <input id="social_url" type="url" inputMode="url" placeholder="linkedin.com/in/yourname" className={`${input} pl-11`} value={socialUrl} onChange={(e) => setSocialUrl(e.target.value)} onBlur={() => setSocialUrl((v) => (v && !/^https?:\/\//.test(v) ? `https://${v.trim()}` : v))} aria-invalid={!!errors.social_url} />
           </div>
         </Field>
 
-        {errors.form && <p className="rounded-sm border border-danger bg-surface px-3 py-2 text-label text-danger">{errors.form}</p>}
+        {errors.form && <p className="rounded-field border border-danger px-4 py-3 text-label text-danger">{errors.form}</p>}
 
-        <div className="flex flex-col gap-3">
+        <div className="mt-auto flex flex-col gap-3 pt-2">
           <button type="submit" disabled={busy} className={btn.primary}>
             {busy ? <Loader2 size={18} className="animate-spin" /> : null}
             Continue <ArrowRight size={18} />
@@ -119,15 +126,31 @@ export function Welcome() {
   );
 }
 
-function Field({ id, text, hint, error, children }: { id: string; text: string; hint?: string; error?: string; children: React.ReactNode }) {
+function Field({
+  id,
+  text,
+  hint,
+  badge,
+  error,
+  children,
+}: {
+  id: string;
+  text: string;
+  hint?: string;
+  badge?: React.ReactNode;
+  error?: string;
+  children: React.ReactNode;
+}) {
   return (
     <div className="flex flex-col gap-2">
-      <label htmlFor={id} className={label}>
-        {text}
-      </label>
-      {hint && <p className={meta}>{hint}</p>}
+      <div className="flex items-center justify-between gap-2">
+        <label htmlFor={id} className={label}>
+          {text}
+        </label>
+        {badge}
+      </div>
       {children}
-      {error && <p className="font-mono text-meta text-danger">{error}</p>}
+      {error ? <p className="font-mono text-meta text-danger">{error}</p> : hint && <p className={meta}>{hint}</p>}
     </div>
   );
 }

@@ -9,7 +9,7 @@ export default function PreviewSignup() {
     <main className={`${page} pb-16 pt-10`}>
       <p className="mb-4 inline-flex rounded-pill bg-candle px-3 py-1 text-label text-on-light">Preview · nothing is saved</p>
       <h1 className="font-display text-title">Welcome to WYD?</h1>
-      <p className="mt-2 text-body text-ink-2">Real people only. A person on our team checks every profile before you can post or join plans.</p>
+      <p className="mt-2 text-body text-ink-2">Two quick steps and you're in.</p>
       <ProfileForm userId="preview" initial={null} submitLabel="Create my profile" next="/pending" wizard preview />
     </main>
   );

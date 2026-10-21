@@ -270,3 +270,23 @@ transitionTimingFunction: {
   out: 'cubic-bezier(0, 0, 0.2, 1)',
 },
 ```
+
+## 10. Refinement pass (best of the three references)
+
+What each reference contributes, now applied across the app:
+
+| Reference | Taken | Where |
+| --- | --- | --- |
+| Timeleft | Cream + sand surfaces, big confident headlines, 32px sheets, one soft shadow only for floating UI, slow marquee | Welcome hero + plan ticker, form sheets, FAB/toasts/Pass-Accept only cast shadows |
+| oddtables | Editorial serif (Fraunces) headlines, DM Mono metadata, coral/candle used sparingly, springy press + sheet motion | `text-hero`, mono eyebrows ("01 / 03", "wants to join your plan"), `ease-press`, plan ticker colours |
+| Partiful | Flat surfaces with hairlines, grey ladder for secondary text, pill buttons, 8px rhythm, Manrope body | Feed rows (no cards), outline "Ask to join", flat profile sections |
+
+New tokens: `text-hero` (44/46 Fraunces), `text-eyebrow` (12/16 DM Mono, tracked, sentence case),
+`rounded-field` (16px), `ease-press` (`cubic-bezier(0.16, 1, 0.3, 1)`). `shadow-card` is now a 1px hairline lift.
+
+Rules from the pass:
+- Lists are flat rows separated by `--line`, never stacked shadow cards.
+- Fields are sand-filled (`--surface-sunk`) with no border until hover/focus.
+- One mono context line per post: area · audience · up to two #tags. Women/Men only stays visible in `--ink`.
+- Secondary actions are outline pills; only the main step CTA is a filled ink pill.
+- Sentence case everywhere, including mono labels (no all-caps).
