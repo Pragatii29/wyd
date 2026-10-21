@@ -1,3 +1,4 @@
+import { cache } from "react";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import type { Tables } from "@/lib/database.types";
@@ -23,7 +24,8 @@ export function isAdminEmail(email: string | undefined) {
   return admins.includes(email.toLowerCase());
 }
 
-export async function getSession() {
+// Cached per request: the layout and the page both ask, but the sign-in check and profile load run once.
+export const getSession = cache(async function getSession() {
   const supabase = await createClient();
   const {
     data: { user },
@@ -31,7 +33,7 @@ export async function getSession() {
   if (!user) return { supabase, user: null, profile: null };
   const { data: profile } = await supabase.from("profiles").select("*").eq("id", user.id).maybeSingle();
   return { supabase, user, profile };
-}
+});
 
 // Where a signed-in user belongs, based on their verification status.
 export function homeFor(profile: Profile | null) {

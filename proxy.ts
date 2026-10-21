@@ -27,5 +27,6 @@ export async function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/((?!_next/static|_next/image|favicon.ico).*)"],
+  // Skip static files (photos, icons, the service worker): they don't need a sign-in check.
+  matcher: ["/((?!_next/static|_next/image|favicon.ico|demo/|sw\\.js|icon\\.svg|.*\\.(?:png|jpe?g|svg|webp|ico|js|css|txt|xml)$).*)"],
 };
