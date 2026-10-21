@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import { ArrowLeft, ArrowRight, Camera, Check, Link2, Loader2, Lock, Plus, Sparkles, X } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { saveProfile, suggestFromAbout, type ProfileErrors } from "@/app/actions/profile";
+import { fallbackProfile } from "@/lib/fallback";
 import { TAGS, type Tag } from "@/lib/tags";
 import { CITIES } from "@/lib/cities";
 import { isValidPhone, normalizePhone } from "@/lib/phone";
@@ -42,6 +43,7 @@ export function ProfileForm({
   submitLabel,
   next,
   wizard = false,
+  preview = false,
 }: {
   userId: string;
   initial: Tables<"profiles"> | null;
@@ -49,6 +51,8 @@ export function ProfileForm({
   submitLabel: string;
   next: string;
   wizard?: boolean;
+  // Local click-through without an account: nothing is uploaded or saved.
+  preview?: boolean;
 }) {
   const router = useRouter();
   const supabase = createClient();
@@ -77,11 +81,16 @@ export function ProfileForm({
   const [saving, setSaving] = useState(false);
   const [errors, setErrors] = useState<ProfileErrors>({});
   const [showAll, setShowAll] = useState(false);
+  const [previewDone, setPreviewDone] = useState(false);
 
   async function onPhoto(file: File | undefined) {
     if (!file) return;
     if (!isJpg(file)) return setErrors({ photo_url: "Please upload a JPG photo (.jpg or .jpeg)" });
     if (file.size > 5 * 1024 * 1024) return setErrors({ photo_url: "Photo must be under 5 MB" });
+    if (preview) {
+      setErrors({});
+      return setPhotoUrl(URL.createObjectURL(file));
+    }
     setUploading(true);
     setErrors({});
     const path = `${userId}/${Date.now()}.jpg`;
@@ -94,7 +103,7 @@ export function ProfileForm({
   async function suggest(text: string) {
     setSuggesting(true);
     setErrors({});
-    const res = await suggestFromAbout(text);
+    const res = preview ? { ok: true as const, ...fallbackProfile(text), path: "fallback" as const } : await suggestFromAbout(text);
     setSuggesting(false);
     if (!res.ok) return setErrors({ interests: res.error });
     setAiPath(res.path);
@@ -149,6 +158,7 @@ export function ProfileForm({
     const local = wizard ? checkStep(step) : { ...checkStep(0), ...checkStep(1), ...checkStep(2) };
     if (Object.keys(local).length) return setErrors(local);
 
+    if (preview) return setPreviewDone(true);
     setSaving(true);
     setErrors({});
     const res = await saveProfile({
@@ -248,7 +258,7 @@ export function ProfileForm({
               className="relative flex aspect-[4/5] w-44 cursor-pointer items-center justify-center overflow-hidden rounded-card bg-sunk focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-ink"
             >
               {photoUrl ? (
-                <Image src={photoUrl} alt="Your profile photo" fill sizes="176px" className="object-cover" />
+                <Image src={photoUrl} alt="Your profile photo" fill sizes="176px" className="object-cover" unoptimized={photoUrl.startsWith("blob:")} />
               ) : uploading ? (
                 <Loader2 className="animate-spin text-ink-3" />
               ) : (
@@ -286,7 +296,7 @@ export function ProfileForm({
           {wizard && photoUrl && (
             <div className="flex items-center gap-3 rounded-card bg-surface p-3 shadow-card">
               <span className="relative size-14 shrink-0 overflow-hidden rounded-full bg-sunk">
-                <Image src={photoUrl} alt="" fill sizes="56px" className="object-cover" />
+                <Image src={photoUrl} alt="" fill sizes="56px" className="object-cover" unoptimized={photoUrl.startsWith("blob:")} />
               </span>
               <span className="min-w-0">
                 <span className="block text-label">
@@ -399,10 +409,15 @@ export function ProfileForm({
       )}
 
       {errors.form && <FieldError msg={errors.form} />}
+      {previewDone && (
+        <p className="animate-fade-in rounded-card border border-success bg-surface p-4 text-body text-ink" role="status">
+          All 3 steps are filled in. This is a preview, so nothing was saved. Sign in on the home page to create your real profile.
+        </p>
+      )}
       <div className="flex flex-col gap-2">
         <div className="flex gap-2">
           {wizard && step > 0 && (
-            <button type="button" onClick={() => { setErrors({}); setStep((s) => s - 1); }} className={`${btn.secondary} w-auto`} aria-label="Back">
+            <button type="button" onClick={() => { setErrors({}); setStep((s) => s - 1); }} className="inline-flex size-13 shrink-0 items-center justify-center rounded-pill border border-line bg-surface text-ink transition duration-fast ease-out active:scale-[0.97] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink" aria-label="Back">
               <ArrowLeft size={18} />
             </button>
           )}
