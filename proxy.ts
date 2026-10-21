@@ -18,7 +18,11 @@ export async function proxy(request: NextRequest) {
       },
     },
   );
-  await supabase.auth.getUser();
+  const { error } = await supabase.auth.getUser();
+  // The browser holds a sign-in for an account that no longer exists: clear it so pages don't loop.
+  if (error && (error.code === "user_not_found" || error.code === "session_not_found")) {
+    await supabase.auth.signOut({ scope: "local" });
+  }
   return response;
 }
 

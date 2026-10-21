@@ -39,8 +39,11 @@ export function Welcome() {
     setBusy(true);
     saveDraft({ email: "", name: name.trim(), phone, social_url: withHttps(socialUrl) });
     const supabase = createClient();
-    const { data } = await supabase.auth.getSession();
-    if (!data.session) {
+    // Ask the server whether the saved sign-in still belongs to a real account. A stale one (e.g. the
+    // account was deleted) would otherwise send the next page straight back here in a loop.
+    const { data } = await supabase.auth.getUser();
+    if (!data.user) {
+      await supabase.auth.signOut({ scope: "local" }).catch(() => {});
       const { error } = await supabase.auth.signInAnonymously();
       if (error) {
         setBusy(false);
