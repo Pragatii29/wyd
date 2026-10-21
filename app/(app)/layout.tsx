@@ -1,21 +1,21 @@
 import { requireApproved } from "@/lib/profile";
-import { TabBar } from "@/components/TabBar";
+import { BottomNav } from "@/components/BottomNav";
 import { NotificationListener } from "@/components/NotificationListener";
 
 // Everything inside the app needs an approved profile.
 export default async function AppLayout({ children }: { children: React.ReactNode }) {
-  const { supabase, user } = await requireApproved();
+  const { supabase, user, profile } = await requireApproved();
   const { count } = await supabase
-    .from("requests")
-    .select("id, threads!inner(author_id)", { count: "exact", head: true })
-    .eq("status", "pending")
-    .eq("threads.author_id", user.id);
+    .from("notifications")
+    .select("*", { count: "exact", head: true })
+    .eq("user_id", user.id)
+    .eq("read", false);
 
   return (
-    <div className="min-h-dvh pb-[calc(96px+env(safe-area-inset-bottom))]">
+    <div className="min-h-dvh pb-[calc(80px+env(safe-area-inset-bottom))]">
       {children}
       <NotificationListener userId={user.id} />
-      <TabBar pendingRequests={count ?? 0} />
+      <BottomNav unreadAlerts={count ?? 0} photo={profile.photo_url} name={profile.name.split(" ")[0]} />
     </div>
   );
 }

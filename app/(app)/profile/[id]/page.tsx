@@ -31,16 +31,15 @@ export default async function PublicProfilePage({ params }: { params: Promise<{ 
 
   // ProfileCard never renders the social link, birthday or email.
   return (
-    <main className={`${page} pt-6`}>
-      <div className="flex items-center justify-between">
-        <Link href="/feed" className="inline-flex size-11 items-center justify-center rounded-full text-ink" aria-label="Back">
-          <ArrowLeft size={22} />
-        </Link>
-        <SafetyMenu target={{ type: "profile", id: profile.id }} userId={profile.id} userName={profile.name.split(" ")[0]} />
-      </div>
-      <div className="mt-2">
-        <ProfileCard profile={profile} sharedWith={me.interests} />
-      </div>
+    <main className={`${page} pt-4`}>
+      <Link href="/feed" className="mb-2 inline-flex size-11 items-center justify-center rounded-full text-ink" aria-label="Back">
+        <ArrowLeft size={22} />
+      </Link>
+      <ProfileCard
+        profile={profile}
+        sharedWith={me.interests}
+        action={<SafetyMenu target={{ type: "profile", id: profile.id }} userId={profile.id} userName={profile.name.split(" ")[0]} />}
+      />
     </main>
   );
 }

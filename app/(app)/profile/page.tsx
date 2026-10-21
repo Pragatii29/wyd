@@ -17,17 +17,15 @@ export default async function MyProfilePage() {
 
   return (
     <main className={`${page} pt-6`}>
-      <div className="flex items-center justify-between">
-        <h1 className="font-display text-title">Your profile</h1>
-        <Link href="/profile/edit" className={`${btn.small} w-auto`}>
-          <Pencil size={16} /> Edit
-        </Link>
-      </div>
-      <p className={`${meta} mt-1`}>This is how other verified people see you. Your birthday, email and social link stay private.</p>
-
-      <div className="mt-4">
-        <ProfileCard profile={profile} />
-      </div>
+      <ProfileCard
+        profile={profile}
+        action={
+          <Link href="/profile/edit" className={`${btn.small} w-auto shrink-0`}>
+            <Pencil size={16} /> Edit
+          </Link>
+        }
+      />
+      <p className={`${meta} mt-3`}>This is how other verified people see you. Your phone, birthday, email and social link stay private.</p>
 
       <section className={`${card} mt-6 flex flex-col gap-4`}>
         <h2 className="text-h2">Settings</h2>

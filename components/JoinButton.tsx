@@ -8,27 +8,36 @@ import { btn } from "@/lib/ui";
 
 const STATUS_LABEL = {
   pending: "Requested",
-  accepted: "You're in! Watch your chats",
+  accepted: "You're in! Check your chats",
   declined: "Not this time",
 };
 
-export function JoinButton({ threadId, status }: { threadId: string; status: "pending" | "accepted" | "declined" | null }) {
+export function JoinButton({
+  threadId,
+  status,
+  compact,
+}: {
+  threadId: string;
+  status: "pending" | "accepted" | "declined" | null;
+  compact?: boolean;
+}) {
   const router = useRouter();
   const [pending, start] = useTransition();
   const [error, setError] = useState("");
   const [optimistic, setOptimistic] = useState(status);
+  const size = compact ? "w-auto self-start" : "";
 
   if (optimistic) {
     return (
-      <button disabled className={`${btn.primary} ${optimistic === "accepted" ? "disabled:bg-success/15 disabled:text-success" : ""}`}>
-        {optimistic !== "declined" && <Check size={18} />} {STATUS_LABEL[optimistic]}
+      <button disabled className={`${compact ? btn.smallPrimary : btn.primary} ${size} ${optimistic === "accepted" ? "disabled:bg-success/15 disabled:text-success" : ""}`}>
+        {optimistic !== "declined" && <Check size={16} />} {STATUS_LABEL[optimistic]}
       </button>
     );
   }
   return (
     <div className="flex flex-col gap-1">
       <button
-        className={btn.primary}
+        className={`${compact ? btn.smallPrimary : btn.primary} ${size}`}
         disabled={pending}
         onClick={() =>
           start(async () => {
@@ -41,7 +50,7 @@ export function JoinButton({ threadId, status }: { threadId: string; status: "pe
           })
         }
       >
-        {pending && <Loader2 className="animate-spin" size={18} />}
+        {pending && <Loader2 className="animate-spin" size={16} />}
         Ask to join
       </button>
       {error && <p className="font-mono text-meta text-danger">{error}</p>}

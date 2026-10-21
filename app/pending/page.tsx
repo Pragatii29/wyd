@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { Clock, ShieldX } from "lucide-react";
 import { getSession, homeFor } from "@/lib/profile";
 import { PushToggle } from "@/components/PushToggle";
+import { ProfileCard } from "@/components/ProfileCard";
 import { SignOutButton } from "@/components/SignOutButton";
 import { btn, page } from "@/lib/ui";
 
@@ -16,7 +17,7 @@ export default async function PendingPage() {
   const suspended = p.status === "suspended";
 
   return (
-    <main className={`${page} flex min-h-dvh flex-col justify-between pb-10 pt-16`}>
+    <main className={`${page} flex min-h-dvh flex-col pb-10 pt-16`}>
       <div className="flex flex-col gap-4">
         <span className="flex size-12 items-center justify-center rounded-full bg-sunk text-ink">
           {rejected || suspended ? <ShieldX size={24} /> : <Clock size={24} />}
@@ -52,6 +53,13 @@ export default async function PendingPage() {
           </>
         )}
       </div>
+      {!rejected && !suspended && (
+        <div className="mt-10 flex flex-col gap-3">
+          <h2 className="text-h2">Your profile</h2>
+          <p className="font-mono text-meta text-ink-2">This is how verified people will see you once you&apos;re approved.</p>
+          <ProfileCard profile={p} />
+        </div>
+      )}
       <div className="flex flex-col gap-4 pt-10">
         {!rejected && !suspended && <PushToggle />}
         <SignOutButton />
