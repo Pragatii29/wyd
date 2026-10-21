@@ -12,6 +12,7 @@ import { TAGS, type Tag } from "@/lib/tags";
 import { CITIES } from "@/lib/cities";
 import { isValidPhone, normalizePhone } from "@/lib/phone";
 import { ageOn } from "@/lib/time";
+import { clearDraft, type SignupDraft } from "@/lib/draft";
 import type { Tables } from "@/lib/database.types";
 import { btn, chip, input, label, meta, tagLabel } from "@/lib/ui";
 
@@ -43,11 +44,14 @@ export function ProfileForm({
   submitLabel,
   next,
   wizard = false,
+  draft = null,
   preview = false,
 }: {
   userId: string;
   initial: Tables<"profiles"> | null;
   initialPhone?: string;
+  // Step 1 filled in on the welcome page before the email link.
+  draft?: SignupDraft | null;
   submitLabel: string;
   next: string;
   wizard?: boolean;
@@ -57,10 +61,11 @@ export function ProfileForm({
   const router = useRouter();
   const supabase = createClient();
 
-  const [step, setStep] = useState(0);
-  const [name, setName] = useState(initial?.name ?? "");
-  const [phone, setPhone] = useState(initialPhone.replace(/^\+91/, ""));
-  const [socialUrl, setSocialUrl] = useState(initial?.social_url ?? "");
+  const draftReady = !!draft && !!draft.name && isValidPhone(normalizePhone(draft.phone)) && /^https:\/\//.test(draft.social_url);
+  const [step, setStep] = useState(draftReady ? 1 : 0);
+  const [name, setName] = useState(initial?.name ?? draft?.name ?? "");
+  const [phone, setPhone] = useState(initialPhone ? initialPhone.replace(/^\+91/, "") : draft?.phone ?? "");
+  const [socialUrl, setSocialUrl] = useState(initial?.social_url ?? draft?.social_url ?? "");
   const [photoUrl, setPhotoUrl] = useState(initial?.photo_url ?? "");
   const [bio, setBio] = useState(initial?.bio ?? "");
   const [dob, setDob] = useState(initial?.dob ?? "");
@@ -172,6 +177,7 @@ export function ProfileForm({
       if (wizard) setStep(FIELD_STEP[first] ?? 2);
       return;
     }
+    clearDraft();
     router.push(next);
     router.refresh();
   }

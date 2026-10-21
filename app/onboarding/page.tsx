@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
 import { getSession, homeFor } from "@/lib/profile";
-import { ProfileForm } from "@/components/ProfileForm";
+import { OnboardingWizard } from "@/components/OnboardingWizard";
 import { SignOutButton } from "@/components/SignOutButton";
 import { ThemeIconButton } from "@/components/ThemeToggle";
 import { page } from "@/lib/ui";
@@ -35,13 +35,12 @@ export default async function OnboardingPage() {
           {profile.rejection_reason}
         </p>
       )}
-      <ProfileForm
+      <OnboardingWizard
         userId={user.id}
         initial={profile}
         initialPhone={priv?.phone ?? ""}
         submitLabel={profile ? "Resubmit for review" : "Create my profile"}
         next="/profile?welcome=1"
-        wizard
       />
     </main>
   );
