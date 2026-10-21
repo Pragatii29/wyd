@@ -1,31 +1,31 @@
 -- Demo data for WYD?: 8 approved users (no password, @example.com, can't sign in) and one live WYD each.
 -- Safe to re-run: fixed ids from md5(email), profiles upserted, each demo user's WYDs replaced.
--- Avatars are generated initials images in public/demo/. No notifications are sent.
+-- Photos are in public/demo/ (real-looking .jpg for six profiles, initials .png for Zoya and Dev). No notifications are sent.
 
 with demo(email, name, gender, age, city, area, bio, interests, photo, body, audience, tags, mins) as (values
   ('ria.demo@example.com', 'Ria Sharma', 'female', 22, 'Bengaluru', 'Indiranagar',
    'Moved to Bangalore three months ago for my first job. I love slow mornings in new cafés, evening walks and live gigs on weekends. Always up for discovering a new corner of the city.',
-   '{coffee_cafes,walking,concerts,photography,exploring_city}', '/demo/ria.png',
+   '{coffee_cafes,walking,concerts,photography,exploring_city}', '/demo/ria.jpg',
    'New to Bangalore, 22F. Anyone up for exploring cafes in Indiranagar today?', 'all', '{coffee_cafes,exploring_city}', 12),
   ('arjun.demo@example.com', 'Arjun Rao', 'male', 25, 'Bengaluru', 'Koramangala',
    'Software engineer, weekend cricketer and street food hunter. I play box cricket most evenings and I''m always looking for a few more players.',
-   '{cricket,football,gym,street_food}', '/demo/arjun.png',
+   '{cricket,football,gym,street_food}', '/demo/arjun.jpg',
    'Looking for people to play cricket this evening in Koramangala. Have a bat and ball!', 'all', '{cricket}', 35),
   ('meera.demo@example.com', 'Meera Iyer', 'female', 27, 'Bengaluru', 'Jayanagar',
    'Bookworm and filter coffee loyalist. I run a tiny book swap with friends and do yoga before work. Museums and quiet chai spots are my happy place.',
-   '{books,chai,art_museums,yoga}', '/demo/meera.png',
+   '{books,chai,art_museums,yoga}', '/demo/meera.jpg',
    'Chai and a book swap in Jayanagar at 5pm? Bring one you loved.', 'women', '{chai,books}', 58),
   ('kabir.demo@example.com', 'Kabir Singh', 'male', 24, 'Bengaluru', 'HSR Layout',
    'Product designer by day, board game collector by night. I have way too many games and not enough people to play them with. Also into stand-up and movies.',
-   '{board_games,gaming,movies,standup_comedy}', '/demo/kabir.png',
+   '{board_games,gaming,movies,standup_comedy}', '/demo/kabir.jpg',
    'Board games night at a café in HSR, need 2 or 3 more for Catan.', 'all', '{board_games}', 90),
   ('ananya.demo@example.com', 'Ananya Das', 'female', 23, 'Bengaluru', 'Whitefield',
    'Weekend trekker and sunrise chaser. I run on weekdays and head out of the city whenever I can. Usually carrying a camera.',
-   '{trekking,day_trips,running,photography}', '/demo/ananya.png',
+   '{trekking,day_trips,running,photography}', '/demo/ananya.jpg',
    'Sunrise trek to Nandi Hills on Saturday, have 2 seats in the car.', 'women', '{trekking,day_trips}', 140),
   ('rohan.demo@example.com', 'Rohan Mehta', 'male', 28, 'Mumbai', 'Bandra',
    'Film nerd who''ll watch anything on a big screen. Love trying new restaurants in Bandra and catching live music when I can.',
-   '{movies,food_exploring,concerts,nightlife}', '/demo/rohan.png',
+   '{movies,food_exploring,concerts,nightlife}', '/demo/rohan.jpg',
    'Anyone up for watching a movie tonight in Bandra?', 'all', '{movies}', 25),
   ('zoya.demo@example.com', 'Zoya Khan', 'female', 26, 'Mumbai', 'Andheri',
    'Dancer, café hopper and occasional guitarist. I just moved to Andheri and want to find people to dance and jam with.',

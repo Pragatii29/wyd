@@ -2,7 +2,7 @@
 // Run: npm run seed:demo   (needs SUPABASE_SERVICE_ROLE_KEY in .env.local)
 //
 // Demo users have @example.com emails and no password, so nobody can sign in as them.
-// Their photos are generated initials avatars in public/demo/, not photos of real people.
+// Their photos live in public/demo/ (six .jpg photos, initials .png for the rest).
 // Seeding sends no notifications. Without the service role key, run supabase/seed/demo.sql instead.
 import { createClient } from "@supabase/supabase-js";
 
@@ -95,6 +95,9 @@ async function findUserId(email: string) {
   return null;
 }
 
+// Demo users with a photo in public/demo/*.jpg; the rest use initials images (*.png).
+const PHOTOS = new Set(["ria", "meera", "ananya", "arjun", "kabir", "rohan"]);
+
 async function main() {
   for (const d of DEMOS) {
     let id = await findUserId(d.email);
@@ -104,7 +107,8 @@ async function main() {
       id = data.user.id;
     }
 
-    const photo_url = `/demo/${d.email.split(".")[0]}.png`;
+    const slug = d.email.split(".")[0];
+    const photo_url = `/demo/${slug}.${PHOTOS.has(slug) ? "jpg" : "png"}`;
 
     const { error: pErr } = await supabase.from("profiles").upsert({
       id,

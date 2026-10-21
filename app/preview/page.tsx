@@ -23,7 +23,7 @@ const ago = (mins: number): string => new Date(Date.now() - mins * 60_000).toISO
 
 function person(p: Partial<Profile> & Pick<Profile, "id" | "name" | "dob" | "gender" | "area" | "bio" | "interests">): Profile {
   return {
-    city: "Bengaluru", photo_url: `/demo/${p.id}.png`, social_url: "", status: "approved", photo_check: null,
+    city: "Bengaluru", photo_url: `/demo/${p.id}.jpg`, social_url: "", status: "approved", photo_check: null,
     rejection_reason: null, lat: null, lng: null, created_at: ago(600), ...p,
   };
 }
