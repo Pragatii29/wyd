@@ -8,6 +8,7 @@ import { answerRequest, startChat } from "@/app/actions/social";
 import { Avatar } from "@/components/Avatar";
 import { InterestChip } from "@/components/InterestChip";
 import { btn, card, meta, timeAgo } from "@/lib/ui";
+import { olderThanHours } from "@/lib/time";
 
 type Requester = {
   id: string;
@@ -85,12 +86,16 @@ function WydGroup({ wyd }: { wyd: BoardWyd }) {
 
   return (
     <li id={`wyd-${wyd.id}`} className="scroll-mt-6">
-      <Link href={`/wyd/${wyd.id}`} className="block rounded-card border border-line bg-surface p-4">
-        <span className="line-clamp-2 font-display text-h2">{wyd.body}</span>
-        <span className="mt-1 block font-mono text-meta text-ink-2">
-          {timeAgo(wyd.created_at)} · {wyd.requests.length} request{wyd.requests.length === 1 ? "" : "s"}
+      <Link href={`/wyd/${wyd.id}`} className="block rounded-card border border-line bg-surface p-4 transition duration-base ease-out hover:bg-sunk">
+        <span className="flex items-center justify-between gap-2">
+          <StatusBadge status={wyd.status} createdAt={wyd.created_at} />
+          <span className="font-mono text-meta text-ink-3">{timeAgo(wyd.created_at)}</span>
+        </span>
+        <span className="mt-2 line-clamp-3 block text-wyd text-ink">{wyd.body}</span>
+        <span className="mt-2 block font-mono text-meta text-ink-2">
+          {wyd.requests.length} request{wyd.requests.length === 1 ? "" : "s"}
           {waiting > 0 && ` · ${waiting} waiting`}
-          {wyd.status !== "live" && ` · ${wyd.status}`}
+          {accepted.length > 0 && ` · ${accepted.length} accepted`}
         </span>
       </Link>
 
@@ -110,7 +115,7 @@ function WydGroup({ wyd }: { wyd: BoardWyd }) {
                       aria-label={`Select ${r.requester.name} for a chat`}
                       checked={isPicked}
                       onChange={() => setPicked((p) => (isPicked ? p.filter((x) => x !== r.requester.id) : [...p, r.requester.id]))}
-                      className="size-5 accent-ink"
+                      className="size-6 shrink-0 accent-[var(--coral)]"
                     />
                   )}
                   <button onClick={() => setOpen(isOpen ? null : r.id)} className="flex min-w-0 flex-1 items-center gap-3 text-left" aria-expanded={isOpen}>
@@ -124,7 +129,7 @@ function WydGroup({ wyd }: { wyd: BoardWyd }) {
                     </span>
                   </button>
                   {r.status === "accepted" && <span className="rounded-pill bg-success/15 px-3 py-1 text-label text-success">Accepted</span>}
-                  {r.status === "declined" && <span className="rounded-pill bg-sunk px-3 py-1 text-label text-ink-2">Declined</span>}
+                  {r.status === "declined" && <span className="rounded-pill bg-sunk px-3 py-1 text-label text-ink-2">Passed</span>}
                 </div>
 
                 {isOpen && (
@@ -147,11 +152,11 @@ function WydGroup({ wyd }: { wyd: BoardWyd }) {
                 )}
 
                 {r.status === "pending" && (
-                  <div className="flex gap-2">
-                    <button className={btn.secondary} disabled={pending} onClick={() => answer(r.id, "declined")}>
-                      <X size={16} /> Decline
+                  <div className="grid grid-cols-2 gap-2">
+                    <button className={`${btn.small} w-full`} disabled={pending} onClick={() => answer(r.id, "declined")}>
+                      <X size={16} /> Pass
                     </button>
-                    <button className={btn.primary} disabled={pending} onClick={() => answer(r.id, "accepted")}>
+                    <button className={`${btn.smallAccent} w-full`} disabled={pending} onClick={() => answer(r.id, "accepted")}>
                       <Check size={16} /> Accept
                     </button>
                   </div>
@@ -164,6 +169,20 @@ function WydGroup({ wyd }: { wyd: BoardWyd }) {
 
       {accepted.length > 0 && (
         <div className="mt-3 flex flex-col gap-2">
+          <div className="flex items-center justify-between gap-2 px-1">
+            <p className={meta}>Tick 1 person for a 1:1 chat, or several for a group chat.</p>
+            {accepted.length > 1 && (
+              <button
+                type="button"
+                className={`${btn.ghost} shrink-0 px-0`}
+                onClick={() =>
+                  setPicked((p) => (p.length === accepted.length ? [] : accepted.map((r) => r.requester.id)))
+                }
+              >
+                {picked.length === accepted.length ? "Clear" : "Select all accepted"}
+              </button>
+            )}
+          </div>
           {!confirming ? (
             <button className={btn.primary} disabled={picked.length === 0 || pending} onClick={() => setConfirming(true)}>
               {picked.length > 1 ? <Users size={18} /> : <MessageCircle size={18} />}
@@ -204,4 +223,16 @@ function WydGroup({ wyd }: { wyd: BoardWyd }) {
       {error && <p className="mt-2 font-mono text-meta text-danger">{error}</p>}
     </li>
   );
+}
+
+function StatusBadge({ status, createdAt }: { status: string; createdAt: string }) {
+  const expired = status === "live" && olderThanHours(createdAt, 24);
+  const [label, style] = expired
+    ? ["Expired", "bg-sunk text-ink-2"]
+    : status === "live"
+      ? ["Live", "bg-success/15 text-success"]
+      : status === "review"
+        ? ["In review", "bg-candle text-on-light"]
+        : ["Blocked", "bg-danger/10 text-danger"];
+  return <span className={`rounded-pill px-2.5 py-0.5 text-label ${style}`}>{label}</span>;
 }

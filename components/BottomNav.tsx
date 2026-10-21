@@ -3,9 +3,9 @@
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { Bell, House, MessageCircle, Plus } from "lucide-react";
+import { Bell, House, LayoutList, MessageCircle, Plus } from "lucide-react";
 
-// Icon-only bottom bar (Home · Notifications · Chats · Profile) plus a floating "+" to drop a WYD.
+// Icon-only bottom bar (Home · My WYDs · Notifications · Chats · Profile) plus a floating "+" to drop a WYD.
 export function BottomNav({
   unreadAlerts,
   photo,
@@ -17,12 +17,13 @@ export function BottomNav({
   photo: string;
   name: string;
   compose?: boolean;
-  current?: "/feed" | "/notifications" | "/chats" | "/profile";
+  current?: "/feed" | "/wyds" | "/notifications" | "/chats" | "/profile";
 }) {
   const realPath = usePathname();
   const path = current ?? realPath;
   const items = [
     { href: "/feed", label: "Home", icon: House, active: path === "/feed" },
+    { href: "/wyds", label: "My WYDs", icon: LayoutList, active: path === "/wyds" },
     { href: "/notifications", label: "Notifications", icon: Bell, active: path === "/notifications", dot: unreadAlerts > 0 },
     { href: "/chats", label: "Chats", icon: MessageCircle, active: path.startsWith("/chats") },
   ];

@@ -206,6 +206,19 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      create_wyd: {
+        Args: {
+          p_secret: string
+          p_body: string
+          p_audience: Database["public"]["Enums"]["audience_t"]
+          p_city: string
+          p_area: string
+          p_tags: string[]
+          p_live: boolean
+          p_reason: string
+        }
+        Returns: string
+      }
       match_users: {
         Args: { p_thread: string }
         Returns: { user_id: string }[]

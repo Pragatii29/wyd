@@ -31,6 +31,15 @@ export function SelfieCamera({
 
   useEffect(() => stop, []);
 
+  // Attach the stream as soon as the <video> is on screen (no animation-frame wait, so it also
+  // works when the tab isn't actively painting).
+  useEffect(() => {
+    if (phase === "live" && video.current && stream.current && video.current.srcObject !== stream.current) {
+      video.current.srcObject = stream.current;
+      video.current.play().catch(() => {});
+    }
+  }, [phase]);
+
   async function open() {
     setError("");
     if (!navigator.mediaDevices?.getUserMedia) {
@@ -44,12 +53,6 @@ export function SelfieCamera({
       });
       stream.current = s;
       setPhase("live");
-      requestAnimationFrame(() => {
-        if (video.current) {
-          video.current.srcObject = s;
-          video.current.play().catch(() => {});
-        }
-      });
     } catch (err) {
       setPhase("idle");
       const name = (err as { name?: string }).name;
@@ -65,7 +68,7 @@ export function SelfieCamera({
 
   function capture() {
     const v = video.current;
-    if (!v || !v.videoWidth) return;
+    if (!v || !v.videoWidth) return setError("The camera is still starting. Try again in a second.");
     // Square crop from the centre of the frame, saved un-mirrored.
     const side = Math.min(v.videoWidth, v.videoHeight);
     const canvas = document.createElement("canvas");

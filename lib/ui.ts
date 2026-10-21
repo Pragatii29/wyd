@@ -10,6 +10,7 @@ export const btn = {
   ghost: `${base} min-h-11 px-2 text-coral-text hover:underline`,
   small: `${base} h-10 border border-line bg-surface px-4 text-ink hover:bg-sunk`,
   smallPrimary: `${base} h-10 bg-ink px-4 text-on-ink hover:opacity-90`,
+  smallAccent: `${base} h-10 bg-coral px-4 text-on-coral hover:brightness-95`,
 };
 
 export const input =

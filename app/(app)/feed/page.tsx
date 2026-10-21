@@ -40,8 +40,8 @@ export default async function FeedPage({ searchParams }: { searchParams: Promise
                   </li>
                 ))}
               </ul>
-              <Link href="/requests" className={`${btn.ghost} mx-4 my-4`}>
-                Start a group chat from a plan
+              <Link href="/wyds" className={`${btn.ghost} mx-4 my-4`}>
+                Manage requests and chats in My WYDs
               </Link>
             </>
           )}

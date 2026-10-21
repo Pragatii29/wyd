@@ -8,7 +8,7 @@ import { overLimit } from "@/lib/limits";
 import { createAdminClient, hasServiceRole } from "@/lib/supabase/admin";
 import type { ActionResult } from "./profile";
 
-const uuid = z.uuid();
+const uuid = z.guid();
 
 async function approvedUser() {
   const session = await getSession();
@@ -105,7 +105,7 @@ export async function sendMessage(chatId: string, body: string): Promise<ActionR
 
 const reportSchema = z.object({
   target_type: z.enum(["profile", "thread", "message"]),
-  target_id: z.uuid(),
+  target_id: z.guid(),
   reason: z.string().trim().max(500).optional(),
 });
 

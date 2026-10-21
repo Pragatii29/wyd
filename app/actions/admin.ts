@@ -17,7 +17,7 @@ async function adminClient() {
   return createAdminClient();
 }
 
-const id = z.uuid();
+const id = z.guid();
 
 export async function approveProfile(formData: FormData) {
   const admin = await adminClient();

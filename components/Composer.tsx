@@ -33,7 +33,7 @@ export function Composer({ city: activeCity, area: defaultArea, preview }: { cit
     setSaving(false);
     if (!res.ok) return setError(res.unsafe ? `Let's keep it friendly — ${res.error} Edit it and try again.` : res.error);
     if (res.status === "review") return setInReview(true);
-    router.push(`/wyd/${res.id}`);
+    router.push(`/wyds#wyd-${res.id}`);
     router.refresh();
   }
 
@@ -43,8 +43,8 @@ export function Composer({ city: activeCity, area: defaultArea, preview }: { cit
         <p className="rounded-card bg-surface p-4 text-body text-ink shadow-card">
           Thanks! Your WYD needs a quick look from our team before it goes live. Nobody is notified until then.
         </p>
-        <button className={btn.secondary} onClick={() => router.push("/feed")}>
-          Back to feed
+        <button className={btn.secondary} onClick={() => router.push("/wyds")}>
+          See my WYDs
         </button>
       </div>
     );

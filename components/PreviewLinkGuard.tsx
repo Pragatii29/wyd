@@ -10,7 +10,7 @@ export function mapToPreview(href: string) {
   const url = new URL(href, window.location.origin);
   const p = url.pathname;
   if (p === "/feed") return url.searchParams.get("tab") === "requests" ? "/preview?screen=requests" : "/preview?screen=home";
-  if (p === "/requests") return "/preview?screen=requests";
+  if (p === "/requests" || p === "/wyds") return "/preview?screen=requests";
   if (p.startsWith("/requests/")) return "/preview?screen=request";
   if (p === "/wyd/new") return "/preview?screen=post";
   if (p.startsWith("/wyd/")) return "/preview?screen=home";

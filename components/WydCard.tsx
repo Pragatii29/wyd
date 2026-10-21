@@ -82,7 +82,7 @@ export function WydCard({
 
         <div className="mt-3">
           {mine ? (
-            <Link href="/feed?tab=requests" className="inline-flex h-10 items-center gap-1.5 text-label text-ink transition duration-fast ease-press active:scale-[0.97]">
+            <Link href={`/wyds#wyd-${wyd.id}`} className="inline-flex h-10 items-center gap-1.5 text-label text-ink transition duration-fast ease-press active:scale-[0.97]">
               <Inbox size={16} /> {requestCount === 0 ? "No requests yet" : `${requestCount} request${requestCount > 1 ? "s" : ""}`}
               {requestCount > 0 && <ChevronRight size={16} className="text-ink-3" />}
             </Link>
