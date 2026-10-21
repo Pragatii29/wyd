@@ -1,0 +1,253 @@
+# DESIGN.md — WYD? ("What You Doin'?")
+
+Merged from three references, adapted for a mobile-first social app:
+
+| Reference | What WYD takes from it |
+| --- | --- |
+| **Timeleft** (timeleft.com) | Warm cream canvas, ink text, soft large shadow, big rounded cards, pill buttons |
+| **oddtables** (bengaluru.oddtables.com) | Coral + candle accents, night/bone dark surfaces, mono metadata, springy motion |
+| **Partiful** (partiful.com) | Neutral grey ladder for secondary text, compact 8px rhythm, Manrope, image-led cards |
+
+Do not copy any reference's logo, wordmark, illustrations or copy. WYD's identity is
+**warm cream + ink + coral**.
+
+## 1. Visual theme and atmosphere
+
+- Feels like an invite from a friend, not a dating app: warm, calm, safe, a little playful.
+- Light mode only for the prototype (cream canvas). Dark "night" surfaces are used only for
+  the landing hero and toasts.
+- People first: profile photos are large and real. Plans are short and readable.
+- One clear action per screen. Lots of breathing room, never dense.
+- Safety is visible: verified badge and audience label on every WYD.
+
+## 2. Colours
+
+Use these tokens only. Never hardcode hex values in components.
+
+| Token | Hex | Role |
+| --- | --- | --- |
+| `--canvas` | `#F7F3ED` | App background (cream) |
+| `--surface` | `#FFFFFF` | Cards, sheets, inputs |
+| `--surface-sunk` | `#EFE8DE` | Chip backgrounds, input fill, dividers on cream |
+| `--ink` | `#111111` | Primary text, primary button fill |
+| `--ink-2` | `#595959` | Secondary text (meets AA on cream and white) |
+| `--ink-3` | `#8E8E93` | Placeholder, disabled, icons only (never body text) |
+| `--line` | `#E5E1DA` | Borders, hairlines |
+| `--coral` | `#FF6B47` | Brand accent: "Drop a WYD" button, active tab, unread dot |
+| `--coral-text` | `#C2410C` | Coral used as text or links on light backgrounds |
+| `--candle` | `#F7C873` | Highlight: "Matches your interests" badge, new-notification glow |
+| `--night` | `#0A0908` | Dark surfaces: landing hero, toast background |
+| `--bone` | `#F5F1EA` | Text on night / ink |
+| `--success` | `#1F6F4A` | Accepted, verified |
+| `--danger` | `#B3261E` | Errors, destructive actions, report |
+
+### Contrast rules (checked)
+
+- Ink on cream 17:1, ink-2 on cream 6.3:1, bone on night 17.7:1 — all pass.
+- **Text on coral must be ink (`#111111`, 6.7:1). Never white on coral (2.8:1, fails).**
+- Never use `--coral` for text on light backgrounds (2.6:1). Use `--coral-text`.
+- Ink on candle 12:1 — badges on candle always use ink text.
+- `--ink-3` is for placeholders, disabled states and icons only.
+
+### Audience colours
+
+Do not colour-code gender (no pink/blue). Audience chips are neutral with an icon:
+`All` · `Women only` · `Men only`, on `--surface-sunk` with `--ink` text.
+
+## 3. Typography
+
+Free Google fonts, loaded with `next/font/google`:
+
+| Role | Font | Use |
+| --- | --- | --- |
+| Display | **Fraunces** (400, 600) | Screen titles, landing headline, empty states. Sparingly. |
+| UI / body | **Manrope** (400, 500, 600, 700) | Everything else |
+| Mono | **DM Mono** (400, 500) | Metadata: time, area, distance, "2 min ago", tag labels |
+
+| Token | Size / line height | Weight | Use |
+| --- | --- | --- | --- |
+| `text-display` | 36 / 40 | Fraunces 600 | Landing headline only |
+| `text-title` | 28 / 34 | Fraunces 600 | Screen titles |
+| `text-h2` | 22 / 28 | Manrope 700 | Section headings, profile name |
+| `text-wyd` | 18 / 26 | Manrope 600 | The plan text on a WYD card |
+| `text-body` | 16 / 24 | Manrope 400 | Body, chat messages, inputs |
+| `text-label` | 14 / 20 | Manrope 600 | Buttons, chips, field labels |
+| `text-meta` | 12 / 16 | DM Mono 400 | Time, area, counts |
+
+- Sentence case everywhere. No ALL CAPS except the "WYD?" wordmark.
+- Inputs are at least 16px so iOS doesn't zoom.
+
+## 4. Spacing, radius, elevation, motion
+
+**Spacing (4px base):** `4 · 8 · 12 · 16 · 20 · 24 · 32 · 40 · 56 · 64`
+- Screen side padding: 16. Card padding: 16. Gap between cards: 12. Section gap: 32.
+
+**Radius:**
+| Token | Value | Use |
+| --- | --- | --- |
+| `radius-sm` | 8px | Inputs, small thumbnails |
+| `radius-card` | 24px | WYD cards, profile cards, request cards |
+| `radius-sheet` | 32px | Bottom sheets, modals (top corners only) |
+| `radius-pill` | 999px | Buttons, chips, toasts, tab bar |
+| `radius-avatar` | 50% | Avatars |
+
+**Elevation:**
+| Token | Value | Use |
+| --- | --- | --- |
+| `shadow-card` | `0 8px 24px rgba(0,0,0,0.06)` | Cards on cream |
+| `shadow-float` | `0 20px 45px rgba(0,0,0,0.08)` | Bottom sheet, floating "Drop a WYD" button, toast |
+
+**Motion:**
+| Token | Value | Use |
+| --- | --- | --- |
+| `ease-spring` | `cubic-bezier(0.32, 0.72, 0, 1)` | Sheets, toasts sliding in |
+| `ease-out` | `cubic-bezier(0, 0, 0.2, 1)` | Colour and opacity changes |
+| `dur-fast` | 120ms | Button press (scale 0.97) |
+| `dur-base` | 240ms | Hover, chip select, toast in |
+| `dur-slow` | 480ms | Sheet open |
+
+Respect `prefers-reduced-motion`: replace movement with a fade.
+
+## 5. Components
+
+### Buttons
+| Variant | Style | Use |
+| --- | --- | --- |
+| Primary | `--ink` fill, `--bone` text, pill, height 52, full width on mobile | Continue, Send request, Accept |
+| Accent (one per app) | `--coral` fill, `--ink` text, pill, `shadow-float` | "Drop a WYD" floating button only |
+| Secondary | `--surface` fill, 1px `--line` border, `--ink` text, pill | Decline, Cancel, View profile |
+| Ghost | No fill, `--coral-text` text | Inline links ("Edit interests") |
+| Danger | `--surface` fill, `--danger` text and border | Report, Delete |
+
+All buttons: hover darkens 6%, press scales to 0.97 (`dur-fast`), focus-visible shows a
+2px `--ink` outline with 2px offset, disabled uses `--surface-sunk` fill and `--ink-3` text,
+loading shows a spinner and keeps the width.
+
+### WYD card (feed)
+- `--surface`, `radius-card`, `shadow-card`, padding 16.
+- Row 1: avatar 40 + name and age ("Ria, 22F") in `text-label` + verified tick in `--success`
+  + `text-meta` time on the right ("6 min ago").
+- Row 2: plan text in `text-wyd`, max 4 lines then truncate.
+- Row 3: audience chip + up to 3 interest chips + area in `text-meta` ("Indiranagar").
+- If it matches the viewer's interests: a small `--candle` badge "Matches your interests".
+- Footer: "Ask to join" primary button, or "Requested" disabled state, or for the author
+  "3 requests" secondary button.
+
+### Chips
+- Interest chip: `--surface-sunk` fill, `--ink` text, `text-label`, pill, height 32.
+  Selected: `--ink` fill, `--bone` text.
+- Audience chip: same shape, with a small icon (people / female / male symbol) before the label.
+
+### Audience picker (on "Drop a WYD")
+- Three large segmented options in a pill container: `All` · `Women only` · `Men only`.
+- Selected segment: `--ink` fill, `--bone` text. Helper text under it in `text-meta`:
+  "Only verified women will see this."
+
+### Profile card (Hinge-style, used in request review)
+- Full-width photo, 4:5 ratio, `radius-card`, name and age overlaid bottom-left on a
+  subtle dark gradient in `--bone`.
+- Below: verified tick, area, social link icon, interest chips, short bio (`text-body`, `--ink-2`).
+- Actions pinned at the bottom: Secondary "Decline" + Primary "Accept".
+
+### Request list item
+- Avatar 48, name and age, 2 shared interests, `text-meta` time; tap opens the profile card.
+
+### Live notification toast
+- `--night` background, `--bone` text, `radius-pill`, `shadow-float`, slides down from the
+  top with `ease-spring`, auto-hides after 5s.
+- Content: avatar 32 + "Ria, 22F" (`text-label`) + plan text (1 line, truncated) + candle dot.
+- Tap opens the WYD.
+
+### Chat
+- Others' messages: `--surface`, `--ink` text. My messages: `--ink`, `--bone` text.
+  Bubble radius 20, padding 10 × 14, max width 78%.
+- Group chats show sender name in `text-meta` above the bubble.
+- Composer: `--surface` input pill + round `--ink` send button, sticky above the keyboard.
+
+### Inputs
+- `--surface` fill, 1px `--line` border, `radius-sm`, height 48, `text-body`.
+- Focus: 2px `--ink` border. Error: `--danger` border + message below in `text-meta`.
+- Bio textarea: min 4 lines, live character count in `text-meta`.
+
+### Navigation
+- Bottom tab bar (pill, `--surface`, `shadow-float`, floating 12 above the bottom):
+  Feed · Chats · Notifications (bell with `--coral` unread dot) · Profile.
+- Floating "Drop a WYD" accent button above the tab bar, bottom right.
+
+### Status screens
+- Pending verification: Fraunces title "We're checking your profile", short reassurance,
+  illustration-free, cream background.
+- Empty feed: "No plans nearby yet. Be the first — drop a WYD."
+- Blocked post: inline `--danger` message with Claude's reason, the text stays editable.
+
+## 6. Layout and responsiveness
+
+- Mobile first: design at 375 × 812. Max content width 480, centred on desktop with the
+  cream canvas around it.
+- Touch targets at least 44 × 44.
+- Respect safe areas (`env(safe-area-inset-bottom)`) for the tab bar and composer.
+- Images: `object-fit: cover`, always with alt text ("Photo of Ria").
+
+## 7. Writing tone
+
+Warm, short, like a friend texting. Second person. No pressure, no dating language.
+
+| Instead of | Write |
+| --- | --- |
+| "Submit post" | "Drop a WYD" |
+| "Send join request" | "Ask to join" |
+| "Match found" | "Ria wants to go for a walk too" |
+| "Your post violates guidelines" | "Let's keep it friendly — {reason}" |
+
+## 8. Do's and don'ts
+
+**Do**
+- Use tokens for every colour, size, radius and shadow.
+- Keep one primary action per screen; the coral accent appears once per screen at most.
+- Show the audience chip and verified tick on every WYD and profile.
+- Define hover, focus-visible, active, disabled and loading states for interactive elements.
+
+**Don't**
+- Don't put white text on coral, or coral text on cream.
+- Don't colour-code gender.
+- Don't use more than 3 font families or add fonts outside this file.
+- Don't use dark mode for app screens in the prototype.
+- Don't use emoji as icons; use one icon set (lucide-react).
+
+## 9. Implementation (Tailwind)
+
+```css
+/* app/globals.css */
+:root {
+  --canvas:#F7F3ED; --surface:#FFFFFF; --surface-sunk:#EFE8DE;
+  --ink:#111111; --ink-2:#595959; --ink-3:#8E8E93; --line:#E5E1DA;
+  --coral:#FF6B47; --coral-text:#C2410C; --candle:#F7C873;
+  --night:#0A0908; --bone:#F5F1EA; --success:#1F6F4A; --danger:#B3261E;
+}
+body { background: var(--canvas); color: var(--ink); }
+```
+
+```ts
+// tailwind.config.ts (theme.extend)
+colors: {
+  canvas: 'var(--canvas)', surface: 'var(--surface)', sunk: 'var(--surface-sunk)',
+  ink: { DEFAULT: 'var(--ink)', 2: 'var(--ink-2)', 3: 'var(--ink-3)' },
+  line: 'var(--line)', coral: { DEFAULT: 'var(--coral)', text: 'var(--coral-text)' },
+  candle: 'var(--candle)', night: 'var(--night)', bone: 'var(--bone)',
+  success: 'var(--success)', danger: 'var(--danger)',
+},
+fontFamily: {
+  display: ['var(--font-fraunces)', 'serif'],
+  sans: ['var(--font-manrope)', 'system-ui', 'sans-serif'],
+  mono: ['var(--font-dm-mono)', 'monospace'],
+},
+borderRadius: { sm: '8px', card: '24px', sheet: '32px', pill: '999px' },
+boxShadow: {
+  card: '0 8px 24px rgba(0,0,0,0.06)',
+  float: '0 20px 45px rgba(0,0,0,0.08)',
+},
+transitionTimingFunction: {
+  spring: 'cubic-bezier(0.32, 0.72, 0, 1)',
+  out: 'cubic-bezier(0, 0, 0.2, 1)',
+},
+```

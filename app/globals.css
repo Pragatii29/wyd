@@ -1,0 +1,22 @@
+@import "tailwindcss";
+@config "../tailwind.config.ts";
+
+:root {
+  --canvas:#F7F3ED; --surface:#FFFFFF; --surface-sunk:#EFE8DE;
+  --ink:#111111; --ink-2:#595959; --ink-3:#8E8E93; --line:#E5E1DA;
+  --coral:#FF6B47; --coral-text:#C2410C; --candle:#F7C873;
+  --night:#0A0908; --bone:#F5F1EA; --success:#1F6F4A; --danger:#B3261E;
+}
+
+body {
+  background: var(--canvas);
+  color: var(--ink);
+  font-family: var(--font-manrope), system-ui, sans-serif;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
