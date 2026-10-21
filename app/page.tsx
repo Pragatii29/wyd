@@ -1,6 +1,6 @@
-import { createClient } from "@/lib/supabase/server";
+import { redirect } from "next/navigation";
+import { getSession, homeFor } from "@/lib/profile";
 import { SignInForm } from "@/components/SignInForm";
-import { SignOutButton } from "@/components/SignOutButton";
 
 export default async function Landing({
   searchParams,
@@ -8,10 +8,8 @@ export default async function Landing({
   searchParams: Promise<{ error?: string }>;
 }) {
   const { error } = await searchParams;
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const { user, profile } = await getSession();
+  if (user) redirect(homeFor(profile));
 
   return (
     <main className="mx-auto flex min-h-dvh max-w-[480px] flex-col justify-between bg-night px-4 py-10 text-bone">
@@ -26,18 +24,7 @@ export default async function Landing({
         </p>
       </div>
 
-      <div className="flex flex-col gap-3">
-        {user ? (
-          <>
-            <p className="text-body">
-              You&apos;re signed in as <strong>{user.email}</strong>.
-            </p>
-            <SignOutButton />
-          </>
-        ) : (
-          <SignInForm initialError={error === "signin"} />
-        )}
-      </div>
+      <SignInForm initialError={error === "signin"} />
     </main>
   );
 }
