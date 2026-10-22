@@ -4,7 +4,7 @@ import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, ArrowRight, Camera, Check, Link2, Loader2, Lock, Plus, Sparkles, X } from "lucide-react";
+import { ArrowLeft, ArrowRight, Camera, Check, Loader2, Lock, Plus, Sparkles, X } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { saveProfile, suggestFromAbout, type ProfileErrors } from "@/app/actions/profile";
 import { fallbackProfile } from "@/lib/fallback";
@@ -15,6 +15,8 @@ import { ageOn } from "@/lib/time";
 import { clearDraft, type SignupDraft } from "@/lib/draft";
 import { StepHeader } from "@/components/StepHeader";
 import { SelfieCamera } from "@/components/SelfieCamera";
+import { SocialLinkField } from "@/components/SocialLinkField";
+import { isValidSocialUrl, platformOf, SOCIAL_ERROR, toSocialUrl, type PlatformId } from "@/lib/social";
 import type { Tables } from "@/lib/database.types";
 import { btn, chip, input, label, meta, tagLabel } from "@/lib/ui";
 
@@ -26,7 +28,7 @@ const STEPS = [
 ];
 // Which step each field lives on, so server errors can send the user back to the right place.
 const FIELD_LABEL: Record<string, string> = {
-  name: "Full name", phone: "Phone number", social_url: "LinkedIn link", selfie_path: "Verification selfie",
+  name: "Full name", phone: "Phone number", social_url: "Social profile", selfie_path: "Verification selfie",
   photo_url: "Profile photo", bio: "About you", dob: "Date of birth", gender: "Gender", city: "City",
   area: "Area", interests: "Interests",
 };
@@ -42,7 +44,6 @@ function maxDob() {
 
 const words = (s: string) => s.trim().split(/\s+/).filter(Boolean).length;
 const isJpg = (f: File) => f.type === "image/jpeg" || /\.jpe?g$/i.test(f.name);
-const isHttpsUrl = (v: string) => /^https:\/\/[^\s]+\.[^\s]+/.test(v.trim());
 
 export function ProfileForm({
   userId,
@@ -71,11 +72,13 @@ export function ProfileForm({
   const router = useRouter();
   const supabase = createClient();
 
-  const draftReady = !!draft && !!draft.name && isValidPhone(normalizePhone(draft.phone)) && /^https:\/\//.test(draft.social_url);
+  const draftReady = !!draft && !!draft.name && isValidPhone(normalizePhone(draft.phone)) && (!draft.social_url || isValidSocialUrl(draft.social_url));
   const [step, setStep] = useState(draftReady ? 1 : 0);
   const [name, setName] = useState(initial?.name ?? draft?.name ?? "");
   const [phone, setPhone] = useState(initialPhone ? initialPhone.replace(/^\+91/, "") : draft?.phone ?? "");
-  const [socialUrl, setSocialUrl] = useState(initial?.social_url ?? draft?.social_url ?? "");
+  const savedSocial = initial?.social_url ?? draft?.social_url ?? "";
+  const [platform, setPlatform] = useState<PlatformId>(platformOf(savedSocial));
+  const [social, setSocial] = useState(savedSocial);
   const [photoUrl, setPhotoUrl] = useState(initial?.photo_url ?? "");
   const [selfiePath, setSelfiePath] = useState("");
   const selfieDone = hasSelfie || !!selfiePath;
@@ -160,7 +163,8 @@ export function ProfileForm({
     if (s === 0) {
       if (!name.trim()) e.name = "Add your name";
       if (!isValidPhone(normalizePhone(phone))) e.phone = "Enter a valid mobile number, e.g. 98765 43210";
-      if (!isHttpsUrl(socialUrl)) e.social_url = "Paste your full LinkedIn link, starting with https://";
+      const url = toSocialUrl(platform, social);
+      if (url && !isValidSocialUrl(url)) e.social_url = SOCIAL_ERROR;
     }
     if (s === 1) {
       if (wizard && !selfieDone) e.selfie_path = "Take a live selfie to continue";
@@ -203,7 +207,7 @@ export function ProfileForm({
     let res: Awaited<ReturnType<typeof saveProfile>>;
     try {
       res = await saveProfile({
-        name, phone, dob, gender: gender as "female", photo_url: photoUrl, social_url: socialUrl.trim(),
+        name, phone, dob, gender: gender as "female", photo_url: photoUrl, social_url: toSocialUrl(platform, social),
         city: city as "Bengaluru", area, bio, interests,
         selfie_path: selfiePath || undefined,
       });
@@ -259,26 +263,7 @@ export function ProfileForm({
             </p>
           </Field>
 
-          <Field
-            id="social_url"
-            text="LinkedIn profile"
-            hint="This is how we know you're authentic. No LinkedIn? Instagram, X, GitHub or Behance also work. We never read your account or ask for passwords."
-            error={errors.social_url}
-          >
-            <div className="relative">
-              <Link2 size={18} className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-ink-2" aria-hidden />
-              <input
-                id="social_url"
-                type="url"
-                inputMode="url"
-                placeholder="https://linkedin.com/in/yourname"
-                className={`${input} pl-11`}
-                value={socialUrl}
-                onChange={(e) => setSocialUrl(e.target.value)}
-                aria-invalid={!!errors.social_url}
-              />
-            </div>
-          </Field>
+          <SocialLinkField platform={platform} value={social} onPlatform={setPlatform} onValue={setSocial} error={errors.social_url} />
         </section>
       )}
 

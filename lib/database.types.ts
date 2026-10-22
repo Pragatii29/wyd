@@ -88,7 +88,7 @@ export type Database = {
           photo_check: Json | null
           photo_url: string
           rejection_reason: string | null
-          social_url: string
+          social_url: string | null
           status: Database["public"]["Enums"]["profile_status_t"]
         }
         Insert: {
@@ -106,7 +106,7 @@ export type Database = {
           photo_check?: Json | null
           photo_url: string
           rejection_reason?: string | null
-          social_url: string
+          social_url?: string | null
           status?: Database["public"]["Enums"]["profile_status_t"]
         }
         Update: {
@@ -124,7 +124,7 @@ export type Database = {
           photo_check?: Json | null
           photo_url?: string
           rejection_reason?: string | null
-          social_url?: string
+          social_url?: string | null
           status?: Database["public"]["Enums"]["profile_status_t"]
         }
         Relationships: []

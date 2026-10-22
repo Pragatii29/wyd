@@ -10,6 +10,7 @@ import { InterestChip } from "@/components/InterestChip";
 import { PlanGroupChat } from "@/components/PlanGroupChat";
 import { btn, card, meta, timeAgo } from "@/lib/ui";
 import { olderThanHours } from "@/lib/time";
+import { platformName } from "@/lib/social";
 
 type Requester = {
   id: string;
@@ -20,7 +21,7 @@ type Requester = {
   area: string;
   city: string;
   interests: string[];
-  social_url: string;
+  social_url: string | null;
   bio: string | null;
 };
 
@@ -145,9 +146,11 @@ function WydGroup({ wyd }: { wyd: BoardWyd }) {
                       <Link href={`/profile/${r.requester.id}`} className={`${btn.ghost} px-0`}>
                         View profile
                       </Link>
-                      <a href={r.requester.social_url} target="_blank" rel="noreferrer noopener" className={`${btn.ghost} px-0`}>
-                        <ExternalLink size={14} /> Social
-                      </a>
+                      {r.requester.social_url && (
+                        <a href={r.requester.social_url} target="_blank" rel="noreferrer noopener" className={`${btn.ghost} px-0`}>
+                          <ExternalLink size={14} /> {platformName(r.requester.social_url) ?? "Social"}
+                        </a>
+                      )}
                     </div>
                   </div>
                 )}

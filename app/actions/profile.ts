@@ -9,10 +9,10 @@ import { CITIES } from "@/lib/cities";
 import { TAGS } from "@/lib/tags";
 import { isValidPhone, normalizePhone } from "@/lib/phone";
 import type { Json } from "@/lib/database.types";
+import { isValidSocialUrl, SOCIAL_ERROR } from "@/lib/social";
 
 export type ActionResult<T = object> = ({ ok: true } & T) | { ok?: false; error: string };
 
-const SOCIAL_HOSTS = ["instagram.com", "linkedin.com", "x.com", "twitter.com", "facebook.com", "github.com", "behance.net"];
 
 function wordCount(s: string) {
   return s.trim().split(/\s+/).filter(Boolean).length;
@@ -38,18 +38,13 @@ const profileSchema = z.object({
     .string()
     .url("Add a clear photo of your face")
     .refine((v) => /\.jpe?g$/i.test(v), "Your photo must be a JPG"),
+  // Optional: empty means skipped.
   social_url: z
     .string()
     .trim()
-    .url("Paste a full link, starting with https://")
-    .refine((v) => {
-      try {
-        const host = new URL(v).hostname.replace(/^www\./, "");
-        return v.startsWith("https://") && SOCIAL_HOSTS.some((h) => host === h || host.endsWith(`.${h}`));
-      } catch {
-        return false;
-      }
-    }, "Use a LinkedIn link (or Instagram, X, Facebook, GitHub, Behance)"),
+    .max(300)
+    .refine((v) => !v || isValidSocialUrl(v), SOCIAL_ERROR)
+    .transform((v) => v || null),
   city: z.enum(CITIES, { message: "Pick your city" }),
   area: z.string().trim().max(60),
   bio: z

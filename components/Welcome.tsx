@@ -3,17 +3,16 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { ArrowRight, Link2, Loader2, Lock } from "lucide-react";
+import { ArrowRight, Loader2, Lock } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { isValidPhone, normalizePhone } from "@/lib/phone";
 import { saveDraft } from "@/lib/draft";
+import { isValidSocialUrl, SOCIAL_ERROR, toSocialUrl, type PlatformId } from "@/lib/social";
+import { SocialLinkField } from "@/components/SocialLinkField";
 import { ThemeIconButton } from "@/components/ThemeToggle";
 import { btn, eyebrow, input, label, meta } from "@/lib/ui";
 import { PlanTicker } from "@/components/PlanTicker";
 import { StepHeader } from "@/components/StepHeader";
-
-const isHttpsUrl = (v: string) => /^https:\/\/[^\s]+\.[^\s]+/.test(v.trim());
-const withHttps = (v: string) => (v.trim() && !/^https?:\/\//.test(v.trim()) ? `https://${v.trim()}` : v.trim());
 
 type Errors = Partial<Record<"name" | "phone" | "social_url" | "form", string>>;
 
@@ -23,7 +22,8 @@ export function Welcome() {
   const router = useRouter();
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
-  const [socialUrl, setSocialUrl] = useState("");
+  const [platform, setPlatform] = useState<PlatformId>("linkedin");
+  const [social, setSocial] = useState("");
   const [errors, setErrors] = useState<Errors>({});
   const [busy, setBusy] = useState(false);
 
@@ -32,12 +32,13 @@ export function Welcome() {
     const next: Errors = {};
     if (!name.trim()) next.name = "Add your name";
     if (!isValidPhone(normalizePhone(phone))) next.phone = "Enter a valid mobile number, e.g. 98765 43210";
-    if (!isHttpsUrl(withHttps(socialUrl))) next.social_url = "Paste your full LinkedIn link, starting with https://";
+    const socialUrl = toSocialUrl(platform, social);
+    if (socialUrl && !isValidSocialUrl(socialUrl)) next.social_url = SOCIAL_ERROR;
     setErrors(next);
     if (Object.keys(next).length) return;
 
     setBusy(true);
-    saveDraft({ email: "", name: name.trim(), phone, social_url: withHttps(socialUrl) });
+    saveDraft({ email: "", name: name.trim(), phone, social_url: socialUrl });
     const supabase = createClient();
     // Ask the server whether the saved sign-in still belongs to a real account. A stale one (e.g. the
     // account was deleted) would otherwise send the next page straight back here in a loop.
@@ -102,12 +103,7 @@ export function Welcome() {
           </div>
         </Field>
 
-        <Field id="social_url" text="LinkedIn profile" hint="Or Instagram, X, GitHub, Behance." error={errors.social_url}>
-          <div className="relative">
-            <Link2 size={18} className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-ink-3" aria-hidden />
-            <input id="social_url" type="url" inputMode="url" placeholder="linkedin.com/in/yourname" className={`${input} pl-11`} value={socialUrl} onChange={(e) => setSocialUrl(e.target.value)} onBlur={() => setSocialUrl((v) => (v && !/^https?:\/\//.test(v) ? `https://${v.trim()}` : v))} aria-invalid={!!errors.social_url} />
-          </div>
-        </Field>
+        <SocialLinkField platform={platform} value={social} onPlatform={setPlatform} onValue={setSocial} error={errors.social_url} />
 
         {errors.form && <p className="rounded-field border border-danger px-4 py-3 text-label text-danger">{errors.form}</p>}
 

@@ -5,7 +5,7 @@ import { SignOutButton } from "@/components/SignOutButton";
 import { ThemeIconButton } from "@/components/ThemeToggle";
 import { eyebrow } from "@/lib/ui";
 
-// Sign-up in three steps: basics (name, phone, LinkedIn) → about + JPG photo → create profile.
+// Sign-up in three steps: basics (name, phone, optional social link) → about + JPG photo → create profile.
 // Also used to fix and resubmit a rejected profile.
 export default async function OnboardingPage() {
   const { supabase, user, profile } = await getSession();

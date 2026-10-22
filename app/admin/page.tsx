@@ -4,6 +4,7 @@ import { BadgeCheck, CircleAlert, ExternalLink } from "lucide-react";
 import { createAdminClient, hasServiceRole } from "@/lib/supabase/admin";
 import { ageFrom } from "@/lib/profile";
 import { isAdmin } from "@/lib/admin";
+import { platformName } from "@/lib/social";
 import { AdminUnlock } from "@/components/AdminUnlock";
 import { isoHoursAgo } from "@/lib/time";
 import { approveProfile, approveWyd, blockWyd, lockAdmin, rejectProfile, resolveReport, suspendProfile } from "@/app/actions/admin";
@@ -101,9 +102,13 @@ export default async function AdminPage() {
               <p className="text-label">
                 Phone: <span className="font-mono">{p.private?.phone ?? "not given"}</span>
               </p>
-              <a href={p.social_url} target="_blank" rel="noreferrer noopener" className={`${btn.ghost} self-start px-0`}>
-                <ExternalLink size={16} /> {p.social_url.replace(/^https?:\/\/(www\.)?/, "")}
-              </a>
+              {p.social_url ? (
+                <a href={p.social_url} target="_blank" rel="noreferrer noopener" className={`${btn.ghost} self-start px-0`}>
+                  <ExternalLink size={16} /> {platformName(p.social_url) ?? "Social"}: {p.social_url.replace(/^https?:\/\/(www\.)?/, "")}
+                </a>
+              ) : (
+                <p className="text-label text-ink-2">No social link (skipped)</p>
+              )}
             </div>
             <PhotoCheckRow check={p.photo_check as PhotoCheck} />
             {p.bio && <p className="whitespace-pre-line text-body text-ink-2">{p.bio}</p>}

@@ -44,7 +44,7 @@ export default async function PendingPage() {
         ) : (
           <>
             <p className="text-body text-ink-2">
-              Thanks, {p.name.split(" ")[0]}. A real person on our team looks at your photo and social link to keep WYD? friendly.
+              Thanks, {p.name.split(" ")[0]}. A real person on our team looks at your photo and details to keep WYD? friendly.
               Until then you can&apos;t see plans, post or chat. Refresh this page to check.
             </p>
             <p className="font-mono text-meta text-ink-2">
