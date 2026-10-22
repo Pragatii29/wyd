@@ -1,20 +1,20 @@
 // Shared class strings for DESIGN.md components.
-// Nebula: soft 14px buttons; the primary has a quiet rose → champagne sheen, outlined fields, pill chips (see DESIGN.md §14).
+// Glass: solid pill buttons (espresso on sand, cream on espresso), frosted pill fields and chips (see DESIGN.md §15).
 const base =
-  "inline-flex items-center justify-center gap-2 rounded-field text-label transition duration-fast ease-press active:scale-[0.97] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink disabled:pointer-events-none disabled:bg-sunk disabled:text-ink-3";
+  "inline-flex items-center justify-center gap-2 rounded-pill text-label transition duration-fast ease-press active:scale-[0.97] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink disabled:pointer-events-none disabled:bg-sunk disabled:text-ink-3";
 
 export const btn = {
-  primary: `${base} bg-shine h-14 w-full bg-coral px-6 text-on-coral text-wyd font-semibold shadow-glow`,
+  primary: `${base} h-14 w-full bg-ink px-6 text-on-ink text-wyd font-medium shadow-glow hover:opacity-90`,
   secondary: `${base} h-14 w-full border border-line bg-surface px-6 text-ink hover:bg-sunk`,
   danger: `${base} h-14 w-full border border-danger bg-surface px-6 text-danger hover:bg-sunk`,
   ghost: `${base} min-h-11 px-2 text-coral-text hover:underline`,
   small: `${base} h-10 border border-line bg-surface px-4 text-ink hover:bg-sunk`,
   smallPrimary: `${base} h-10 bg-ink px-4 text-on-ink hover:opacity-90`,
-  smallAccent: `${base} h-10 bg-coral px-4 text-on-coral hover:brightness-110`,
+  smallAccent: `${base} h-10 bg-ink px-4 text-on-ink hover:opacity-90`,
 };
 
 export const input =
-  "h-14 w-full rounded-field border border-ink-3 bg-surface px-4 text-body text-ink placeholder:text-ink-3 transition duration-base ease-out hover:border-ink focus:border-coral focus:outline-none focus:ring-2 focus:ring-coral/40 aria-[invalid=true]:border-danger aria-[invalid=true]:ring-danger";
+  "h-14 w-full rounded-field border border-line bg-surface px-5 text-body text-ink placeholder:text-ink-3 transition duration-base ease-out hover:border-ink-3 focus:border-ink-2 focus:outline-none focus:ring-2 focus:ring-ink/10 aria-[invalid=true]:border-danger aria-[invalid=true]:ring-danger";
 
 export const chip = (selected: boolean) =>
   `inline-flex h-9 items-center gap-1 rounded-pill px-4 text-label transition duration-base ease-press active:scale-[0.97] ${

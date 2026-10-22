@@ -5,7 +5,7 @@ const SPARKLE = "M82 13.5 Q83.6 22.4 92.5 24 Q83.6 25.6 82 34.5 Q80.4 25.6 71.5 
 
 // WYD? wordmark: bubbly letters drawn as thick rounded strokes so W and Y melt together,
 // with a sparkle punched through the D (the page shows through it). Colour = currentColor.
-// `spark` fills the sparkle with a rose → champagne sheen instead of leaving it see-through; `twinkle` animates it.
+// `spark` fills the sparkle with a blush → sand tint instead of leaving it see-through; `twinkle` animates it.
 export function Logo({
   className = "h-7 w-auto",
   spark = false,
@@ -24,8 +24,8 @@ export function Logo({
     <svg viewBox="0 0 132 48" className={className} role="img" aria-label={title} fill="none">
       <defs>
         <linearGradient id={shine} x1="72" y1="14" x2="92" y2="34" gradientUnits="userSpaceOnUse">
-          <stop offset="0" stopColor="#E06C8E" />
-          <stop offset="1" stopColor="#ECCDA6" />
+          <stop offset="0" stopColor="#E3A9A6" />
+          <stop offset="1" stopColor="#EBCFAE" />
         </linearGradient>
       </defs>
       <mask id={mask} maskUnits="userSpaceOnUse" x="0" y="0" width="132" height="48">
@@ -64,67 +64,17 @@ export function Logo({
   );
 }
 
-// Glitter positions: a fixed pseudo-random scatter, so server and browser render the same thing.
-const GLITTER_COLOURS = ["#FFFFFF", "#FFFFFF", "#F3E3CF", "#F2D3DC"];
-const GLITTER = Array.from({ length: 22 }, (_, i) => {
-  const r = (n: number) => {
-    const x = Math.sin(i * 12.9898 + n * 78.233) * 43758.5453;
-    return x - Math.floor(x);
-  };
-  return {
-    left: `${(r(1) * 100).toFixed(2)}%`,
-    top: `${(r(2) * 100).toFixed(2)}%`,
-    size: 1 + Math.round(r(3) * 1.4),
-    colour: GLITTER_COLOURS[Math.floor(r(4) * GLITTER_COLOURS.length)],
-    d: `${(4 + r(5) * 4).toFixed(2)}s`,
-    delay: `${(-r(6) * 5).toFixed(2)}s`,
-  };
-});
-
-// Two small four-point stars with a soft halo.
-const STARS = [
-  { left: "12%", top: "16%", size: 11, delay: "0s" },
-  { left: "78%", top: "72%", size: 9, delay: "-3s" },
-];
-
-// The nebula backdrop from the inspo boards, kept quiet: dusty-rose and champagne clouds through a fine
-// screen grid, faint diagonal light streaks, a little white-gold glitter and two small stars. Put it inside a
+// The hazy backdrop from the luxury references: big soft blush, sand and cocoa light drifting
+// slowly, an optional glossy blush sphere, and a fine film grain. Put it inside a
 // `relative overflow-hidden` box on a --brand background.
-export function Nebula({ className = "", streaks = true }: { className?: string; streaks?: boolean }) {
+export function Haze({ className = "", sphere = true }: { className?: string; sphere?: boolean }) {
   return (
     <div className={`pointer-events-none absolute inset-0 overflow-hidden ${className}`} aria-hidden>
-      <div className="nebula-glow">
-        <div className="nebula-clouds" />
-      </div>
-      {streaks && <div className="nebula-streaks" />}
-      {GLITTER.map((g, i) => (
-        <span
-          key={i}
-          className="glitter"
-          style={{
-            left: g.left,
-            top: g.top,
-            width: g.size,
-            height: g.size,
-            background: g.colour,
-            boxShadow: `0 0 ${g.size * 2}px ${g.colour}`,
-            ["--d" as string]: g.d,
-            ["--delay" as string]: g.delay,
-          }}
-        />
-      ))}
-      {STARS.map((st, i) => (
-        <svg
-          key={i}
-          viewBox="71.5 13.5 21 21"
-          width={st.size}
-          height={st.size}
-          className="glitter"
-          style={{ left: st.left, top: st.top, filter: "drop-shadow(0 0 4px #F3E3CF)", ["--d" as string]: "6s", ["--delay" as string]: st.delay }}
-        >
-          <path d={SPARKLE} fill="#FFF6F9" />
-        </svg>
-      ))}
+      <div className="haze-orb -right-24 -top-24 size-80" style={{ background: "var(--haze-1)" }} />
+      <div className="haze-orb -left-28 top-1/3 size-72" style={{ background: "var(--haze-2)", animationDelay: "-12s" }} />
+      <div className="haze-orb -bottom-24 right-0 size-72" style={{ background: "var(--haze-3)", animationDelay: "-20s" }} />
+      {sphere && <div className="haze-sphere -right-20 top-[58%] size-40 opacity-70" />}
+      <div className="haze-grain" />
     </div>
   );
 }

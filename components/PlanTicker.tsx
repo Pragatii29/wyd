@@ -1,11 +1,11 @@
 // Frosted pill on the dark hero.
-const GLASS = "border border-on-brand/20 bg-on-brand/10 text-on-brand backdrop-blur-md";
+const GLASS = "border border-on-brand/25 bg-on-brand/10 text-on-brand backdrop-blur-xl";
 
 // A slow, endless strip of example plans on the dark hero: shows what WYD? is for before anyone reads a word.
 const PLANS = [
   { text: "Chai at a tapri, 5pm?", tone: GLASS },
-  { text: "Sunset walk at Cubbon Park", tone: "bg-coral text-on-coral" },
-  { text: "Need 2 more for box cricket", tone: "bg-on-brand text-brand" },
+  { text: "Sunset walk at Cubbon Park", tone: "bg-on-brand text-brand" },
+  { text: "Need 2 more for box cricket", tone: GLASS },
   { text: "Trying that new café in Indiranagar", tone: GLASS },
   { text: "Stand-up show tonight, 1 extra ticket", tone: "bg-on-brand text-brand" },
   { text: "Board games + coffee, HSR", tone: GLASS },

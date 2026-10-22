@@ -19,7 +19,7 @@ export function HomeHeader({
   base?: string;
 }) {
   return (
-    <header className="sticky top-0 z-20 border-b border-line bg-canvas/75 backdrop-blur-xl">
+    <header className="sticky top-0 z-20 border-b border-line bg-canvas/60 backdrop-blur-2xl">
       <div className="flex h-14 items-center justify-between px-5">
         <Link href="/profile" aria-label="Your profile" className="rounded-full focus-visible:outline-2 focus-visible:outline-ink">
           <Avatar src={photo} name={name} size={40} />
@@ -47,7 +47,7 @@ export function HomeHeader({
             {!!t.count && (
               <span className="flex h-5 min-w-5 items-center justify-center rounded-pill bg-coral px-1.5 font-mono text-meta text-on-coral">{t.count}</span>
             )}
-            {t.active && <span className="absolute bottom-0 h-1 w-16 rounded-pill bg-coral" aria-hidden />}
+            {t.active && <span className="absolute bottom-0 h-1 w-16 rounded-pill bg-ink" aria-hidden />}
           </Link>
         ))}
       </nav>

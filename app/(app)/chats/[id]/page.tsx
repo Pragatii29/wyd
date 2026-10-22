@@ -38,7 +38,7 @@ export default async function ChatPage({ params }: { params: Promise<{ id: strin
   const members = chat.chat_members.filter((m) => m.profile).map((m) => ({ id: m.profile!.id, name: m.profile!.name, photo: m.profile!.photo_url }));
 
   return (
-    <main className={`${page} flex h-[calc(100dvh-96px-env(safe-area-inset-bottom))] flex-col pt-4`}>
+    <main className={`${page} flex h-[calc(100dvh-100px-env(safe-area-inset-bottom))] flex-col pt-4`}>
       <div className="flex items-center gap-2">
         <Link href="/chats" className="inline-flex size-11 shrink-0 items-center justify-center rounded-full text-ink" aria-label="Back to chats">
           <ArrowLeft size={22} />

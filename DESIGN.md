@@ -374,7 +374,7 @@ halftone glow. This section wins over §10–12 where they differ.
   - The primary button, selected chips, my chat bubbles, the active tab and the + button glow blue.
   - Headers and the bottom bar are frosted glass (`backdrop-blur-xl`).
 
-## 14. Nebula direction (current)
+## 14. Nebula direction (superseded by §15)
 
 The blue is gone. Colour now comes from the inspo boards: rose/gold nebula light through a screen grid,
 dusty-pink clouds with stars, diagonal light streaks with glitter, and iridescent pink sparkle.
@@ -403,7 +403,7 @@ dusty-pink clouds with stars, diagonal light streaks with glitter, and iridescen
   Use it only on `bg-brand` surfaces (the welcome hero, empty states), with the light kept to the
   edges. All motion stops under reduced motion.
 
-### 14.1 Toned down (current)
+### 14.1 Toned down (superseded by §15)
 
 Feedback: too many colours, it read as AI-made. Restraint is what makes it look expensive now.
 
@@ -420,3 +420,39 @@ Feedback: too many colours, it read as AI-made. Restraint is what makes it look 
 - **Editorial accent:** one italic serif phrase per hero, in Instrument Serif (`font-serif`,
   `text-hero-accent`) with the rose → champagne `.text-shine`, e.g. "Find *your people.*"
 - The logo sparkle is a rose → champagne gradient. The logo's halo is a faint champagne glow.
+
+## 15. Glass direction (current)
+
+Based on luxury app references (N99 beauty studio, Creative.style, KOH): frosted translucent panels
+over hazy warm light, warm neutrals, big soft corners, solid pill buttons and light, clean headlines.
+The logo (§13) and every feature and icon stay the same. This section wins where it differs from
+§10–14.
+
+- **Themes:** Espresso (dark, the default), Sand (light), and System.
+- **Colour tokens** (`app/globals.css`):
+  - Espresso: canvas `#16110E`, ink `#F7EFE8`, ink-2 `#C2B2A6`, accent blush `#E0AFA8`.
+  - Sand: canvas `#EFE6DE`, ink `#1A1512`, ink-2 `#6E6159`, accent dusty rose `#B8767A`.
+  - `--surface` and `--surface-sunk` are translucent (white or cream at 7–55%). Every `bg-surface`
+    and `bg-sunk` element also blurs what's behind it (24px `backdrop-filter`), so cards, fields
+    and chips read as frosted glass.
+  - `--line` is a translucent hairline.
+  - `--sheet` is an opaque panel colour, for dialogs and the floating nav.
+  - `--aura` and `--aura-2`: blush top right and sand bottom left behind every page, so the glass has
+    something to blur.
+- **`<Haze />`** (`components/Logo.tsx`) replaces `<Nebula />`: three big blurred orbs (blush, sand,
+  cocoa) drifting slowly, a glossy blush sphere (reference 2) and a fine film grain. Use it on
+  `bg-brand` brand moments only.
+- **Buttons:**
+  - Primary is a solid pill in the ink colour: espresso on Sand, cream on Espresso. The text is
+    medium weight with a soft shadow. There's no gradient.
+  - Secondary and small buttons are glass pills with a hairline border.
+  - The + button is an ink circle.
+- **Fields:** frosted glass, 22px corners, hairline border, a soft ink focus ring.
+- **Cards:** WYD posts are separate glass cards (28px corners, hairline, soft wide shadow) with 12px
+  gaps, not rows.
+- **Navigation:** the bottom bar is a floating frosted pill, 12px off the bottom edge. Headers are
+  frosted too. Active marks are ink, not colour.
+- **Type:** Poppins (300–500) for headlines, set medium and large. Eyebrows are 12px, spaced
+  capitals. DM Sans for body. One italic Instrument Serif phrase on the welcome page.
+- **Accent use:** blush or dusty rose only for unread dots, the request count and small status
+  marks. My chat bubbles are ink.

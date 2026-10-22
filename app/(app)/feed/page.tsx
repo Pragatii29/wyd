@@ -7,7 +7,7 @@ import { HomeHeader } from "@/components/HomeHeader";
 import { PlanGroupChat } from "@/components/PlanGroupChat";
 import { RequestRow } from "@/components/RequestRow";
 import { WydCard } from "@/components/WydCard";
-import { Logo, Nebula } from "@/components/Logo";
+import { Haze, Logo } from "@/components/Logo";
 import { btn } from "@/lib/ui";
 
 // Home: "For you" (plans in your active city, your interests first) and "Requests" (people asking to join you).
@@ -117,12 +117,12 @@ export default async function FeedPage({ searchParams }: { searchParams: Promise
 function Empty({ title, body, cta }: { title: string; body: string; cta: { href: string; label: string } }) {
   return (
     <div className="relative mx-4 mt-8 overflow-hidden rounded-card bg-brand px-8 pb-10 pt-12 text-center text-on-brand">
-      <Nebula streaks={false} />
+      <Haze sphere={false} />
       <div className="relative flex flex-col items-center gap-4">
         <Logo className="h-10 w-auto" spark twinkle />
         <h2 className="font-display text-title">{title}</h2>
         <p className="text-body text-on-brand/75">{body}</p>
-        <Link href={cta.href} className={`${btn.primary} max-w-60 shadow-glow`}>
+        <Link href={cta.href} className={`${btn.primary} max-w-60 bg-on-brand text-brand`}>
           {cta.label}
         </Link>
       </div>

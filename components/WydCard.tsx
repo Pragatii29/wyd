@@ -40,7 +40,7 @@ export function WydCard({
   const body = <p className={`${linkBody ? "line-clamp-5" : ""} text-wyd text-ink`}>{wyd.body}</p>;
 
   return (
-    <article className="flex gap-3 border-b border-line px-5 py-5 transition duration-base ease-out hover:bg-surface">
+    <article className="mx-3 mt-3 flex gap-3 rounded-card border border-line bg-surface p-4 shadow-card transition duration-base ease-out hover:bg-sunk">
       <Link href={mine ? "/profile" : `/profile/${wyd.author.id}`} className="shrink-0 self-start rounded-full focus-visible:outline-2 focus-visible:outline-ink">
         <Avatar src={wyd.author.photo_url} name={wyd.author.name} size={48} />
       </Link>
@@ -53,7 +53,7 @@ export function WydCard({
             · {timeShort(wyd.created_at)}
           </time>
           {shared.length > 0 && !mine && (
-            <span className="ml-auto shrink-0 rounded-pill border border-coral/30 px-2.5 py-0.5 font-mono text-meta text-coral-text">for you</span>
+            <span className="ml-auto shrink-0 rounded-pill border border-line px-2.5 py-0.5 font-mono text-meta text-ink-2">for you</span>
           )}
         </div>
 

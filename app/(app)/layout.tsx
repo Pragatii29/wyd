@@ -12,7 +12,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
     .eq("read", false);
 
   return (
-    <div className="min-h-dvh pb-[calc(80px+env(safe-area-inset-bottom))]">
+    <div className="min-h-dvh pb-[calc(100px+env(safe-area-inset-bottom))]">
       {children}
       <NotificationListener userId={user.id} />
       <BottomNav unreadAlerts={count ?? 0} photo={profile.photo_url} name={profile.name.split(" ")[0]} />

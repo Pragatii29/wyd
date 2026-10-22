@@ -87,7 +87,7 @@ export function RequestDecision({
             role="dialog"
             aria-label="Start a chat"
             onClick={(e) => e.stopPropagation()}
-            className="animate-toast-in w-full max-w-[480px] rounded-t-sheet bg-canvas p-6 pb-[calc(24px+env(safe-area-inset-bottom))] shadow-float"
+            className="animate-toast-in w-full max-w-[480px] rounded-t-sheet bg-sheet p-6 pb-[calc(24px+env(safe-area-inset-bottom))] shadow-float"
           >
             <h2 className="text-h2">You accepted {firstName}!</h2>
             <p className="mt-2 text-body text-ink-2">
@@ -114,7 +114,7 @@ export function RequestDecision({
         </div>
       )}
 
-      <div className="fixed inset-x-0 bottom-[calc(80px+env(safe-area-inset-bottom))] z-30 flex justify-center px-4">
+      <div className="fixed inset-x-0 bottom-[calc(96px+env(safe-area-inset-bottom))] z-30 flex justify-center px-4">
         {status === "pending" ? (
           <div className="flex gap-2 rounded-pill bg-surface/90 p-1.5 shadow-float backdrop-blur">
             <button

@@ -12,7 +12,7 @@ import { SocialLinkField } from "@/components/SocialLinkField";
 import { ThemeIconButton } from "@/components/ThemeToggle";
 import { btn, input, label, meta } from "@/lib/ui";
 import { PlanTicker } from "@/components/PlanTicker";
-import { Logo, Nebula } from "@/components/Logo";
+import { Haze, Logo } from "@/components/Logo";
 import { StepHeader } from "@/components/StepHeader";
 
 type Errors = Partial<Record<"name" | "phone" | "social_url" | "form", string>>;
@@ -62,16 +62,16 @@ export function Welcome() {
 
   return (
     <main className="mx-auto flex min-h-dvh w-full max-w-[480px] flex-col">
-      {/* Hero: the brand moment. Always warm black, with the nebula glow and glitter behind the logo. */}
+      {/* Hero: the brand moment. Always espresso, with hazy blush and sand light behind the logo. */}
       <section className="relative overflow-hidden bg-brand pb-12 text-on-brand">
-        <Nebula />
+        <Haze />
         <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-brand" aria-hidden />
         <div className="relative flex items-center justify-end px-3 pt-3">
           <ThemeIconButton className="text-on-brand" />
         </div>
         <div className="relative flex flex-col items-center px-5 pb-2 pt-6 text-center">
-          <Logo className="h-24 w-auto drop-shadow-[0_8px_36px_rgba(233,198,160,0.25)]" spark twinkle />
-          <p className="mt-6 text-eyebrow uppercase tracking-[0.12em] text-on-brand/70">Bengaluru · Mumbai · Delhi · and more</p>
+          <Logo className="h-24 w-auto drop-shadow-[0_10px_40px_rgba(0,0,0,0.25)]" spark twinkle />
+          <p className="mt-6 text-eyebrow uppercase text-on-brand/70">Bengaluru · Mumbai · Delhi · and more</p>
           <h1 className="mt-3 font-display text-hero">
             Got a plan?
             <br />
@@ -84,7 +84,7 @@ export function Welcome() {
         </div>
       </section>
 
-      <form onSubmit={onSubmit} noValidate className="relative -mt-6 flex flex-1 flex-col gap-6 rounded-t-sheet bg-surface px-5 pb-10 pt-7 shadow-float">
+      <form onSubmit={onSubmit} noValidate className="relative -mt-8 flex flex-1 flex-col gap-6 rounded-t-sheet border-t border-line bg-sheet/85 px-5 pb-10 pt-8 shadow-float backdrop-blur-2xl">
         <StepHeader step={1} title="The basics" blurb="So people know who they're meeting." />
 
         <Field id="name" text="Full name" error={errors.name}>

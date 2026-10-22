@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Bricolage_Grotesque, DM_Sans, Instrument_Serif } from "next/font/google";
+import { DM_Sans, Instrument_Serif, Poppins } from "next/font/google";
 import "./globals.css";
 
 // Airbnb typography: one friendly geometric sans for everything. Airbnb Cereal isn't licensed for use,
@@ -9,9 +9,10 @@ const dmSans = DM_Sans({
   variable: "--font-sans",
 });
 
-// Headlines: chunky and a little quirky, to sit next to the bubbly WYD logo.
-const bricolage = Bricolage_Grotesque({
+// Headlines: clean geometric Poppins, set light and large like the luxury app references.
+const poppins = Poppins({
   subsets: ["latin"],
+  weight: ["300", "400", "500"],
   variable: "--font-display",
 });
 
@@ -32,7 +33,7 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" data-theme="dark" className={`${dmSans.variable} ${bricolage.variable} ${instrument.variable}`} suppressHydrationWarning>
+    <html lang="en" data-theme="dark" className={`${dmSans.variable} ${poppins.variable} ${instrument.variable}`} suppressHydrationWarning>
       <head>
         {/* Apply the saved theme before first paint. Midnight (dark) is the default. */}
         <script

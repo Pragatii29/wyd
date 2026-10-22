@@ -36,7 +36,7 @@ export function SocialLinkField({
             aria-checked={platform === p.id}
             onClick={() => onPlatform(p.id)}
             className={`h-9 rounded-pill border px-3.5 text-label transition duration-fast ease-out ${
-              platform === p.id ? "border-ink bg-ink text-on-ink" : "border-line bg-canvas text-ink hover:bg-sunk"
+              platform === p.id ? "border-ink bg-ink text-on-ink" : "border-line bg-surface text-ink hover:bg-sunk"
             }`}
           >
             {p.label}

@@ -21,34 +21,36 @@ const config: Config = {
         "on-coral": "var(--on-coral)",
         brand: "var(--brand)",
         "on-brand": "var(--on-brand)",
+        // Opaque panel for sheets and dialogs that sit over content.
+        sheet: "var(--sheet)",
       },
       fontFamily: {
-        // Bricolage Grotesque for headlines (chunky, a little quirky, like the logo); DM Sans for the rest.
+        // Poppins for headlines (clean, geometric, set light and large like the luxury references); DM Sans for the rest.
         display: ["var(--font-display)", "var(--font-sans)", "system-ui", "sans-serif"],
         sans: ["var(--font-sans)", "system-ui", "sans-serif"],
         serif: ["var(--font-serif)", "Georgia", "serif"],
         mono: ["var(--font-sans)", "system-ui", "sans-serif"],
       },
       fontSize: {
-        hero: ["40px", { lineHeight: "44px", fontWeight: "800", letterSpacing: "-0.03em" }],
+        hero: ["40px", { lineHeight: "46px", fontWeight: "500", letterSpacing: "-0.03em" }],
         // The italic serif phrase inside a hero headline (serif runs small, so it is set larger).
         "hero-accent": ["46px", { lineHeight: "44px", fontWeight: "400", letterSpacing: "0" }],
-        display: ["32px", { lineHeight: "36px", fontWeight: "800", letterSpacing: "-0.02em" }],
-        title: ["26px", { lineHeight: "30px", fontWeight: "700", letterSpacing: "-0.01em" }],
-        h2: ["22px", { lineHeight: "28px", fontWeight: "600" }],
+        display: ["32px", { lineHeight: "38px", fontWeight: "500", letterSpacing: "-0.02em" }],
+        title: ["26px", { lineHeight: "32px", fontWeight: "500", letterSpacing: "-0.015em" }],
+        h2: ["22px", { lineHeight: "28px", fontWeight: "500", letterSpacing: "-0.01em" }],
         wyd: ["18px", { lineHeight: "26px", fontWeight: "500", letterSpacing: "-0.01em" }],
         body: ["16px", { lineHeight: "24px", fontWeight: "400" }],
-        label: ["14px", { lineHeight: "20px", fontWeight: "600" }],
+        label: ["14px", { lineHeight: "20px", fontWeight: "500" }],
         meta: ["13px", { lineHeight: "18px", fontWeight: "400" }],
-        eyebrow: ["13px", { lineHeight: "18px", fontWeight: "600" }],
+        eyebrow: ["12px", { lineHeight: "16px", fontWeight: "500", letterSpacing: "0.14em" }],
       },
-      // Soft, bubbly shapes to match the logo: 14px buttons and fields, 20px cards, 28px sheets, pill chips.
-      borderRadius: { sm: "4px", field: "14px", card: "20px", sheet: "28px", pill: "999px" },
+      // Luxury-app shapes: pill buttons and chips, 22px fields, 28px glass cards, 36px sheets.
+      borderRadius: { sm: "6px", field: "22px", card: "28px", sheet: "36px", pill: "999px" },
       boxShadow: {
-        card: "0 1px 2px rgba(0,0,0,0.08)",
-        float: "0 10px 30px rgba(4,3,26,0.28)",
-        // Electric glow under the main action.
-        glow: "0 8px 28px var(--glow)",
+        // Soft, wide shadows that lift glass panels off the haze.
+        card: "0 8px 30px rgba(30,18,12,0.10)",
+        float: "0 24px 60px rgba(30,18,12,0.22)",
+        glow: "0 12px 32px var(--glow)",
       },
       transitionTimingFunction: {
         spring: "cubic-bezier(0.32, 0.72, 0, 1)",
