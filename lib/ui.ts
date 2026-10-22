@@ -1,16 +1,16 @@
 // Shared class strings for DESIGN.md components.
-// Midnight: soft 14px buttons with a glowing electric-blue primary, outlined fields, pill chips (see DESIGN.md §13).
+// Nebula: soft 14px buttons with a glowing rose → gold shimmer primary, outlined fields, pill chips (see DESIGN.md §14).
 const base =
   "inline-flex items-center justify-center gap-2 rounded-field text-label transition duration-fast ease-press active:scale-[0.97] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink disabled:pointer-events-none disabled:bg-sunk disabled:text-ink-3";
 
 export const btn = {
-  primary: `${base} h-14 w-full bg-coral px-6 text-on-coral text-wyd font-semibold shadow-glow hover:brightness-110`,
+  primary: `${base} bg-shine h-14 w-full bg-coral px-6 text-on-coral text-wyd font-semibold shadow-glow`,
   secondary: `${base} h-14 w-full border border-line bg-surface px-6 text-ink hover:bg-sunk`,
   danger: `${base} h-14 w-full border border-danger bg-surface px-6 text-danger hover:bg-sunk`,
   ghost: `${base} min-h-11 px-2 text-coral-text hover:underline`,
   small: `${base} h-10 border border-line bg-surface px-4 text-ink hover:bg-sunk`,
   smallPrimary: `${base} h-10 bg-ink px-4 text-on-ink hover:opacity-90`,
-  smallAccent: `${base} h-10 bg-coral px-4 text-on-coral hover:brightness-110`,
+  smallAccent: `${base} bg-shine h-10 bg-coral px-4 text-on-coral`,
 };
 
 export const input =
@@ -18,7 +18,7 @@ export const input =
 
 export const chip = (selected: boolean) =>
   `inline-flex h-9 items-center gap-1 rounded-pill px-4 text-label transition duration-base ease-press active:scale-[0.97] ${
-    selected ? "bg-coral text-on-coral shadow-glow" : "border border-line bg-surface text-ink hover:bg-sunk"
+    selected ? "bg-shine bg-coral text-on-coral shadow-glow" : "border border-line bg-surface text-ink hover:bg-sunk"
   }`;
 
 export const label = "text-label text-ink";

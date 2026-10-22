@@ -347,7 +347,7 @@ Rausch `#E31C5F` (about 4.6:1). Text on pink is always white; text on the soft p
 **Elevation:** Airbnb's soft float `0 6px 16px rgba(0,0,0,0.12)` for floating UI only; lists stay flat with hairlines.
 **Theme switch:** Light (default) · Dark · System.
 
-## 13. Midnight direction (current)
+## 13. Midnight direction (superseded by §14; logo, shapes and type still apply)
 
 Inspired by the WYD logo (white bubbly letters on deep navy, a sparkle cut into the D) and an LED-style
 halftone glow. This section wins over §10–12 where they differ.
@@ -373,3 +373,32 @@ halftone glow. This section wins over §10–12 where they differ.
   - Softer, to match the bubbly logo: 14px buttons and fields, 20px cards, 28px sheets, pill chips.
   - The primary button, selected chips, my chat bubbles, the active tab and the + button glow blue.
   - Headers and the bottom bar are frosted glass (`backdrop-blur-xl`).
+
+## 14. Nebula direction (current)
+
+The blue is gone. Colour now comes from the inspo boards: rose/gold nebula light through a screen grid,
+dusty-pink clouds with stars, diagonal light streaks with glitter, and iridescent pink sparkle.
+§13's logo, type, shapes and glass bars stay the same.
+
+- **Default theme is Nebula (dark).** Light is "Blush"; System follows the device.
+- **Colour tokens** (`app/globals.css`):
+  - Nebula: canvas `#0B0709` (warm black), surface `#171015`, sunk `#221820`, ink `#FBF3F6`, ink-2
+    `#CDB3BF`, line `#35242E`.
+  - Blush: canvas `#FFF7F9`, surface white, ink `#1A0E14`, line `#F0DDE4`.
+  - The action colour is hot rose: `#FF4D9D` (Nebula), `#E0207F` (Blush). It uses the `--coral` token
+    name. `--glow` is its pink shadow (`shadow-glow`).
+  - `--shine` is the shimmer: rose `#FF3D9A` → `#FF6FA8` → peach `#FFA37A` → champagne `#F7CF7A`.
+    Use `.bg-shine` on top of `bg-coral` for main buttons, selected chips, my chat bubbles, the +
+    button and highlight pills; it slides on hover and switches off when disabled. Use `.text-shine`
+    for one highlighted phrase per screen at most ("Find *your people.*").
+  - `--aura` and `--aura-2`: a faint rose (top right) and gold (bottom left) light behind every page.
+  - `--brand` `#0B0709` stays the same in both themes, for brand moments.
+- **Logo sparkle** is filled with the rose → gold shimmer when `spark` is on. The app icon is the white
+  mark on warm black with a rose sparkle.
+- **`<Nebula />`** (`components/Logo.tsx`) replaces `<Halftone />`:
+  - drifting rose, gold, magenta and a little violet clouds, seen through a fine 3.5px screen grid;
+  - faint diagonal light streaks (switch them off with `streaks={false}`);
+  - 46 twinkling glitter specks in white, blush, gold, pink, lilac and mint;
+  - five four-point stars.
+  Use it only on `bg-brand` surfaces (the welcome hero, empty states), with the light kept to the
+  edges. All motion stops under reduced motion.

@@ -1,47 +1,74 @@
 @import "tailwindcss";
 @config "../tailwind.config.ts";
 
-/* Midnight: the WYD logo's deep navy, white type and an electric "spark" blue for actions
-   (the --coral token name is kept so components don't change). Midnight is the default theme;
-   Light keeps the navy ink on a soft lavender-white canvas. --brand stays navy in both themes. */
+/* Nebula: warm black, dusty rose and gold light, magenta glitter (the inspo boards).
+   Actions are hot rose with a pink → peach → gold shimmer (`.bg-shine`). The --coral token name is
+   kept so components don't change. Nebula (dark) is the default; Light is "blush" on soft pink-white.
+   --brand stays warm black in both themes for brand moments. */
 :root {
-  --brand:#0D0B2E; --on-brand:#FFFFFF;
+  --brand:#0B0709; --on-brand:#FFF6F9;
+  /* Iridescent shimmer: hot rose → peach → champagne gold. */
+  --shine:linear-gradient(115deg, #FF3D9A 0%, #FF6FA8 38%, #FFA37A 70%, #F7CF7A 100%);
 }
 :root,
 :root[data-theme="dark"] {
-  --canvas:#0B0A24; --surface:#13123A; --surface-sunk:#1C1B4B;
-  --ink:#F4F3FF; --ink-2:#A9A8D6; --ink-3:#706FA6; --line:#29286A;
-  --coral:#5B6BFF; --coral-text:#9EA9FF; --candle:#DCE3FF;
-  --night:#04031A; --bone:#FFFFFF; --success:#5BE3A5; --danger:#FF7A8A;
-  --on-ink:#0B0A24; --on-light:#0B0A24; --on-coral:#FFFFFF;
-  --glow:rgba(91,107,255,0.45);
+  --canvas:#0B0709; --surface:#171015; --surface-sunk:#221820;
+  --ink:#FBF3F6; --ink-2:#CDB3BF; --ink-3:#8E7381; --line:#35242E;
+  --coral:#FF4D9D; --coral-text:#FF8EC2; --candle:#FCE1EC;
+  --night:#050304; --bone:#FFFFFF; --success:#6EE7B7; --danger:#FF6B7D;
+  --on-ink:#0B0709; --on-light:#1A0E14; --on-coral:#FFFFFF;
+  --glow:rgba(255,77,157,0.45);
+  --aura:rgba(232,150,185,0.10); --aura-2:rgba(240,185,100,0.07);
   color-scheme: dark;
 }
 :root[data-theme="light"] {
-  --canvas:#F6F5FC; --surface:#FFFFFF; --surface-sunk:#EDECF7;
-  --ink:#0D0B2E; --ink-2:#56557F; --ink-3:#8A89B0; --line:#DDDCEE;
-  --coral:#3F4FF2; --coral-text:#3341E0; --candle:#E2E7FF;
-  --night:#0D0B2E; --bone:#FFFFFF; --success:#0E8A4F; --danger:#D23A4A;
-  --on-ink:#FFFFFF; --on-light:#0D0B2E; --on-coral:#FFFFFF;
-  --glow:rgba(63,79,242,0.28);
+  --canvas:#FFF7F9; --surface:#FFFFFF; --surface-sunk:#FBEEF2;
+  --ink:#1A0E14; --ink-2:#6E5560; --ink-3:#A28B95; --line:#F0DDE4;
+  --coral:#E0207F; --coral-text:#C2186B; --candle:#FCE1EC;
+  --night:#1A0E14; --bone:#FFFFFF; --success:#0E8A4F; --danger:#D23A4A;
+  --on-ink:#FFFFFF; --on-light:#1A0E14; --on-coral:#FFFFFF;
+  --glow:rgba(224,32,127,0.25);
+  --aura:rgba(255,120,175,0.10); --aura-2:rgba(247,190,110,0.10);
   color-scheme: light;
 }
 @media (prefers-color-scheme: light) {
   :root[data-theme="system"] {
-    --canvas:#F6F5FC; --surface:#FFFFFF; --surface-sunk:#EDECF7;
-    --ink:#0D0B2E; --ink-2:#56557F; --ink-3:#8A89B0; --line:#DDDCEE;
-    --coral:#3F4FF2; --coral-text:#3341E0; --candle:#E2E7FF;
-    --night:#0D0B2E; --bone:#FFFFFF; --success:#0E8A4F; --danger:#D23A4A;
-    --on-ink:#FFFFFF; --on-light:#0D0B2E; --on-coral:#FFFFFF;
-    --glow:rgba(63,79,242,0.28);
+    --canvas:#FFF7F9; --surface:#FFFFFF; --surface-sunk:#FBEEF2;
+    --ink:#1A0E14; --ink-2:#6E5560; --ink-3:#A28B95; --line:#F0DDE4;
+    --coral:#E0207F; --coral-text:#C2186B; --candle:#FCE1EC;
+    --night:#1A0E14; --bone:#FFFFFF; --success:#0E8A4F; --danger:#D23A4A;
+    --on-ink:#FFFFFF; --on-light:#1A0E14; --on-coral:#FFFFFF;
+    --glow:rgba(224,32,127,0.25);
+    --aura:rgba(255,120,175,0.10); --aura-2:rgba(247,190,110,0.10);
     color-scheme: light;
   }
 }
 
+/* A faint rose and gold aura behind every page, so even plain screens feel lit. */
 body {
-  background: var(--canvas);
+  background:
+    radial-gradient(70% 45% at 100% 0%, var(--aura), transparent 70%),
+    radial-gradient(60% 40% at 0% 100%, var(--aura-2), transparent 70%),
+    var(--canvas);
+  background-attachment: fixed;
   color: var(--ink);
   font-family: var(--font-sans), system-ui, sans-serif;
+}
+
+/* The shimmer gradient for main actions; sits over bg-coral so the solid colour is the fallback. */
+.bg-shine {
+  background-image: var(--shine);
+  background-size: 160% 100%;
+  background-position: 0% 50%;
+  transition: background-position 480ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.bg-shine:hover { background-position: 100% 50%; }
+.bg-shine:disabled { background-image: none; box-shadow: none; }
+.text-shine {
+  background-image: var(--shine);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
 }
 
 @keyframes toast-in {
@@ -63,35 +90,70 @@ body {
 }
 .animate-marquee { animation: marquee 32s linear infinite; }
 
-/* Halftone glow (logo inspo): soft blurred light, seen through a grid of dots like an LED screen.
-   The wrapper holds the dot mask; the glow inside drifts slowly. */
-.halftone {
+/* ---- Nebula backdrop (components/Logo.tsx → <Nebula />) ---- */
+
+/* Soft rose, gold and magenta clouds drifting, seen through a fine screen grid (inspo 1). */
+.nebula-glow {
   position: absolute;
   inset: 0;
   overflow: hidden;
   pointer-events: none;
-  -webkit-mask: radial-gradient(circle at center, #000 1.7px, transparent 2.2px) 0 0 / 5px 5px;
-  mask: radial-gradient(circle at center, #000 1.7px, transparent 2.2px) 0 0 / 5px 5px;
+  -webkit-mask: radial-gradient(circle at center, #000 1.25px, rgba(0, 0, 0, 0.55) 1.6px) 0 0 / 3.5px 3.5px;
+  mask: radial-gradient(circle at center, #000 1.25px, rgba(0, 0, 0, 0.55) 1.6px) 0 0 / 3.5px 3.5px;
 }
-.halftone-glow {
+.nebula-clouds {
   position: absolute;
-  inset: -6%;
-  /* Bright light at the edges (top right, left, bottom right) with a dark band through the middle,
-     so white text stays readable on top. */
+  inset: -8%;
+  /* Light kept to the edges and corners, a darker band through the middle for the headline. */
   background:
-    radial-gradient(34% 24% at 88% 14%, rgba(255, 255, 255, 1), transparent 72%),
-    radial-gradient(30% 22% at 74% 6%, rgba(150, 190, 255, 0.9), transparent 70%),
-    radial-gradient(26% 30% at 4% 46%, rgba(255, 255, 255, 0.95), transparent 72%),
-    radial-gradient(20% 26% at 14% 58%, rgba(110, 160, 255, 0.85), transparent 70%),
-    radial-gradient(34% 24% at 96% 86%, rgba(255, 236, 222, 0.95), transparent 72%),
-    radial-gradient(22% 18% at 70% 96%, rgba(120, 170, 255, 0.8), transparent 70%);
-  filter: blur(18px);
-  animation: drift 22s ease-in-out infinite alternate;
+    radial-gradient(36% 22% at 82% 12%, rgba(240, 190, 210, 0.85), transparent 72%),
+    radial-gradient(26% 18% at 64% 4%, rgba(255, 90, 170, 0.55), transparent 70%),
+    radial-gradient(30% 26% at 6% 44%, rgba(247, 196, 120, 0.7), transparent 72%),
+    radial-gradient(22% 22% at 18% 62%, rgba(255, 120, 150, 0.45), transparent 70%),
+    radial-gradient(38% 24% at 88% 84%, rgba(255, 80, 165, 0.6), transparent 72%),
+    radial-gradient(30% 20% at 40% 98%, rgba(247, 200, 130, 0.55), transparent 70%),
+    radial-gradient(24% 16% at 96% 50%, rgba(150, 110, 255, 0.35), transparent 70%);
+  filter: blur(22px) saturate(1.25) brightness(1.3);
+  animation: drift 26s ease-in-out infinite alternate;
 }
 @keyframes drift {
   0% { transform: translate3d(0, 0, 0) rotate(0deg) scale(1); }
   50% { transform: translate3d(3%, -2%, 0) rotate(4deg) scale(1.05); }
   100% { transform: translate3d(-3%, 2%, 0) rotate(-3deg) scale(1); }
+}
+
+/* Diagonal light streaks (inspo 3), very faint, sliding slowly. */
+.nebula-streaks {
+  position: absolute;
+  inset: -20%;
+  pointer-events: none;
+  background: repeating-linear-gradient(
+    -58deg,
+    transparent 0 46px,
+    rgba(255, 236, 214, 0.10) 47px,
+    transparent 49px 88px,
+    rgba(255, 190, 220, 0.07) 89px,
+    transparent 90px 131px
+  );
+  -webkit-mask: linear-gradient(180deg, transparent, #000 25%, #000 60%, transparent);
+  mask: linear-gradient(180deg, transparent, #000 25%, #000 60%, transparent);
+  animation: streak 18s linear infinite;
+}
+@keyframes streak {
+  from { transform: translate3d(0, 0, 0); }
+  to { transform: translate3d(-131px, 0, 0); }
+}
+
+/* Glitter: tiny lights that twinkle at their own pace (inspo 2 and 4). */
+.glitter {
+  position: absolute;
+  border-radius: 999px;
+  pointer-events: none;
+  animation: glimmer var(--d, 3s) ease-in-out var(--delay, 0s) infinite;
+}
+@keyframes glimmer {
+  0%, 100% { opacity: 0.25; transform: scale(0.7); }
+  50% { opacity: 1; transform: scale(1.15); }
 }
 
 /* The logo's sparkle: a slow twinkle. */
@@ -104,7 +166,9 @@ body {
 @media (prefers-reduced-motion: reduce) {
   .animate-toast-in { animation-name: fade-in; }
   .animate-marquee,
-  .halftone-glow,
+  .nebula-clouds,
+  .nebula-streaks,
+  .glitter,
   .animate-twinkle { animation: none; }
   * {
     animation-duration: 0.01ms !important;

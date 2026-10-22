@@ -12,7 +12,7 @@ import { SocialLinkField } from "@/components/SocialLinkField";
 import { ThemeIconButton } from "@/components/ThemeToggle";
 import { btn, input, label, meta } from "@/lib/ui";
 import { PlanTicker } from "@/components/PlanTicker";
-import { Halftone, Logo } from "@/components/Logo";
+import { Logo, Nebula } from "@/components/Logo";
 import { StepHeader } from "@/components/StepHeader";
 
 type Errors = Partial<Record<"name" | "phone" | "social_url" | "form", string>>;
@@ -62,20 +62,20 @@ export function Welcome() {
 
   return (
     <main className="mx-auto flex min-h-dvh w-full max-w-[480px] flex-col">
-      {/* Hero: the brand moment. Always navy, with the halftone glow behind the logo. */}
+      {/* Hero: the brand moment. Always warm black, with the nebula glow and glitter behind the logo. */}
       <section className="relative overflow-hidden bg-brand pb-12 text-on-brand">
-        <Halftone className="opacity-90" />
+        <Nebula />
         <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-brand" aria-hidden />
         <div className="relative flex items-center justify-end px-3 pt-3">
           <ThemeIconButton className="text-on-brand" />
         </div>
         <div className="relative flex flex-col items-center px-5 pb-2 pt-6 text-center">
-          <Logo className="h-24 w-auto drop-shadow-[0_8px_40px_rgba(168,196,255,0.45)]" spark twinkle />
+          <Logo className="h-24 w-auto drop-shadow-[0_8px_40px_rgba(255,120,180,0.45)]" spark twinkle />
           <p className="mt-6 text-eyebrow uppercase tracking-[0.12em] text-on-brand/70">Bengaluru · Mumbai · Delhi · and more</p>
           <h1 className="mt-3 font-display text-hero">
             Got a plan?
             <br />
-            Find your people.
+            Find <span className="text-shine">your people.</span>
           </h1>
           <p className="mt-3 max-w-xs text-body text-on-brand/75">Post what you&apos;re up to. Verified people nearby who are into the same things ask to join.</p>
         </div>
