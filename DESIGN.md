@@ -361,7 +361,7 @@ halftone glow. This section wins over §10–12 where they differ.
     `--coral` token name, so components didn't change. `--glow` is its soft shadow (`shadow-glow`).
   - `--brand` `#0D0B2E` / `--on-brand` white stay the same in both themes, for brand moments (welcome
     hero, empty states).
-- **Logo:** `components/Logo.tsx`, an SVG drawn with thick round strokes so the W and Y melt together,
+- **Logo:** `components/Logo.tsx`, "WYD?", an SVG drawn with thick round strokes so the W and Y melt together (the ? uses the same stroke, slightly lighter),
   with a four-point sparkle punched through the D. It uses `currentColor`. `spark` fills the sparkle
   with the action blue, and `twinkle` animates it. The app icon (`app/icon.svg`, `public/icon.svg`) is
   the same mark on navy.

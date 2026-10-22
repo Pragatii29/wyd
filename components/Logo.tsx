@@ -3,7 +3,7 @@ import { useId } from "react";
 // The four-point sparkle cut into the D (centre 82,24).
 const SPARKLE = "M82 13.5 Q83.6 22.4 92.5 24 Q83.6 25.6 82 34.5 Q80.4 25.6 71.5 24 Q80.4 22.4 82 13.5 Z";
 
-// WYD wordmark: bubbly letters drawn as thick rounded strokes so W and Y melt together,
+// WYD? wordmark: bubbly letters drawn as thick rounded strokes so W and Y melt together,
 // with a sparkle punched through the D (the page shows through it). Colour = currentColor.
 // `spark` fills the sparkle with a rose → champagne sheen instead of leaving it see-through; `twinkle` animates it.
 export function Logo({
@@ -21,15 +21,15 @@ export function Logo({
   const mask = `${id}-m`;
   const shine = `${id}-s`;
   return (
-    <svg viewBox="0 0 104 48" className={className} role="img" aria-label={title} fill="none">
+    <svg viewBox="0 0 132 48" className={className} role="img" aria-label={title} fill="none">
       <defs>
         <linearGradient id={shine} x1="72" y1="14" x2="92" y2="34" gradientUnits="userSpaceOnUse">
           <stop offset="0" stopColor="#E06C8E" />
           <stop offset="1" stopColor="#ECCDA6" />
         </linearGradient>
       </defs>
-      <mask id={mask} maskUnits="userSpaceOnUse" x="0" y="0" width="104" height="48">
-        <rect width="104" height="48" fill="#fff" />
+      <mask id={mask} maskUnits="userSpaceOnUse" x="0" y="0" width="132" height="48">
+        <rect width="132" height="48" fill="#fff" />
         <path d={SPARKLE} fill="#000" className={twinkle ? "animate-twinkle" : undefined} />
       </mask>
       <g mask={`url(#${mask})`}>
@@ -49,6 +49,15 @@ export function Logo({
           strokeWidth="6"
           strokeLinejoin="round"
         />
+        {/* ? in the same rounded stroke, a touch lighter so it reads as punctuation */}
+        <path
+          d="M107 15 C107 9.5 111.5 6.5 116 6.5 C121 6.5 124.5 10 124.5 14.5 C124.5 19 121.5 21 118.5 22.5 C116.5 23.5 115.5 25 115.5 28"
+          stroke="currentColor"
+          strokeWidth="11"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+        <circle cx="115.5" cy="39" r="5.5" fill="currentColor" />
       </g>
       {spark && <path d={SPARKLE} fill={`url(#${shine})`} className={twinkle ? "animate-twinkle" : undefined} />}
     </svg>
