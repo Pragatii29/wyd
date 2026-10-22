@@ -35,7 +35,7 @@ export function BottomNav({
         <Link
           href="/wyd/new"
           aria-label="Drop a WYD"
-          className="fixed bottom-[calc(80px+env(safe-area-inset-bottom))] right-[max(16px,calc(50%-224px))] z-30 flex size-14 items-center justify-center rounded-full bg-shine bg-coral text-on-coral shadow-glow transition duration-fast ease-out active:scale-[0.97] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink"
+          className="fixed bottom-[calc(80px+env(safe-area-inset-bottom))] right-[max(16px,calc(50%-224px))] z-30 flex size-14 items-center justify-center rounded-full bg-coral text-on-coral shadow-glow transition duration-fast ease-out active:scale-[0.97] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink"
         >
           <Plus size={28} strokeWidth={2.5} />
         </Link>
@@ -55,7 +55,7 @@ export function BottomNav({
             >
               <Icon size={26} strokeWidth={active ? 2.75 : 1.75} fill={active && href === "/feed" ? "currentColor" : "none"} />
               {dot && <span className="absolute right-2.5 top-2.5 size-2.5 rounded-full bg-coral ring-2 ring-canvas" aria-label="Unread" />}
-              {active && <span className="absolute bottom-0.5 size-1 rounded-full bg-coral shadow-glow" aria-hidden />}
+              {active && <span className="absolute bottom-0.5 size-1 rounded-full bg-coral" aria-hidden />}
             </Link>
           ))}
           <Link

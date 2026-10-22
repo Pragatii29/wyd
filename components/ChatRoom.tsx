@@ -104,7 +104,7 @@ export function ChatRoom({
                 <div className={`flex items-end gap-1 ${mine ? "flex-row-reverse" : ""}`}>
                   <p
                     className={`max-w-[78vw] whitespace-pre-wrap break-words rounded-[20px] px-3.5 py-2.5 text-body sm:max-w-[360px] ${
-                      mine ? "bg-shine bg-coral text-on-coral shadow-glow" : "bg-surface text-ink shadow-card"
+                      mine ? "bg-coral text-on-coral" : "bg-surface text-ink shadow-card"
                     }`}
                   >
                     {m.body}

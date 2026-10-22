@@ -1,45 +1,46 @@
 @import "tailwindcss";
 @config "../tailwind.config.ts";
 
-/* Nebula: warm black, dusty rose and gold light, magenta glitter (the inspo boards).
-   Actions are hot rose with a pink → peach → gold shimmer (`.bg-shine`). The --coral token name is
+/* Nebula: warm black, dusty rose and champagne light, a little white-gold glitter (the inspo boards),
+   kept quiet so it reads expensive. Actions are a deep rose; the rose → champagne sheen
+   (`.bg-shine`) is saved for the one main button on a screen. The --coral token name is
    kept so components don't change. Nebula (dark) is the default; Light is "blush" on soft pink-white.
    --brand stays warm black in both themes for brand moments. */
 :root {
   --brand:#0B0709; --on-brand:#FFF6F9;
-  /* Iridescent shimmer: hot rose → peach → champagne gold. */
-  --shine:linear-gradient(115deg, #FF3D9A 0%, #FF6FA8 38%, #FFA37A 70%, #F7CF7A 100%);
+  /* A quiet sheen: deep rose → soft rose → champagne. Used sparingly. */
+  --shine:linear-gradient(115deg, #CC3A66 0%, #E5718F 55%, #E9C6A0 100%);
 }
 :root,
 :root[data-theme="dark"] {
   --canvas:#0B0709; --surface:#171015; --surface-sunk:#221820;
   --ink:#FBF3F6; --ink-2:#CDB3BF; --ink-3:#8E7381; --line:#35242E;
-  --coral:#FF4D9D; --coral-text:#FF8EC2; --candle:#FCE1EC;
+  --coral:#CC3A66; --coral-text:#EE9AB3; --candle:#FCE1EC;
   --night:#050304; --bone:#FFFFFF; --success:#6EE7B7; --danger:#FF6B7D;
   --on-ink:#0B0709; --on-light:#1A0E14; --on-coral:#FFFFFF;
-  --glow:rgba(255,77,157,0.45);
-  --aura:rgba(232,150,185,0.10); --aura-2:rgba(240,185,100,0.07);
+  --glow:rgba(217,65,111,0.22);
+  --aura:rgba(220,150,170,0.07); --aura-2:rgba(233,198,160,0.05);
   color-scheme: dark;
 }
 :root[data-theme="light"] {
   --canvas:#FFF7F9; --surface:#FFFFFF; --surface-sunk:#FBEEF2;
   --ink:#1A0E14; --ink-2:#6E5560; --ink-3:#A28B95; --line:#F0DDE4;
-  --coral:#E0207F; --coral-text:#C2186B; --candle:#FCE1EC;
+  --coral:#C23461; --coral-text:#A82A53; --candle:#FCE1EC;
   --night:#1A0E14; --bone:#FFFFFF; --success:#0E8A4F; --danger:#D23A4A;
   --on-ink:#FFFFFF; --on-light:#1A0E14; --on-coral:#FFFFFF;
-  --glow:rgba(224,32,127,0.25);
-  --aura:rgba(255,120,175,0.10); --aura-2:rgba(247,190,110,0.10);
+  --glow:rgba(194,52,97,0.18);
+  --aura:rgba(220,140,165,0.08); --aura-2:rgba(233,198,160,0.10);
   color-scheme: light;
 }
 @media (prefers-color-scheme: light) {
   :root[data-theme="system"] {
     --canvas:#FFF7F9; --surface:#FFFFFF; --surface-sunk:#FBEEF2;
     --ink:#1A0E14; --ink-2:#6E5560; --ink-3:#A28B95; --line:#F0DDE4;
-    --coral:#E0207F; --coral-text:#C2186B; --candle:#FCE1EC;
+    --coral:#C23461; --coral-text:#A82A53; --candle:#FCE1EC;
     --night:#1A0E14; --bone:#FFFFFF; --success:#0E8A4F; --danger:#D23A4A;
     --on-ink:#FFFFFF; --on-light:#1A0E14; --on-coral:#FFFFFF;
-    --glow:rgba(224,32,127,0.25);
-    --aura:rgba(255,120,175,0.10); --aura-2:rgba(247,190,110,0.10);
+    --glow:rgba(194,52,97,0.18);
+    --aura:rgba(220,140,165,0.08); --aura-2:rgba(233,198,160,0.10);
     color-scheme: light;
   }
 }
@@ -92,7 +93,7 @@ body {
 
 /* ---- Nebula backdrop (components/Logo.tsx → <Nebula />) ---- */
 
-/* Soft rose, gold and magenta clouds drifting, seen through a fine screen grid (inspo 1). */
+/* Soft dusty-rose and champagne clouds drifting, seen through a fine screen grid (inspo 1). */
 .nebula-glow {
   position: absolute;
   inset: 0;
@@ -106,15 +107,12 @@ body {
   inset: -8%;
   /* Light kept to the edges and corners, a darker band through the middle for the headline. */
   background:
-    radial-gradient(36% 22% at 82% 12%, rgba(240, 190, 210, 0.85), transparent 72%),
-    radial-gradient(26% 18% at 64% 4%, rgba(255, 90, 170, 0.55), transparent 70%),
-    radial-gradient(30% 26% at 6% 44%, rgba(247, 196, 120, 0.7), transparent 72%),
-    radial-gradient(22% 22% at 18% 62%, rgba(255, 120, 150, 0.45), transparent 70%),
-    radial-gradient(38% 24% at 88% 84%, rgba(255, 80, 165, 0.6), transparent 72%),
-    radial-gradient(30% 20% at 40% 98%, rgba(247, 200, 130, 0.55), transparent 70%),
-    radial-gradient(24% 16% at 96% 50%, rgba(150, 110, 255, 0.35), transparent 70%);
-  filter: blur(22px) saturate(1.25) brightness(1.3);
-  animation: drift 26s ease-in-out infinite alternate;
+    radial-gradient(38% 22% at 84% 12%, rgba(226, 178, 192, 0.75), transparent 72%),
+    radial-gradient(30% 26% at 6% 46%, rgba(233, 198, 160, 0.5), transparent 72%),
+    radial-gradient(40% 24% at 90% 86%, rgba(200, 90, 125, 0.45), transparent 72%),
+    radial-gradient(30% 18% at 38% 100%, rgba(233, 198, 160, 0.35), transparent 70%);
+  filter: blur(26px) saturate(0.85);
+  animation: drift 40s ease-in-out infinite alternate;
 }
 @keyframes drift {
   0% { transform: translate3d(0, 0, 0) rotate(0deg) scale(1); }
@@ -130,21 +128,21 @@ body {
   background: repeating-linear-gradient(
     -58deg,
     transparent 0 46px,
-    rgba(255, 236, 214, 0.10) 47px,
+    rgba(240, 222, 196, 0.06) 47px,
     transparent 49px 88px,
-    rgba(255, 190, 220, 0.07) 89px,
+    rgba(240, 222, 196, 0.035) 89px,
     transparent 90px 131px
   );
   -webkit-mask: linear-gradient(180deg, transparent, #000 25%, #000 60%, transparent);
   mask: linear-gradient(180deg, transparent, #000 25%, #000 60%, transparent);
-  animation: streak 18s linear infinite;
+  animation: streak 36s linear infinite;
 }
 @keyframes streak {
   from { transform: translate3d(0, 0, 0); }
   to { transform: translate3d(-131px, 0, 0); }
 }
 
-/* Glitter: tiny lights that twinkle at their own pace (inspo 2 and 4). */
+/* Glitter: a few tiny white-gold lights that twinkle slowly, each at its own pace (inspo 2). */
 .glitter {
   position: absolute;
   border-radius: 999px;
@@ -152,8 +150,8 @@ body {
   animation: glimmer var(--d, 3s) ease-in-out var(--delay, 0s) infinite;
 }
 @keyframes glimmer {
-  0%, 100% { opacity: 0.25; transform: scale(0.7); }
-  50% { opacity: 1; transform: scale(1.15); }
+  0%, 100% { opacity: 0.15; transform: scale(0.8); }
+  50% { opacity: 0.85; transform: scale(1); }
 }
 
 /* The logo's sparkle: a slow twinkle. */

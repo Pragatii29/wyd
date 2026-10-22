@@ -402,3 +402,21 @@ dusty-pink clouds with stars, diagonal light streaks with glitter, and iridescen
   - five four-point stars.
   Use it only on `bg-brand` surfaces (the welcome hero, empty states), with the light kept to the
   edges. All motion stops under reduced motion.
+
+### 14.1 Toned down (current)
+
+Feedback: too many colours, it read as AI-made. Restraint is what makes it look expensive now.
+
+- **Two colours only, on warm black:** dusty rose and champagne. No magenta, violet, mint or peach.
+- **Rose:** `#CC3A66` (Nebula) / `#C23461` (Blush), rose text `#EE9AB3`. The glow is a faint rose
+  shadow.
+- **Sheen** `--shine`: rose → soft rose → champagne. It's used on the primary button only. Chips,
+  chat bubbles, the + button and pills are solid colours. Selected chips are ink-on-canvas.
+- **`<Nebula />`:**
+  - dusty-rose and champagne clouds, desaturated and drifting slowly (40s);
+  - 22 small white or champagne glitter specks that twinkle slowly;
+  - two small stars;
+  - champagne streaks at very low opacity.
+- **Editorial accent:** one italic serif phrase per hero, in Instrument Serif (`font-serif`,
+  `text-hero-accent`) with the rose → champagne `.text-shine`, e.g. "Find *your people.*"
+- The logo sparkle is a rose → champagne gradient. The logo's halo is a faint champagne glow.

@@ -47,7 +47,7 @@ export function HomeHeader({
             {!!t.count && (
               <span className="flex h-5 min-w-5 items-center justify-center rounded-pill bg-coral px-1.5 font-mono text-meta text-on-coral">{t.count}</span>
             )}
-            {t.active && <span className="absolute bottom-0 h-1 w-16 rounded-pill bg-coral shadow-glow" aria-hidden />}
+            {t.active && <span className="absolute bottom-0 h-1 w-16 rounded-pill bg-coral" aria-hidden />}
           </Link>
         ))}
       </nav>

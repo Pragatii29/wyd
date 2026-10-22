@@ -185,7 +185,7 @@ export default async function Preview({ searchParams }: { searchParams: Promise<
               const mine = m.from === "ria";
               return (
                 <li key={m.body} className={`flex flex-col ${mine ? "items-end" : "items-start"}`}>
-                  <p className={`max-w-[78%] rounded-[20px] px-3.5 py-2.5 text-body ${mine ? "bg-coral text-on-coral shadow-glow" : "bg-surface text-ink shadow-card"}`}>{m.body}</p>
+                  <p className={`max-w-[78%] rounded-[20px] px-3.5 py-2.5 text-body ${mine ? "bg-coral text-on-coral" : "bg-surface text-ink shadow-card"}`}>{m.body}</p>
                   <span className={`${meta} mt-0.5 px-2`}>{timeAgo(ago(m.mins))}</span>
                 </li>
               );

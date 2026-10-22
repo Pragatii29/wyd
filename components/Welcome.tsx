@@ -70,12 +70,12 @@ export function Welcome() {
           <ThemeIconButton className="text-on-brand" />
         </div>
         <div className="relative flex flex-col items-center px-5 pb-2 pt-6 text-center">
-          <Logo className="h-24 w-auto drop-shadow-[0_8px_40px_rgba(255,120,180,0.45)]" spark twinkle />
+          <Logo className="h-24 w-auto drop-shadow-[0_8px_36px_rgba(233,198,160,0.25)]" spark twinkle />
           <p className="mt-6 text-eyebrow uppercase tracking-[0.12em] text-on-brand/70">Bengaluru · Mumbai · Delhi · and more</p>
           <h1 className="mt-3 font-display text-hero">
             Got a plan?
             <br />
-            Find <span className="text-shine">your people.</span>
+            Find <span className="text-shine pr-1 font-serif text-hero-accent italic">your people.</span>
           </h1>
           <p className="mt-3 max-w-xs text-body text-on-brand/75">Post what you&apos;re up to. Verified people nearby who are into the same things ask to join.</p>
         </div>

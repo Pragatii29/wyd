@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Bricolage_Grotesque, DM_Sans } from "next/font/google";
+import { Bricolage_Grotesque, DM_Sans, Instrument_Serif } from "next/font/google";
 import "./globals.css";
 
 // Airbnb typography: one friendly geometric sans for everything. Airbnb Cereal isn't licensed for use,
@@ -15,6 +15,14 @@ const bricolage = Bricolage_Grotesque({
   variable: "--font-display",
 });
 
+// One editorial accent: an italic serif for a single highlighted phrase.
+const instrument = Instrument_Serif({
+  subsets: ["latin"],
+  weight: "400",
+  style: "italic",
+  variable: "--font-serif",
+});
+
 export const metadata: Metadata = {
   title: "WYD?",
   description: "Find company for everyday plans in your city.",
@@ -24,7 +32,7 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" data-theme="dark" className={`${dmSans.variable} ${bricolage.variable}`} suppressHydrationWarning>
+    <html lang="en" data-theme="dark" className={`${dmSans.variable} ${bricolage.variable} ${instrument.variable}`} suppressHydrationWarning>
       <head>
         {/* Apply the saved theme before first paint. Midnight (dark) is the default. */}
         <script

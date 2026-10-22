@@ -26,10 +26,13 @@ const config: Config = {
         // Bricolage Grotesque for headlines (chunky, a little quirky, like the logo); DM Sans for the rest.
         display: ["var(--font-display)", "var(--font-sans)", "system-ui", "sans-serif"],
         sans: ["var(--font-sans)", "system-ui", "sans-serif"],
+        serif: ["var(--font-serif)", "Georgia", "serif"],
         mono: ["var(--font-sans)", "system-ui", "sans-serif"],
       },
       fontSize: {
         hero: ["40px", { lineHeight: "44px", fontWeight: "800", letterSpacing: "-0.03em" }],
+        // The italic serif phrase inside a hero headline (serif runs small, so it is set larger).
+        "hero-accent": ["46px", { lineHeight: "44px", fontWeight: "400", letterSpacing: "0" }],
         display: ["32px", { lineHeight: "36px", fontWeight: "800", letterSpacing: "-0.02em" }],
         title: ["26px", { lineHeight: "30px", fontWeight: "700", letterSpacing: "-0.01em" }],
         h2: ["22px", { lineHeight: "28px", fontWeight: "600" }],

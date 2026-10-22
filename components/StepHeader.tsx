@@ -10,7 +10,7 @@ export function StepHeader({ step, total = 3, title, blurb }: { step: number; to
         </span>
         <div className="flex flex-1 gap-1.5" aria-hidden>
           {Array.from({ length: total }, (_, i) => (
-            <span key={i} className={`h-1 flex-1 rounded-pill transition duration-slow ease-spring ${i < step ? "bg-coral shadow-glow" : "bg-line"}`} />
+            <span key={i} className={`h-1 flex-1 rounded-pill transition duration-slow ease-spring ${i < step ? "bg-coral" : "bg-line"}`} />
           ))}
         </div>
       </div>
