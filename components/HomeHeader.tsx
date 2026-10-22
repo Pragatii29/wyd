@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Avatar } from "@/components/Avatar";
 import { RefreshButton } from "@/components/RefreshButton";
 import { ThemeIconButton } from "@/components/ThemeToggle";
+import { Logo } from "@/components/Logo";
 
 // Sticky home header: your photo, the wordmark, refresh, then the For you / Requests tabs.
 export function HomeHeader({
@@ -18,12 +19,14 @@ export function HomeHeader({
   base?: string;
 }) {
   return (
-    <header className="sticky top-0 z-20 border-b border-line bg-canvas/90 backdrop-blur">
+    <header className="sticky top-0 z-20 border-b border-line bg-canvas/75 backdrop-blur-xl">
       <div className="flex h-14 items-center justify-between px-5">
         <Link href="/profile" aria-label="Your profile" className="rounded-full focus-visible:outline-2 focus-visible:outline-ink">
           <Avatar src={photo} name={name} size={40} />
         </Link>
-        <span className="font-display text-title">WYD?</span>
+        <Link href="/feed" aria-label="WYD? home" className="text-ink">
+          <Logo className="h-7 w-auto" spark />
+        </Link>
         <div className="flex items-center">
           <ThemeIconButton />
           <RefreshButton />
@@ -44,7 +47,7 @@ export function HomeHeader({
             {!!t.count && (
               <span className="flex h-5 min-w-5 items-center justify-center rounded-pill bg-coral px-1.5 font-mono text-meta text-on-coral">{t.count}</span>
             )}
-            {t.active && <span className="absolute bottom-0 h-1 w-16 rounded-pill bg-ink" aria-hidden />}
+            {t.active && <span className="absolute bottom-0 h-1 w-16 rounded-pill bg-coral shadow-glow" aria-hidden />}
           </Link>
         ))}
       </nav>

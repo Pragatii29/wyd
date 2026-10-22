@@ -35,14 +35,14 @@ export function BottomNav({
         <Link
           href="/wyd/new"
           aria-label="Drop a WYD"
-          className="fixed bottom-[calc(80px+env(safe-area-inset-bottom))] right-[max(16px,calc(50%-224px))] z-30 flex size-14 items-center justify-center rounded-full bg-coral text-on-coral shadow-float transition duration-fast ease-out active:scale-[0.97] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink"
+          className="fixed bottom-[calc(80px+env(safe-area-inset-bottom))] right-[max(16px,calc(50%-224px))] z-30 flex size-14 items-center justify-center rounded-full bg-coral text-on-coral shadow-glow transition duration-fast ease-out active:scale-[0.97] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink"
         >
           <Plus size={28} strokeWidth={2.5} />
         </Link>
       )}
       <nav
         aria-label="Main"
-        className="fixed inset-x-0 bottom-0 z-30 border-t border-line bg-canvas pb-[env(safe-area-inset-bottom)]"
+        className="fixed inset-x-0 bottom-0 z-30 border-t border-line bg-canvas/90 pb-[env(safe-area-inset-bottom)] backdrop-blur-xl"
       >
         <div className="mx-auto flex h-16 max-w-[480px] items-center justify-around px-4">
           {items.map(({ href, label, icon: Icon, active, dot }) => (
@@ -51,10 +51,11 @@ export function BottomNav({
               href={href}
               aria-label={label}
               aria-current={active ? "page" : undefined}
-              className="relative flex size-12 items-center justify-center rounded-full text-ink focus-visible:outline-2 focus-visible:outline-ink"
+              className={`relative flex size-12 items-center justify-center rounded-full transition duration-fast ease-out focus-visible:outline-2 focus-visible:outline-ink ${active ? "text-ink" : "text-ink-2"}`}
             >
               <Icon size={26} strokeWidth={active ? 2.75 : 1.75} fill={active && href === "/feed" ? "currentColor" : "none"} />
               {dot && <span className="absolute right-2.5 top-2.5 size-2.5 rounded-full bg-coral ring-2 ring-canvas" aria-label="Unread" />}
+              {active && <span className="absolute bottom-0.5 size-1 rounded-full bg-coral shadow-glow" aria-hidden />}
             </Link>
           ))}
           <Link
@@ -62,7 +63,7 @@ export function BottomNav({
             aria-label="Profile"
             aria-current={path.startsWith("/profile") ? "page" : undefined}
             className={`relative size-9 overflow-hidden rounded-full bg-sunk focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink ${
-              path.startsWith("/profile") ? "ring-2 ring-ink ring-offset-2 ring-offset-canvas" : ""
+              path.startsWith("/profile") ? "ring-2 ring-coral ring-offset-2 ring-offset-canvas" : ""
             }`}
           >
             <Image src={photo} alt={`Your profile, ${name}`} fill sizes="36px" className="object-cover" />

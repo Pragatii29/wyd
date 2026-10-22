@@ -19,10 +19,12 @@ const config: Config = {
         "on-ink": "var(--on-ink)",
         "on-light": "var(--on-light)",
         "on-coral": "var(--on-coral)",
+        brand: "var(--brand)",
+        "on-brand": "var(--on-brand)",
       },
       fontFamily: {
-        // One family, Airbnb-style: "mono" metadata falls back to the same sans.
-        display: ["var(--font-sans)", "system-ui", "sans-serif"],
+        // Bricolage Grotesque for headlines (chunky, a little quirky, like the logo); DM Sans for the rest.
+        display: ["var(--font-display)", "var(--font-sans)", "system-ui", "sans-serif"],
         sans: ["var(--font-sans)", "system-ui", "sans-serif"],
         mono: ["var(--font-sans)", "system-ui", "sans-serif"],
       },
@@ -37,11 +39,13 @@ const config: Config = {
         meta: ["13px", { lineHeight: "18px", fontWeight: "400" }],
         eyebrow: ["13px", { lineHeight: "18px", fontWeight: "600" }],
       },
-      // Airbnb shapes: 8px buttons and fields, 12px cards and photos, 24px sheets, pill chips.
-      borderRadius: { sm: "4px", field: "8px", card: "12px", sheet: "24px", pill: "999px" },
+      // Soft, bubbly shapes to match the logo: 14px buttons and fields, 20px cards, 28px sheets, pill chips.
+      borderRadius: { sm: "4px", field: "14px", card: "20px", sheet: "28px", pill: "999px" },
       boxShadow: {
         card: "0 1px 2px rgba(0,0,0,0.08)",
-        float: "0 6px 16px rgba(0,0,0,0.12)",
+        float: "0 10px 30px rgba(4,3,26,0.28)",
+        // Electric glow under the main action.
+        glow: "0 8px 28px var(--glow)",
       },
       transitionTimingFunction: {
         spring: "cubic-bezier(0.32, 0.72, 0, 1)",

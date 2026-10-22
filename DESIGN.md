@@ -319,7 +319,7 @@ regular weight, never faux-bold; Geist for UI and body; DM Mono for metadata and
 **Elevation:** none. Floating UI gets a 1px `--line` ring instead of a shadow.
 **Motion:** press `cubic-bezier(0.16, 1, 0.3, 1)` 120ms; sheets/reveals `cubic-bezier(0.32, 0.72, 0, 1)` 240–480ms.
 
-## 12. Airbnb direction (current)
+## 12. Airbnb direction (superseded by §13)
 
 Supersedes §10–11 where they differ. Colour and type now follow Airbnb.
 
@@ -346,3 +346,30 @@ Rausch `#E31C5F` (about 4.6:1). Text on pink is always white; text on the soft p
 **Fields:** white with a `--ink-3` 1px border, `#222` border + ring on focus.
 **Elevation:** Airbnb's soft float `0 6px 16px rgba(0,0,0,0.12)` for floating UI only; lists stay flat with hairlines.
 **Theme switch:** Light (default) · Dark · System.
+
+## 13. Midnight direction (current)
+
+Inspired by the WYD logo (white bubbly letters on deep navy, a sparkle cut into the D) and an LED-style
+halftone glow. This section wins over §10–12 where they differ.
+
+- **Default theme is Midnight (dark).** Light and System stay available in Profile → Appearance.
+- **Colour tokens** (`app/globals.css`):
+  - Midnight: canvas `#0B0A24`, surface `#13123A`, sunk `#1C1B4B`, ink `#F4F3FF`, ink-2 `#A9A8D6`,
+    line `#29286A`.
+  - Light: canvas `#F6F5FC`, surface `#FFFFFF`, ink `#0D0B2E` (the logo navy), line `#DDDCEE`.
+  - The action colour is electric "spark" blue: `#5B6BFF` (Midnight), `#3F4FF2` (Light). It still uses the
+    `--coral` token name, so components didn't change. `--glow` is its soft shadow (`shadow-glow`).
+  - `--brand` `#0D0B2E` / `--on-brand` white stay the same in both themes, for brand moments (welcome
+    hero, empty states).
+- **Logo:** `components/Logo.tsx`, an SVG drawn with thick round strokes so the W and Y melt together,
+  with a four-point sparkle punched through the D. It uses `currentColor`. `spark` fills the sparkle
+  with the action blue, and `twinkle` animates it. The app icon (`app/icon.svg`, `public/icon.svg`) is
+  the same mark on navy.
+- **Halftone:** `<Halftone />` puts the glow behind the content: blurred light at the edges seen
+  through a 5px dot grid, drifting slowly. Use it only on navy brand surfaces, with the light kept at
+  the edges so white text stays readable. It's turned off under reduced motion.
+- **Type:** Bricolage Grotesque (`font-display`) for headlines, DM Sans for everything else.
+- **Shape:**
+  - Softer, to match the bubbly logo: 14px buttons and fields, 20px cards, 28px sheets, pill chips.
+  - The primary button, selected chips, my chat bubbles, the active tab and the + button glow blue.
+  - Headers and the bottom bar are frosted glass (`backdrop-blur-xl`).

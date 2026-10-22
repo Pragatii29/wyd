@@ -104,7 +104,7 @@ export function ChatRoom({
                 <div className={`flex items-end gap-1 ${mine ? "flex-row-reverse" : ""}`}>
                   <p
                     className={`max-w-[78vw] whitespace-pre-wrap break-words rounded-[20px] px-3.5 py-2.5 text-body sm:max-w-[360px] ${
-                      mine ? "bg-ink text-on-ink" : "bg-surface text-ink shadow-card"
+                      mine ? "bg-coral text-on-coral shadow-glow" : "bg-surface text-ink shadow-card"
                     }`}
                   >
                     {m.body}
@@ -144,7 +144,7 @@ export function ChatRoom({
           type="submit"
           disabled={pending || !text.trim()}
           aria-label="Send"
-          className="flex size-12 shrink-0 items-center justify-center rounded-full bg-ink text-on-ink transition duration-fast ease-out active:scale-[0.97] disabled:bg-sunk disabled:text-ink-3"
+          className="flex size-12 shrink-0 items-center justify-center rounded-full bg-coral text-on-coral shadow-glow transition duration-fast ease-out active:scale-[0.97] disabled:bg-sunk disabled:shadow-none disabled:text-ink-3"
         >
           {pending ? <Loader2 size={20} className="animate-spin" /> : <ArrowUp size={20} />}
         </button>

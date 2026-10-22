@@ -10,8 +10,9 @@ import { saveDraft } from "@/lib/draft";
 import { isValidSocialUrl, SOCIAL_ERROR, toSocialUrl, type PlatformId } from "@/lib/social";
 import { SocialLinkField } from "@/components/SocialLinkField";
 import { ThemeIconButton } from "@/components/ThemeToggle";
-import { btn, eyebrow, input, label, meta } from "@/lib/ui";
+import { btn, input, label, meta } from "@/lib/ui";
 import { PlanTicker } from "@/components/PlanTicker";
+import { Halftone, Logo } from "@/components/Logo";
 import { StepHeader } from "@/components/StepHeader";
 
 type Errors = Partial<Record<"name" | "phone" | "social_url" | "form", string>>;
@@ -61,26 +62,29 @@ export function Welcome() {
 
   return (
     <main className="mx-auto flex min-h-dvh w-full max-w-[480px] flex-col">
-      <div className="flex items-center justify-between px-5 pt-4">
-        <span className="font-display text-title">WYD?</span>
-        <ThemeIconButton />
-      </div>
-
-      <section className="px-5 pt-8">
-        <p className={eyebrow}>Bengaluru · Mumbai · Delhi · and more</p>
-        <h1 className="mt-3 font-display text-hero text-ink">
-          Got a plan?
-          <br />
-          Find your people.
-        </h1>
-        <p className="mt-3 text-body text-ink-2">Post what you&apos;re up to. Verified people nearby who are into the same things ask to join.</p>
+      {/* Hero: the brand moment. Always navy, with the halftone glow behind the logo. */}
+      <section className="relative overflow-hidden bg-brand pb-12 text-on-brand">
+        <Halftone className="opacity-90" />
+        <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-brand" aria-hidden />
+        <div className="relative flex items-center justify-end px-3 pt-3">
+          <ThemeIconButton className="text-on-brand" />
+        </div>
+        <div className="relative flex flex-col items-center px-5 pb-2 pt-6 text-center">
+          <Logo className="h-24 w-auto drop-shadow-[0_8px_40px_rgba(168,196,255,0.45)]" spark twinkle />
+          <p className="mt-6 text-eyebrow uppercase tracking-[0.12em] text-on-brand/70">Bengaluru · Mumbai · Delhi · and more</p>
+          <h1 className="mt-3 font-display text-hero">
+            Got a plan?
+            <br />
+            Find your people.
+          </h1>
+          <p className="mt-3 max-w-xs text-body text-on-brand/75">Post what you&apos;re up to. Verified people nearby who are into the same things ask to join.</p>
+        </div>
+        <div className="relative mt-8">
+          <PlanTicker />
+        </div>
       </section>
 
-      <div className="mt-6">
-        <PlanTicker />
-      </div>
-
-      <form onSubmit={onSubmit} noValidate className="mt-6 flex flex-1 flex-col gap-6 rounded-t-sheet border-t border-line bg-surface px-5 pb-10 pt-7">
+      <form onSubmit={onSubmit} noValidate className="relative -mt-6 flex flex-1 flex-col gap-6 rounded-t-sheet bg-surface px-5 pb-10 pt-7 shadow-float">
         <StepHeader step={1} title="The basics" blurb="So people know who they're meeting." />
 
         <Field id="name" text="Full name" error={errors.name}>

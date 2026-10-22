@@ -2,7 +2,8 @@
 
 import { useActionState } from "react";
 import Link from "next/link";
-import { KeyRound, Loader2 } from "lucide-react";
+import { Loader2 } from "lucide-react";
+import { Logo } from "@/components/Logo";
 import { unlockAdmin } from "@/app/actions/admin";
 import { btn, input, meta, page } from "@/lib/ui";
 
@@ -11,7 +12,7 @@ export function AdminUnlock() {
   const [error, action, pending] = useActionState(unlockAdmin, null);
   return (
     <main className={`${page} flex flex-col gap-4 pt-16`}>
-      <KeyRound size={32} className="text-coral" aria-hidden />
+      <Logo className="h-9 w-auto self-start text-ink" spark twinkle />
       <h1 className="font-display text-title">Admin</h1>
       <p className="text-body text-ink-2">Enter the admin passcode to review sign-ups, WYDs and reports on this device.</p>
       <form action={action} className="flex flex-col gap-3">

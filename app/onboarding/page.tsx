@@ -4,6 +4,7 @@ import { OnboardingWizard } from "@/components/OnboardingWizard";
 import { SignOutButton } from "@/components/SignOutButton";
 import { ThemeIconButton } from "@/components/ThemeToggle";
 import { eyebrow } from "@/lib/ui";
+import { Logo } from "@/components/Logo";
 
 // Sign-up in three steps: basics (name, phone, optional social link) → about + JPG photo → create profile.
 // Also used to fix and resubmit a rejected profile.
@@ -19,7 +20,7 @@ export default async function OnboardingPage() {
   return (
     <main className="mx-auto flex min-h-dvh w-full max-w-[480px] flex-col">
       <div className="flex items-center justify-between px-5 pt-4">
-        <span className="font-display text-title">WYD?</span>
+        <Logo className="h-7 w-auto" spark />
         <div className="flex items-center">
           <ThemeIconButton />
           <SignOutButton compact />
@@ -36,7 +37,7 @@ export default async function OnboardingPage() {
           </p>
         )}
       </section>
-      <div className="mt-6 flex-1 rounded-t-sheet border-t border-line bg-surface px-5 pb-12 pt-1">
+      <div className="mt-6 flex-1 rounded-t-sheet bg-surface shadow-float px-5 pb-12 pt-1">
         <OnboardingWizard
           userId={user.id}
           initial={profile}

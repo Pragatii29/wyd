@@ -6,6 +6,7 @@ import { PushToggle } from "@/components/PushToggle";
 import { ProfileCard } from "@/components/ProfileCard";
 import { SignOutButton } from "@/components/SignOutButton";
 import { btn, page } from "@/lib/ui";
+import { Logo } from "@/components/Logo";
 
 export default async function PendingPage() {
   const { user, profile } = await getSession();
@@ -17,7 +18,8 @@ export default async function PendingPage() {
   const suspended = p.status === "suspended";
 
   return (
-    <main className={`${page} flex min-h-dvh flex-col pb-10 pt-16`}>
+    <main className={`${page} flex min-h-dvh flex-col pb-10 pt-8`}>
+      <Logo className="mb-10 h-7 w-auto text-ink" spark />
       <div className="flex flex-col gap-4">
         <span className="flex size-12 items-center justify-center rounded-full bg-sunk text-ink">
           {rejected || suspended ? <ShieldX size={24} /> : <Clock size={24} />}

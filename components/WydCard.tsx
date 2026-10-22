@@ -53,7 +53,7 @@ export function WydCard({
             · {timeShort(wyd.created_at)}
           </time>
           {shared.length > 0 && !mine && (
-            <span className="ml-auto shrink-0 rounded-pill bg-candle px-2.5 py-0.5 font-mono text-meta text-on-light">for you</span>
+            <span className="ml-auto shrink-0 rounded-pill bg-coral/15 px-2.5 py-0.5 font-mono text-meta text-coral-text">✦ for you</span>
           )}
         </div>
 

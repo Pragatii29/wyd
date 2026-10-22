@@ -1,12 +1,15 @@
-// A slow, endless strip of example plans: shows what WYD? is for before anyone reads a word.
+// Frosted pill on the navy hero.
+const GLASS = "border border-on-brand/20 bg-on-brand/10 text-on-brand backdrop-blur-md";
+
+// A slow, endless strip of example plans on the navy hero: shows what WYD? is for before anyone reads a word.
 const PLANS = [
-  { text: "Chai at a tapri, 5pm?", tone: "bg-candle text-on-light" },
-  { text: "Sunset walk at Cubbon Park", tone: "bg-coral text-on-coral" },
-  { text: "Need 2 more for box cricket", tone: "bg-night text-bone" },
-  { text: "Trying that new café in Indiranagar", tone: "bg-surface text-ink border border-line" },
-  { text: "Stand-up show tonight, 1 extra ticket", tone: "bg-candle text-on-light" },
-  { text: "Board games + coffee, HSR", tone: "bg-coral text-on-coral" },
-  { text: "Nandi Hills sunrise ride", tone: "bg-night text-bone" },
+  { text: "Chai at a tapri, 5pm?", tone: GLASS },
+  { text: "Sunset walk at Cubbon Park", tone: "bg-coral text-on-coral shadow-glow" },
+  { text: "Need 2 more for box cricket", tone: "bg-on-brand text-brand" },
+  { text: "Trying that new café in Indiranagar", tone: GLASS },
+  { text: "Stand-up show tonight, 1 extra ticket", tone: "bg-on-brand text-brand" },
+  { text: "Board games + coffee, HSR", tone: "bg-coral text-on-coral shadow-glow" },
+  { text: "Nandi Hills sunrise ride", tone: GLASS },
 ];
 
 export function PlanTicker() {
@@ -23,8 +26,8 @@ export function PlanTicker() {
           </span>
         ))}
       </div>
-      <div className="pointer-events-none absolute inset-y-0 left-0 w-8 bg-gradient-to-r from-canvas to-transparent" />
-      <div className="pointer-events-none absolute inset-y-0 right-0 w-8 bg-gradient-to-l from-canvas to-transparent" />
+      <div className="pointer-events-none absolute inset-y-0 left-0 w-8 bg-gradient-to-r from-brand to-transparent" />
+      <div className="pointer-events-none absolute inset-y-0 right-0 w-8 bg-gradient-to-l from-brand to-transparent" />
     </div>
   );
 }

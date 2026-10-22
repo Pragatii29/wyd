@@ -1,24 +1,24 @@
 // Shared class strings for DESIGN.md components.
-// Airbnb-style: 8px buttons with a pink primary, outlined fields, pill chips (see DESIGN.md §12).
+// Midnight: soft 14px buttons with a glowing electric-blue primary, outlined fields, pill chips (see DESIGN.md §13).
 const base =
   "inline-flex items-center justify-center gap-2 rounded-field text-label transition duration-fast ease-press active:scale-[0.97] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink disabled:pointer-events-none disabled:bg-sunk disabled:text-ink-3";
 
 export const btn = {
-  primary: `${base} h-14 w-full bg-coral px-6 text-on-coral text-wyd font-semibold hover:brightness-95`,
+  primary: `${base} h-14 w-full bg-coral px-6 text-on-coral text-wyd font-semibold shadow-glow hover:brightness-110`,
   secondary: `${base} h-14 w-full border border-line bg-surface px-6 text-ink hover:bg-sunk`,
   danger: `${base} h-14 w-full border border-danger bg-surface px-6 text-danger hover:bg-sunk`,
   ghost: `${base} min-h-11 px-2 text-coral-text hover:underline`,
   small: `${base} h-10 border border-line bg-surface px-4 text-ink hover:bg-sunk`,
   smallPrimary: `${base} h-10 bg-ink px-4 text-on-ink hover:opacity-90`,
-  smallAccent: `${base} h-10 bg-coral px-4 text-on-coral hover:brightness-95`,
+  smallAccent: `${base} h-10 bg-coral px-4 text-on-coral hover:brightness-110`,
 };
 
 export const input =
-  "h-14 w-full rounded-field border border-ink-3 bg-surface px-4 text-body text-ink placeholder:text-ink-3 transition duration-base ease-out hover:border-ink focus:border-ink focus:outline-none focus:ring-1 focus:ring-ink aria-[invalid=true]:border-danger aria-[invalid=true]:ring-danger";
+  "h-14 w-full rounded-field border border-ink-3 bg-surface px-4 text-body text-ink placeholder:text-ink-3 transition duration-base ease-out hover:border-ink focus:border-coral focus:outline-none focus:ring-2 focus:ring-coral/40 aria-[invalid=true]:border-danger aria-[invalid=true]:ring-danger";
 
 export const chip = (selected: boolean) =>
   `inline-flex h-9 items-center gap-1 rounded-pill px-4 text-label transition duration-base ease-press active:scale-[0.97] ${
-    selected ? "bg-ink text-on-ink" : "border border-line bg-surface text-ink hover:bg-sunk"
+    selected ? "bg-coral text-on-coral shadow-glow" : "border border-line bg-surface text-ink hover:bg-sunk"
   }`;
 
 export const label = "text-label text-ink";

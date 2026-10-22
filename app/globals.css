@@ -1,33 +1,40 @@
 @import "tailwindcss";
 @config "../tailwind.config.ts";
 
-/* Airbnb colour theory: white canvas, #222 text, a grey ladder, Rausch pink for the main action.
-   Buttons use the deeper Rausch (#E31C5F) so white text passes contrast; light is the default. */
+/* Midnight: the WYD logo's deep navy, white type and an electric "spark" blue for actions
+   (the --coral token name is kept so components don't change). Midnight is the default theme;
+   Light keeps the navy ink on a soft lavender-white canvas. --brand stays navy in both themes. */
+:root {
+  --brand:#0D0B2E; --on-brand:#FFFFFF;
+}
 :root,
+:root[data-theme="dark"] {
+  --canvas:#0B0A24; --surface:#13123A; --surface-sunk:#1C1B4B;
+  --ink:#F4F3FF; --ink-2:#A9A8D6; --ink-3:#706FA6; --line:#29286A;
+  --coral:#5B6BFF; --coral-text:#9EA9FF; --candle:#DCE3FF;
+  --night:#04031A; --bone:#FFFFFF; --success:#5BE3A5; --danger:#FF7A8A;
+  --on-ink:#0B0A24; --on-light:#0B0A24; --on-coral:#FFFFFF;
+  --glow:rgba(91,107,255,0.45);
+  color-scheme: dark;
+}
 :root[data-theme="light"] {
-  --canvas:#FFFFFF; --surface:#FFFFFF; --surface-sunk:#F7F7F7;
-  --ink:#222222; --ink-2:#6A6A6A; --ink-3:#929292; --line:#DDDDDD;
-  --coral:#E31C5F; --coral-text:#E31C5F; --candle:#FFE8EE;
-  --night:#222222; --bone:#FFFFFF; --success:#008A05; --danger:#C13515;
-  --on-ink:#FFFFFF; --on-light:#222222; --on-coral:#FFFFFF;
+  --canvas:#F6F5FC; --surface:#FFFFFF; --surface-sunk:#EDECF7;
+  --ink:#0D0B2E; --ink-2:#56557F; --ink-3:#8A89B0; --line:#DDDCEE;
+  --coral:#3F4FF2; --coral-text:#3341E0; --candle:#E2E7FF;
+  --night:#0D0B2E; --bone:#FFFFFF; --success:#0E8A4F; --danger:#D23A4A;
+  --on-ink:#FFFFFF; --on-light:#0D0B2E; --on-coral:#FFFFFF;
+  --glow:rgba(63,79,242,0.28);
   color-scheme: light;
 }
-:root[data-theme="dark"] {
-  --canvas:#121212; --surface:#1C1C1C; --surface-sunk:#262626;
-  --ink:#F7F7F7; --ink-2:#B0B0B0; --ink-3:#7A7A7A; --line:#333333;
-  --coral:#E31C5F; --coral-text:#FF5A7E; --candle:#F9CFDA;
-  --night:#2A2A2A; --bone:#FFFFFF; --success:#4CC38A; --danger:#FF6B6B;
-  --on-ink:#222222; --on-light:#222222; --on-coral:#FFFFFF;
-  color-scheme: dark;
-}
-@media (prefers-color-scheme: dark) {
+@media (prefers-color-scheme: light) {
   :root[data-theme="system"] {
-    --canvas:#121212; --surface:#1C1C1C; --surface-sunk:#262626;
-  --ink:#F7F7F7; --ink-2:#B0B0B0; --ink-3:#7A7A7A; --line:#333333;
-  --coral:#E31C5F; --coral-text:#FF5A7E; --candle:#F9CFDA;
-  --night:#2A2A2A; --bone:#FFFFFF; --success:#4CC38A; --danger:#FF6B6B;
-  --on-ink:#222222; --on-light:#222222; --on-coral:#FFFFFF;
-  color-scheme: dark;
+    --canvas:#F6F5FC; --surface:#FFFFFF; --surface-sunk:#EDECF7;
+    --ink:#0D0B2E; --ink-2:#56557F; --ink-3:#8A89B0; --line:#DDDCEE;
+    --coral:#3F4FF2; --coral-text:#3341E0; --candle:#E2E7FF;
+    --night:#0D0B2E; --bone:#FFFFFF; --success:#0E8A4F; --danger:#D23A4A;
+    --on-ink:#FFFFFF; --on-light:#0D0B2E; --on-coral:#FFFFFF;
+    --glow:rgba(63,79,242,0.28);
+    color-scheme: light;
   }
 }
 
@@ -56,9 +63,49 @@ body {
 }
 .animate-marquee { animation: marquee 32s linear infinite; }
 
+/* Halftone glow (logo inspo): soft blurred light, seen through a grid of dots like an LED screen.
+   The wrapper holds the dot mask; the glow inside drifts slowly. */
+.halftone {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  -webkit-mask: radial-gradient(circle at center, #000 1.7px, transparent 2.2px) 0 0 / 5px 5px;
+  mask: radial-gradient(circle at center, #000 1.7px, transparent 2.2px) 0 0 / 5px 5px;
+}
+.halftone-glow {
+  position: absolute;
+  inset: -6%;
+  /* Bright light at the edges (top right, left, bottom right) with a dark band through the middle,
+     so white text stays readable on top. */
+  background:
+    radial-gradient(34% 24% at 88% 14%, rgba(255, 255, 255, 1), transparent 72%),
+    radial-gradient(30% 22% at 74% 6%, rgba(150, 190, 255, 0.9), transparent 70%),
+    radial-gradient(26% 30% at 4% 46%, rgba(255, 255, 255, 0.95), transparent 72%),
+    radial-gradient(20% 26% at 14% 58%, rgba(110, 160, 255, 0.85), transparent 70%),
+    radial-gradient(34% 24% at 96% 86%, rgba(255, 236, 222, 0.95), transparent 72%),
+    radial-gradient(22% 18% at 70% 96%, rgba(120, 170, 255, 0.8), transparent 70%);
+  filter: blur(18px);
+  animation: drift 22s ease-in-out infinite alternate;
+}
+@keyframes drift {
+  0% { transform: translate3d(0, 0, 0) rotate(0deg) scale(1); }
+  50% { transform: translate3d(3%, -2%, 0) rotate(4deg) scale(1.05); }
+  100% { transform: translate3d(-3%, 2%, 0) rotate(-3deg) scale(1); }
+}
+
+/* The logo's sparkle: a slow twinkle. */
+@keyframes twinkle {
+  0%, 100% { transform: scale(1) rotate(0deg); }
+  50% { transform: scale(1.18) rotate(45deg); }
+}
+.animate-twinkle { animation: twinkle 3.6s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
+
 @media (prefers-reduced-motion: reduce) {
   .animate-toast-in { animation-name: fade-in; }
-  .animate-marquee { animation: none; }
+  .animate-marquee,
+  .halftone-glow,
+  .animate-twinkle { animation: none; }
   * {
     animation-duration: 0.01ms !important;
     transition-duration: 0.01ms !important;
