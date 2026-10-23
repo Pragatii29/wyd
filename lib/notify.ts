@@ -27,6 +27,7 @@ export async function notifyMatches(threadId: string) {
     .neq("id", thread.author_id);
   if (thread.audience === "women") query = query.eq("gender", "female");
   if (thread.audience === "men") query = query.eq("gender", "male");
+  if (thread.audience === "non_binary") query = query.eq("gender", "non_binary");
   const { data: candidates } = await query;
   if (!candidates?.length) return { notified: 0 };
 

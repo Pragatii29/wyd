@@ -105,7 +105,8 @@ export function Composer({ city: activeCity, area: defaultArea, preview }: { cit
 
       <fieldset className="flex flex-col gap-2">
         <legend className={`${label} mb-2`}>Who can see it?</legend>
-        <div className="flex rounded-pill bg-sunk p-1" role="radiogroup">
+        {/* Four audiences: a 2×2 grid so each label fits on a phone. */}
+        <div className="grid grid-cols-2 gap-1 rounded-field bg-sunk p-1" role="radiogroup">
           {AUDIENCES.map(({ value, label: text, icon: Icon }) => (
             <button
               key={value}
@@ -113,7 +114,7 @@ export function Composer({ city: activeCity, area: defaultArea, preview }: { cit
               role="radio"
               aria-checked={audience === value}
               onClick={() => setAudience(value)}
-              className={`flex h-11 flex-1 items-center justify-center gap-1 rounded-pill text-label transition duration-base ease-out focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink ${
+              className={`flex h-11 items-center justify-center gap-1 rounded-pill text-label transition duration-base ease-out focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink ${
                 audience === value ? "bg-ink text-on-ink" : "text-ink"
               }`}
             >

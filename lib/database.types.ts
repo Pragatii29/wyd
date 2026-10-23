@@ -225,7 +225,7 @@ export type Database = {
       }
     }
     Enums: {
-      audience_t: "all" | "women" | "men"
+      audience_t: "all" | "women" | "men" | "non_binary"
       gender_t: "female" | "male" | "non_binary"
       profile_status_t: "pending" | "approved" | "rejected" | "suspended"
       request_status_t: "pending" | "accepted" | "declined"
@@ -247,7 +247,7 @@ export type Enums<T extends keyof PublicSchema["Enums"]> = PublicSchema["Enums"]
 export const Constants = {
   public: {
     Enums: {
-      audience_t: ["all", "women", "men"],
+      audience_t: ["all", "women", "men", "non_binary"],
       gender_t: ["female", "male", "non_binary"],
       profile_status_t: ["pending", "approved", "rejected", "suspended"],
       request_status_t: ["pending", "accepted", "declined"],

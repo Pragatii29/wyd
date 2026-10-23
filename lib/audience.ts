@@ -1,4 +1,4 @@
-import { Mars, Users, Venus, type LucideIcon } from "lucide-react";
+import { Mars, NonBinary, Users, Venus, type LucideIcon } from "lucide-react";
 import type { Enums } from "@/lib/database.types";
 
 export type Audience = Enums<"audience_t">;
@@ -8,4 +8,5 @@ export const AUDIENCES: { value: Audience; label: string; icon: LucideIcon; help
   { value: "all", label: "Everyone", icon: Users, helper: "Every verified person nearby can see this." },
   { value: "women", label: "Women only", icon: Venus, helper: "Only verified women will see this." },
   { value: "men", label: "Men only", icon: Mars, helper: "Only verified men will see this." },
+  { value: "non_binary", label: "Non-binary only", icon: NonBinary, helper: "Only verified non-binary people will see this." },
 ];

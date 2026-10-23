@@ -12,7 +12,7 @@ import type { ActionResult } from "./profile";
 
 const wydSchema = z.object({
   body: z.string().trim().min(1, "Write your plan first.").max(280, "Keep it under 280 characters."),
-  audience: z.enum(["all", "women", "men"]),
+  audience: z.enum(["all", "women", "men", "non_binary"]),
   city: z.enum(CITIES),
   area: z.string().trim().max(60),
 });
