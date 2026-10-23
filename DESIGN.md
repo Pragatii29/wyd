@@ -489,8 +489,9 @@ features stay the same.
   a recessed centre, 2 or 4 holes and a gloss highlight. `sewn` stitches a thread cross through the
   holes, which is the "picked" state. `buttonLook(i)` gives each grid position a fixed shape and
   colour, so a grid looks hand-picked.
-- **Interests:** each interest is a sewing button with its emoji and name underneath. Picking one sews
-  it on (thread cross, a slight lift, a small tick).
+- **Interests:** each interest is written on a sewing button: the button (no holes) is the background,
+  and the emoji and name sit on its face in the button's own ink colour. Picking one stitches a dashed
+  thread ring around the face, lifts it slightly and adds a small tick.
 - **Stitching:** `.stitch` draws a dashed thread line just inside the edge. It's on every solid and
   outline button, chips, cards, WYD cards and the sign-up panel. `.stitch-loose` sets it further in
   and fainter, for big cards.

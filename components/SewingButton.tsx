@@ -1,19 +1,21 @@
 // A glossy sewing button (the button-box reference): a raised rim, a recessed centre, thread holes,
-// and a highlight. `sewn` stitches a thread cross through the holes — the "picked" state.
+// and a highlight. `sewn` stitches a thread cross through the holes — the "picked" state. With
+// holes={0} it's a plain face for a label on top, and `sewn` stitches a ring instead.
 // Pure SVG, so it scales cleanly and needs no images.
 
 export type ButtonShape = "round" | "flower" | "heart" | "star";
 
 // Colours from the reference: pinks, cocoa browns, cream, caramel and mustard.
 export const BUTTON_COLOURS = [
-  { base: "#F2A9C0", rim: "#E58AA8", thread: "#FFF6F1" }, // candy pink
-  { base: "#7A4E3D", rim: "#5E3A2D", thread: "#F3E3CF" }, // cocoa
-  { base: "#F3E7D6", rim: "#E0CDB4", thread: "#7A4E3D" }, // cream
-  { base: "#E46F9C", rim: "#CF5687", thread: "#FFF0C9" }, // hot pink
-  { base: "#D7B07A", rim: "#BF955F", thread: "#FFF6F1" }, // caramel
-  { base: "#F8D5E0", rim: "#EEB9CB", thread: "#7A4E3D" }, // blush
-  { base: "#4F3128", rim: "#3A231C", thread: "#F2A9C0" }, // dark chocolate
-  { base: "#E7B43F", rim: "#CF9B27", thread: "#FFF6F1" }, // mustard
+  // `ink` is the text colour for words written on the button face.
+  { base: "#F2A9C0", rim: "#E58AA8", thread: "#7A4E3D", ink: "#3A1F18" }, // candy pink
+  { base: "#7A4E3D", rim: "#5E3A2D", thread: "#F3E3CF", ink: "#FFF6F1" }, // cocoa
+  { base: "#F3E7D6", rim: "#E0CDB4", thread: "#7A4E3D", ink: "#3A1F18" }, // cream
+  { base: "#E46F9C", rim: "#CF5687", thread: "#FFF0C9", ink: "#FFFFFF" }, // hot pink
+  { base: "#D7B07A", rim: "#BF955F", thread: "#5E3A2D", ink: "#3A1F18" }, // caramel
+  { base: "#F8D5E0", rim: "#EEB9CB", thread: "#7A4E3D", ink: "#3A1F18" }, // blush
+  { base: "#4F3128", rim: "#3A231C", thread: "#F2A9C0", ink: "#FFF6F1" }, // dark chocolate
+  { base: "#E7B43F", rim: "#CF9B27", thread: "#5E3A2D", ink: "#3A1F18" }, // mustard
 ] as const;
 
 const SHAPES: Record<ButtonShape, string> = {
@@ -54,9 +56,13 @@ export function SewingButton({
         <path d={SHAPES[shape]} fill={c.rim} />
         {/* raised face, slightly inset */}
         <path d={SHAPES[shape]} fill={c.base} transform="translate(6 6) scale(0.88)" />
-        {/* recessed centre */}
-        <circle cx="50" cy="50" r="19" fill={c.rim} opacity="0.55" />
-        <circle cx="50" cy="51" r="17" fill={c.base} />
+        {/* recessed centre (only where there are holes; a labelled button keeps a clear face) */}
+        {holes > 0 && (
+          <>
+            <circle cx="50" cy="50" r="19" fill={c.rim} opacity="0.55" />
+            <circle cx="50" cy="51" r="17" fill={c.base} />
+          </>
+        )}
         {/* holes */}
         {holeAt.map(([x, y]) => (
           <circle key={`${x}-${y}`} cx={x} cy={y} r="4.2" fill="rgba(40,22,16,0.55)" />
@@ -72,6 +78,10 @@ export function SewingButton({
           ) : (
             <path d="M42 50H58" stroke={c.thread} strokeWidth="3.6" strokeLinecap="round" />
           ))}
+        {/* with no holes, "sewn" is a stitched thread ring around the face */}
+        {sewn && holes === 0 && (
+          <circle cx="50" cy="50" r="37" fill="none" stroke={c.thread} strokeWidth="2.6" strokeDasharray="5 4" strokeLinecap="round" />
+        )}
         {/* glossy highlight */}
         <path d={SHAPES[shape]} fill="url(#sewing-gloss)" transform="translate(6 6) scale(0.88)" />
       </g>

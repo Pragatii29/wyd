@@ -16,7 +16,7 @@ import { isValidSocialUrl, SOCIAL_ERROR, toSocialUrl, type PlatformId } from "@/
 import { SelfieCamera } from "@/components/SelfieCamera";
 import { SocialLinkField } from "@/components/SocialLinkField";
 import { SIGNUP_STEPS, SlideShell } from "@/components/SlideShell";
-import { SewingButton, buttonLook } from "@/components/SewingButton";
+import { BUTTON_COLOURS, SewingButton, buttonLook } from "@/components/SewingButton";
 import { btn, chip, input, meta, tagLabel } from "@/lib/ui";
 
 const MAX_WORDS = 250;
@@ -351,28 +351,31 @@ export function SignupSlides({ userId, draft, hasSelfie = false, startAt }: { us
             ))}
           </div>
         )}
-        <div className="grid grid-cols-3 gap-x-2 gap-y-4 pt-1">
+        <div className="grid grid-cols-3 gap-2 pt-1">
           {TAGS.map((t, i) => {
             const on = interests.includes(t);
+            const colour = buttonLook(i).colour;
             return (
               <button
                 key={t}
                 type="button"
                 onClick={() => toggle(t)}
                 aria-pressed={on}
-                className="group flex flex-col items-center gap-1.5 text-center text-meta text-ink transition duration-base ease-press active:scale-[0.94]"
+                className={`relative mx-auto flex aspect-square w-full max-w-[104px] items-center justify-center transition duration-base ease-spring active:scale-[0.94] ${
+                  on ? "-translate-y-0.5 scale-105" : "hover:-translate-y-0.5"
+                }`}
               >
-                <span className={`relative transition duration-base ease-spring ${on ? "-translate-y-0.5 scale-105" : "group-hover:-translate-y-0.5"}`}>
-                  <SewingButton {...buttonLook(i)} sewn={on} size={68} />
-                  {on && (
-                    <span className="absolute -right-1 -top-1 flex size-5 items-center justify-center rounded-full bg-ink text-on-ink shadow-card">
-                      <Check size={12} />
-                    </span>
-                  )}
+                {/* The button is the background; the activity sits on its face. */}
+                <SewingButton colour={colour} holes={0} sewn={on} size={104} className="absolute inset-0 size-full" />
+                <span className="relative flex flex-col items-center gap-0.5 px-4 text-center text-meta font-medium leading-tight" style={{ color: BUTTON_COLOURS[colour].ink }}>
+                  <span className="text-h2" aria-hidden>{TAG_EMOJI[t]}</span>
+                  {tagLabel(t)}
                 </span>
-                <span className={on ? "font-medium" : "text-ink-2"}>
-                  <span aria-hidden>{TAG_EMOJI[t]}</span> {tagLabel(t)}
-                </span>
+                {on && (
+                  <span className="absolute right-1 top-1 flex size-5 items-center justify-center rounded-full bg-ink text-on-ink shadow-card">
+                    <Check size={12} />
+                  </span>
+                )}
               </button>
             );
           })}
