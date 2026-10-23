@@ -11,17 +11,20 @@ export function SocialLinkField({
   onPlatform,
   onValue,
   error,
+  bare = false,
 }: {
   platform: PlatformId;
   value: string;
   onPlatform: (p: PlatformId) => void;
   onValue: (v: string) => void;
   error?: string;
+  // On a sign-up slide the question above already explains it: drop the label and hint.
+  bare?: boolean;
 }) {
   const current = PLATFORMS.find((p) => p.id === platform) ?? PLATFORMS[0];
   return (
     <div id="field-social_url" className="flex flex-col gap-2">
-      <div className="flex items-center justify-between gap-2">
+      <div className={`flex items-center justify-between gap-2 ${bare ? "sr-only" : ""}`}>
         <label htmlFor="social_url" className={label}>
           Social profile
         </label>
@@ -61,7 +64,7 @@ export function SocialLinkField({
       {error ? (
         <p className="font-mono text-meta text-danger">{error}</p>
       ) : (
-        <p className={meta}>Helps people see you&apos;re real. Skip it if you&apos;d rather not. We never read your account.</p>
+        !bare && <p className={meta}>Helps people see you&apos;re real. Skip it if you&apos;d rather not. We never read your account.</p>
       )}
     </div>
   );

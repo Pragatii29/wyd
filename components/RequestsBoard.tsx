@@ -11,12 +11,13 @@ import { PlanGroupChat } from "@/components/PlanGroupChat";
 import { btn, card, meta, timeAgo } from "@/lib/ui";
 import { olderThanHours } from "@/lib/time";
 import { platformName } from "@/lib/social";
+import { genderLetter, type Gender } from "@/lib/gender";
 
 type Requester = {
   id: string;
   name: string;
   dob: string;
-  gender: "female" | "male";
+  gender: Gender;
   photo_url: string;
   area: string;
   city: string;
@@ -42,7 +43,7 @@ function age(dob: string) {
   return a;
 }
 
-const short = (r: Requester) => `${r.name.split(" ")[0]}, ${age(r.dob)}${r.gender === "female" ? "F" : "M"}`;
+const short = (r: Requester) => `${r.name.split(" ")[0]}, ${age(r.dob)}${genderLetter(r.gender)}`;
 
 // Requests grouped by WYD. The poster accepts/declines, then picks accepted people for a 1:1 or group chat.
 export function RequestsBoard({ wyds }: { wyds: BoardWyd[] }) {

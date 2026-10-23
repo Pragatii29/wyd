@@ -3,13 +3,14 @@ import { ChevronRight } from "lucide-react";
 import { Avatar } from "@/components/Avatar";
 import { ageOn } from "@/lib/time";
 import { timeAgo } from "@/lib/ui";
+import { genderLetter, type Gender } from "@/lib/gender";
 
 export type IncomingRequest = {
   id: string;
   status: "pending" | "accepted" | "declined";
   created_at: string;
   thread: { body: string };
-  requester: { name: string; dob: string; gender: "female" | "male"; photo_url: string };
+  requester: { name: string; dob: string; gender: Gender; photo_url: string };
 };
 
 // One row in the Requests tab: who wants to join which plan, with a dot while it's waiting.
@@ -21,7 +22,7 @@ export function RequestRow({ r, href }: { r: IncomingRequest; href: string }) {
         <span className="block text-body">
           <span className="text-label">
             {r.requester.name.split(" ")[0]}, {ageOn(r.requester.dob)}
-            {r.requester.gender === "female" ? "F" : "M"}
+            {genderLetter(r.requester.gender)}
           </span>{" "}
           wants to join
         </span>

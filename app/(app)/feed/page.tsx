@@ -122,7 +122,7 @@ function Empty({ title, body, cta }: { title: string; body: string; cta: { href:
         <Logo className="h-10 w-auto" spark twinkle />
         <h2 className="font-display text-title">{title}</h2>
         <p className="text-body text-on-brand/75">{body}</p>
-        <Link href={cta.href} className={`${btn.primary} max-w-60 bg-on-brand text-brand`}>
+        <Link href={cta.href} className={`${btn.brand} max-w-60`}>
           {cta.label}
         </Link>
       </div>

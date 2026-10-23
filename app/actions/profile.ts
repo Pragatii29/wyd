@@ -33,7 +33,7 @@ const profileSchema = z.object({
     .transform(normalizePhone)
     .refine(isValidPhone, "Enter a valid mobile number, e.g. 98765 43210"),
   dob: z.iso.date("Add your date of birth").refine((v) => v <= eighteenYearsAgo(), "You must be 18 or older to use WYD?"),
-  gender: z.enum(["female", "male"], { message: "Pick one" }),
+  gender: z.enum(["female", "male", "non_binary"], { message: "Pick one" }),
   photo_url: z
     .string()
     .url("Add a clear photo of your face")

@@ -2,10 +2,12 @@
 
 import { useSyncExternalStore } from "react";
 import { ProfileForm } from "@/components/ProfileForm";
+import { SignupSlides } from "@/components/SignupSlides";
 import { parseDraft, readDraftRaw } from "@/lib/draft";
 import type { Tables } from "@/lib/database.types";
 
-// Picks up step 1 from the welcome page (saved on this device) so sign-up resumes at step 2.
+// New members get the one-question-per-screen sign-up, picking up the name typed on the welcome page
+// (saved on this device). A rejected profile being fixed gets the full form instead.
 export function OnboardingWizard(props: {
   userId: string;
   initial: Tables<"profiles"> | null;
@@ -15,7 +17,8 @@ export function OnboardingWizard(props: {
   next: string;
 }) {
   const raw = useSyncExternalStore(() => () => {}, readDraftRaw, () => null);
-  const draft = props.initial ? null : parseDraft(raw);
-  // Remount once the draft is read in the browser so the form starts from it.
-  return <ProfileForm key={draft ? "draft" : "blank"} {...props} draft={draft} wizard />;
+  if (props.initial) return <ProfileForm {...props} />;
+  const draft = parseDraft(raw);
+  // Remount once the draft is read in the browser so the slides start from it.
+  return <SignupSlides key={draft ? "draft" : "blank"} userId={props.userId} draft={draft} hasSelfie={props.hasSelfie} />;
 }

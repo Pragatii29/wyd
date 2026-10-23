@@ -5,6 +5,8 @@ const base =
 
 export const btn = {
   primary: `${base} h-14 w-full bg-ink px-6 text-on-ink text-wyd font-medium shadow-glow hover:opacity-90`,
+  // Cream pill for the espresso brand screens (intro, empty states).
+  brand: `${base} h-14 w-full bg-on-brand px-6 text-brand text-wyd font-medium shadow-float hover:opacity-90`,
   secondary: `${base} h-14 w-full border border-line bg-surface px-6 text-ink hover:bg-sunk`,
   danger: `${base} h-14 w-full border border-danger bg-surface px-6 text-danger hover:bg-sunk`,
   ghost: `${base} min-h-11 px-2 text-coral-text hover:underline`,

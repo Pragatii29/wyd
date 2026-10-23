@@ -18,6 +18,7 @@ import { SelfieCamera } from "@/components/SelfieCamera";
 import { SocialLinkField } from "@/components/SocialLinkField";
 import { isValidSocialUrl, platformOf, SOCIAL_ERROR, toSocialUrl, type PlatformId } from "@/lib/social";
 import type { Tables } from "@/lib/database.types";
+import { GENDERS, type Gender } from "@/lib/gender";
 import { btn, chip, input, label, meta, tagLabel } from "@/lib/ui";
 
 const MAX_WORDS = 250;
@@ -84,7 +85,7 @@ export function ProfileForm({
   const selfieDone = hasSelfie || !!selfiePath;
   const [bio, setBio] = useState(initial?.bio ?? "");
   const [dob, setDob] = useState(initial?.dob ?? "");
-  const [gender, setGender] = useState<"female" | "male" | "">(initial?.gender ?? "");
+  const [gender, setGender] = useState<Gender | "">(initial?.gender ?? "");
   const [city, setCity] = useState(initial?.city ?? "Bengaluru");
   const [area, setArea] = useState(initial?.area ?? "");
   const [interests, setInterests] = useState<Tag[]>((initial?.interests ?? []) as Tag[]);
@@ -207,7 +208,7 @@ export function ProfileForm({
     let res: Awaited<ReturnType<typeof saveProfile>>;
     try {
       res = await saveProfile({
-        name, phone, dob, gender: gender as "female", photo_url: photoUrl, social_url: toSocialUrl(platform, social),
+        name, phone, dob, gender: gender as Gender, photo_url: photoUrl, social_url: toSocialUrl(platform, social),
         city: city as "Bengaluru", area, bio, interests,
         selfie_path: selfiePath || undefined,
       });
@@ -362,11 +363,11 @@ export function ProfileForm({
 
           <fieldset id="field-gender" className="flex flex-col gap-2">
             <legend className={`${label} mb-1`}>Gender</legend>
-            <p className={`${meta} mb-1`}>Used only for Women only and Men only plans. We never guess it.</p>
+            <p className={`${meta} mb-1`}>Used only for Women only and Men only plans. Non-binary members see plans open to everyone.</p>
             <div className="flex gap-2">
-              {(["female", "male"] as const).map((g) => (
-                <button key={g} type="button" onClick={() => setGender(g)} className={`${chip(gender === g)} h-11 flex-1 justify-center`} aria-pressed={gender === g}>
-                  {g === "female" ? "Woman" : "Man"}
+              {GENDERS.map((g) => (
+                <button key={g.value} type="button" onClick={() => setGender(g.value)} className={`${chip(gender === g.value)} h-11 flex-1 justify-center`} aria-pressed={gender === g.value}>
+                  {g.label}
                 </button>
               ))}
             </div>

@@ -456,3 +456,25 @@ The logo (§13) and every feature and icon stay the same. This section wins wher
   capitals. DM Sans for body. One italic Instrument Serif phrase on the welcome page.
 - **Accent use:** blush or dusty rose only for unread dots, the request count and small status
   marks. My chat bubbles are ink.
+
+### 15.1 Sign-up as slides (current)
+
+The front door is now a sequence of screens, never a long form:
+
+1. **Splash** (about 2s): the logo twirls in on the hazy espresso background.
+2. **Intro:** the logo, "Got a plan? *Find your people.*", one supporting line, and a cream "Get started" pill
+   (`btn.brand`).
+3. **One question per screen** (`components/SlideShell.tsx`): a back arrow, the small logo and "3/9" at
+   the top, a thin progress bar, the question in large type, the answer in a glass panel, and one pinned
+   button. Enter moves on, and each new screen slides in from the right. The questions, in order:
+   1. name
+   2. photos: a live selfie (required) and a profile photo (optional; skip it and the selfie becomes the
+      profile photo)
+   3. gender: Man / Woman / Non-binary, which moves on as soon as you tap one
+   4. birthday
+   5. phone
+   6. city and area
+   7. about you
+   8. interests, as emoji tiles, with suggestions from the About text
+   9. social link (optional, with "Skip and create my profile")
+4. From the gender screen on, a "Hey [photo] Name" greeting sits above the question.

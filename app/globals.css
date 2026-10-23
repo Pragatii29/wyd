@@ -90,6 +90,26 @@ body {
 }
 .animate-fade-in { animation: fade-in 240ms cubic-bezier(0, 0, 0.2, 1); }
 
+/* Sign-up slides: each question glides in from the right. */
+@keyframes slide-in {
+  from { opacity: 0; transform: translateX(24px); }
+  to { opacity: 1; transform: none; }
+}
+.animate-slide-in { animation: slide-in 420ms cubic-bezier(0.16, 1, 0.3, 1); }
+
+/* Splash: the logo twirls in (a full turn around its vertical axis) and settles. */
+@keyframes twirl-in {
+  0% { opacity: 0; transform: perspective(600px) rotateY(-360deg) scale(0.6); filter: blur(6px); }
+  70% { opacity: 1; transform: perspective(600px) rotateY(12deg) scale(1.04); filter: blur(0); }
+  100% { opacity: 1; transform: perspective(600px) rotateY(0deg) scale(1); }
+}
+.animate-twirl-in { animation: twirl-in 1400ms cubic-bezier(0.16, 1, 0.3, 1) both; }
+@keyframes rise-in {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: none; }
+}
+.animate-rise-in { animation: rise-in 700ms cubic-bezier(0.16, 1, 0.3, 1) both; }
+
 /* Scrolling strip of example plans on the welcome page (Timeleft-style marquee). */
 @keyframes marquee {
   from { transform: translateX(0); }
@@ -138,6 +158,7 @@ body {
 @media (prefers-reduced-motion: reduce) {
   .animate-toast-in { animation-name: fade-in; }
   .animate-marquee,
+  .animate-twirl-in,
   .haze-orb,
   .haze-sphere,
   .animate-twinkle { animation: none; }

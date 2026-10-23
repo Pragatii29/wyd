@@ -6,8 +6,8 @@ import { ThemeIconButton } from "@/components/ThemeToggle";
 import { eyebrow } from "@/lib/ui";
 import { Logo } from "@/components/Logo";
 
-// Sign-up in three steps: basics (name, phone, optional social link) → about + JPG photo → create profile.
-// Also used to fix and resubmit a rejected profile.
+// Sign-up, one question per screen (components/SignupSlides). Also used to fix and resubmit a
+// rejected profile, which gets the full form.
 export default async function OnboardingPage() {
   const { supabase, user, profile } = await getSession();
   if (!user) redirect("/");
@@ -16,6 +16,12 @@ export default async function OnboardingPage() {
   const { data: priv } = profile
     ? await supabase.from("profile_private").select("phone, selfie_path").eq("id", user.id).maybeSingle()
     : { data: null };
+
+  if (!profile) {
+    return (
+      <OnboardingWizard userId={user.id} initial={null} initialPhone="" hasSelfie={!!priv?.selfie_path} submitLabel="Create my profile" next="/profile?welcome=1" />
+    );
+  }
 
   return (
     <main className="mx-auto flex min-h-dvh w-full max-w-[480px] flex-col">

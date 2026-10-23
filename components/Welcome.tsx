@@ -1,45 +1,40 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { ArrowRight, Loader2, Lock } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
-import { isValidPhone, normalizePhone } from "@/lib/phone";
 import { saveDraft } from "@/lib/draft";
-import { isValidSocialUrl, SOCIAL_ERROR, toSocialUrl, type PlatformId } from "@/lib/social";
-import { SocialLinkField } from "@/components/SocialLinkField";
 import { ThemeIconButton } from "@/components/ThemeToggle";
-import { btn, input, label, meta } from "@/lib/ui";
-import { PlanTicker } from "@/components/PlanTicker";
 import { Haze, Logo } from "@/components/Logo";
-import { StepHeader } from "@/components/StepHeader";
+import { SIGNUP_STEPS, SlideShell } from "@/components/SlideShell";
+import { btn, input, meta } from "@/lib/ui";
 
-type Errors = Partial<Record<"name" | "phone" | "social_url" | "form", string>>;
+type Phase = "splash" | "intro" | "name";
 
-// The front door: step 1 of sign-up. No email or password: Continue creates a test account on this
-// device (Supabase anonymous sign-in) and goes straight to step 2.
+// The front door: a short logo splash, an intro screen, then the first sign-up question (your name).
+// No email or password: Next creates a test account on this device (Supabase anonymous sign-in)
+// and the rest of the questions continue on /onboarding, one per screen.
 export function Welcome() {
   const router = useRouter();
+  const [phase, setPhase] = useState<Phase>("splash");
   const [name, setName] = useState("");
-  const [phone, setPhone] = useState("");
-  const [platform, setPlatform] = useState<PlatformId>("linkedin");
-  const [social, setSocial] = useState("");
-  const [errors, setErrors] = useState<Errors>({});
+  const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
 
-  async function onSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    const next: Errors = {};
-    if (!name.trim()) next.name = "Add your name";
-    if (!isValidPhone(normalizePhone(phone))) next.phone = "Enter a valid mobile number, e.g. 98765 43210";
-    const socialUrl = toSocialUrl(platform, social);
-    if (socialUrl && !isValidSocialUrl(socialUrl)) next.social_url = SOCIAL_ERROR;
-    setErrors(next);
-    if (Object.keys(next).length) return;
+  // The splash plays once, then hands over to the intro.
+  useEffect(() => {
+    if (phase !== "splash") return;
+    const t = setTimeout(() => setPhase("intro"), 1900);
+    return () => clearTimeout(t);
+  }, [phase]);
 
+  async function start() {
+    if (!name.trim()) return setError("Add your name to continue");
     setBusy(true);
-    saveDraft({ email: "", name: name.trim(), phone, social_url: socialUrl });
+    setError("");
+    saveDraft({ email: "", name: name.trim(), phone: "", social_url: "" });
     const supabase = createClient();
     // Ask the server whether the saved sign-in still belongs to a real account. A stale one (e.g. the
     // account was deleted) would otherwise send the next page straight back here in a loop.
@@ -49,111 +44,82 @@ export function Welcome() {
       const { error } = await supabase.auth.signInAnonymously();
       if (error) {
         setBusy(false);
-        return setErrors({
-          form: error.message.includes("disabled")
+        return setError(
+          error.message.includes("disabled")
             ? "Sign-up is switched off right now: turn on anonymous sign-ins in Supabase (Authentication → Sign In / Providers)."
             : error.message,
-        });
+        );
       }
     }
     router.push("/onboarding");
     router.refresh();
   }
 
+  if (phase === "name") {
+    return (
+      <SlideShell
+        step={1}
+        total={SIGNUP_STEPS}
+        onBack={() => setPhase("intro")}
+        question="What should we call you?"
+        hint="Your first name is what people see."
+        onNext={start}
+        busy={busy}
+        error={error}
+      >
+        <label htmlFor="name" className="sr-only">
+          Full name
+        </label>
+        <input
+          id="name"
+          autoFocus
+          autoComplete="name"
+          placeholder="Your full name"
+          className={`${input} text-center text-wyd`}
+          value={name}
+          onChange={(e) => {
+            setName(e.target.value);
+            setError("");
+          }}
+        />
+      </SlideShell>
+    );
+  }
+
+  // Splash and intro share the hazy espresso stage; the logo twirls in, then the line and button rise.
   return (
-    <main className="mx-auto flex min-h-dvh w-full max-w-[480px] flex-col">
-      {/* Hero: the brand moment. Always espresso, with hazy blush and sand light behind the logo. */}
-      <section className="relative overflow-hidden bg-brand pb-12 text-on-brand">
-        <Haze />
-        <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-brand" aria-hidden />
-        <div className="relative flex items-center justify-end px-3 pt-3">
-          <ThemeIconButton className="text-on-brand" />
-        </div>
-        <div className="relative flex flex-col items-center px-5 pb-2 pt-6 text-center">
-          <Logo className="h-24 w-auto drop-shadow-[0_10px_40px_rgba(0,0,0,0.25)]" spark twinkle />
-          <p className="mt-6 text-eyebrow uppercase text-on-brand/70">Bengaluru · Mumbai · Delhi · and more</p>
-          <h1 className="mt-3 font-display text-hero">
-            Got a plan?
-            <br />
-            Find <span className="text-shine pr-1 font-serif text-hero-accent italic">your people.</span>
-          </h1>
-          <p className="mt-3 max-w-xs text-body text-on-brand/75">Post what you&apos;re up to. Verified people nearby who are into the same things ask to join.</p>
-        </div>
-        <div className="relative mt-8">
-          <PlanTicker />
-        </div>
-      </section>
-
-      <form onSubmit={onSubmit} noValidate className="relative -mt-8 flex flex-1 flex-col gap-6 rounded-t-sheet border-t border-line bg-sheet/85 px-5 pb-10 pt-8 shadow-float backdrop-blur-2xl">
-        <StepHeader step={1} title="The basics" blurb="So people know who they're meeting." />
-
-        <Field id="name" text="Full name" error={errors.name}>
-          <input id="name" className={input} value={name} onChange={(e) => setName(e.target.value)} aria-invalid={!!errors.name} autoComplete="name" placeholder="Ria Sharma" />
-        </Field>
-
-        <Field
-          id="phone"
-          text="Phone number"
-          badge={
-            <span className="inline-flex items-center gap-1 rounded-pill bg-sunk px-2 py-0.5 font-mono text-meta text-ink-2">
-              <Lock size={11} /> Private
-            </span>
-          }
-          error={errors.phone}
-        >
-          <div className="flex gap-2">
-            <span className="flex h-13 shrink-0 items-center rounded-field bg-sunk px-4 text-body text-ink-2">+91</span>
-            <input id="phone" type="tel" inputMode="tel" autoComplete="tel-national" placeholder="98765 43210" className={input} value={phone} onChange={(e) => setPhone(e.target.value)} aria-invalid={!!errors.phone} />
-          </div>
-        </Field>
-
-        <SocialLinkField platform={platform} value={social} onPlatform={setPlatform} onValue={setSocial} error={errors.social_url} />
-
-        {errors.form && <p className="rounded-field border border-danger px-4 py-3 text-label text-danger">{errors.form}</p>}
-
-        <div className="mt-auto flex flex-col gap-3 pt-2">
-          <button type="submit" disabled={busy} className={btn.primary}>
-            {busy ? <Loader2 size={18} className="animate-spin" /> : null}
-            Continue <ArrowRight size={18} />
+    <main className="relative mx-auto flex min-h-dvh w-full max-w-[480px] flex-col overflow-hidden bg-brand text-on-brand">
+      <Haze />
+      <div className="relative flex justify-end px-3 pt-3">{phase === "intro" && <ThemeIconButton className="text-on-brand" />}</div>
+      <div className="relative flex flex-1 flex-col items-center justify-center px-6 text-center">
+        <Logo className="animate-twirl-in h-28 w-auto drop-shadow-[0_10px_40px_rgba(0,0,0,0.25)]" spark twinkle />
+        {phase === "intro" && (
+          <>
+            <p className="animate-rise-in mt-8 font-display text-title">
+              Got a plan?
+              <br />
+              <span className="text-shine font-serif text-hero-accent italic">Find your people.</span>
+            </p>
+            <p className="animate-rise-in mt-3 max-w-xs text-body text-on-brand/70 [animation-delay:120ms]">
+              Verified people nearby who are into the same things.
+            </p>
+          </>
+        )}
+      </div>
+      {phase === "intro" && (
+        <div className="animate-rise-in relative flex flex-col gap-3 px-6 pb-[calc(28px+env(safe-area-inset-bottom))] [animation-delay:240ms]">
+          <button type="button" onClick={() => setPhase("name")} className={btn.brand}>
+            Get started <ArrowRight size={18} />
           </button>
-          <p className={`${meta} text-center`}>
+          <p className={`${meta} text-center text-on-brand/60`}>
             By continuing you agree to our{" "}
-            <Link href="/privacy" className="text-coral-text underline">
+            <Link href="/privacy" className="underline">
               privacy notice
             </Link>
             .
           </p>
         </div>
-      </form>
+      )}
     </main>
-  );
-}
-
-function Field({
-  id,
-  text,
-  hint,
-  badge,
-  error,
-  children,
-}: {
-  id: string;
-  text: string;
-  hint?: string;
-  badge?: React.ReactNode;
-  error?: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <div className="flex flex-col gap-2">
-      <div className="flex items-center justify-between gap-2">
-        <label htmlFor={id} className={label}>
-          {text}
-        </label>
-        {badge}
-      </div>
-      {children}
-      {error ? <p className="font-mono text-meta text-danger">{error}</p> : hint && <p className={meta}>{hint}</p>}
-    </div>
   );
 }

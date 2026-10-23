@@ -226,7 +226,7 @@ export type Database = {
     }
     Enums: {
       audience_t: "all" | "women" | "men"
-      gender_t: "female" | "male"
+      gender_t: "female" | "male" | "non_binary"
       profile_status_t: "pending" | "approved" | "rejected" | "suspended"
       request_status_t: "pending" | "accepted" | "declined"
       thread_status_t: "live" | "review" | "blocked"
@@ -248,7 +248,7 @@ export const Constants = {
   public: {
     Enums: {
       audience_t: ["all", "women", "men"],
-      gender_t: ["female", "male"],
+      gender_t: ["female", "male", "non_binary"],
       profile_status_t: ["pending", "approved", "rejected", "suspended"],
       request_status_t: ["pending", "accepted", "declined"],
       thread_status_t: ["live", "review", "blocked"],

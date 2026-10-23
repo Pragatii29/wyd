@@ -5,6 +5,7 @@ import { createAdminClient, hasServiceRole } from "@/lib/supabase/admin";
 import { ageFrom } from "@/lib/profile";
 import { isAdmin } from "@/lib/admin";
 import { platformName } from "@/lib/social";
+import { genderLetter } from "@/lib/gender";
 import { AdminUnlock } from "@/components/AdminUnlock";
 import { isoHoursAgo } from "@/lib/time";
 import { approveProfile, approveWyd, blockWyd, lockAdmin, rejectProfile, resolveReport, suspendProfile } from "@/app/actions/admin";
@@ -94,7 +95,7 @@ export default async function AdminPage() {
             <div className="flex flex-col gap-1">
               <p className="text-h2">
                 {p.name}, {ageFrom(p.dob)}
-                {p.gender === "female" ? "F" : "M"}
+                {genderLetter(p.gender)}
               </p>
               <p className={meta}>
                 {[p.area, p.city].filter(Boolean).join(", ")} · DOB {p.dob} · submitted {timeAgo(p.created_at)}
@@ -153,7 +154,7 @@ export default async function AdminPage() {
                 <div className="flex items-center justify-between gap-3">
                   <span className="text-label">
                     {p.name}, {ageFrom(p.dob)}
-                    {p.gender === "female" ? "F" : "M"} <span className={meta}>· {p.private?.phone} · {timeAgo(p.created_at)}</span>
+                    {genderLetter(p.gender)} <span className={meta}>· {p.private?.phone} · {timeAgo(p.created_at)}</span>
                   </span>
                   <form action={suspendProfile}>
                     <input type="hidden" name="id" value={p.id} />

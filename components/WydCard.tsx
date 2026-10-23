@@ -5,6 +5,7 @@ import { JoinButton } from "@/components/JoinButton";
 import { displayName } from "@/lib/profile";
 import { AUDIENCES, type Audience } from "@/lib/audience";
 import { timeShort } from "@/lib/ui";
+import type { Gender } from "@/lib/gender";
 
 export type FeedWyd = {
   id: string;
@@ -14,7 +15,7 @@ export type FeedWyd = {
   area: string;
   city: string;
   created_at: string;
-  author: { id: string; name: string; dob: string; gender: "female" | "male"; photo_url: string };
+  author: { id: string; name: string; dob: string; gender: Gender; photo_url: string };
 };
 
 // A WYD as a flat post row: who · when, the plan in large type, one quiet mono line of context, then the action.

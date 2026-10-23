@@ -2,6 +2,7 @@ import { cache } from "react";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import type { Tables } from "@/lib/database.types";
+import { genderLetter } from "@/lib/gender";
 
 export type Profile = Tables<"profiles">;
 
@@ -13,9 +14,9 @@ export function ageFrom(dob: string, now = new Date()) {
   return age;
 }
 
-// "Ria, 22F"
+// "Ria, 22F" (non-binary: "Sam, 24")
 export function displayName(p: Pick<Profile, "name" | "dob" | "gender">) {
-  return `${p.name.split(" ")[0]}, ${ageFrom(p.dob)}${p.gender === "female" ? "F" : "M"}`;
+  return `${p.name.split(" ")[0]}, ${ageFrom(p.dob)}${genderLetter(p.gender)}`;
 }
 
 export function isAdminEmail(email: string | undefined) {
