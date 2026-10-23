@@ -16,13 +16,14 @@ import { isValidSocialUrl, SOCIAL_ERROR, toSocialUrl, type PlatformId } from "@/
 import { SelfieCamera } from "@/components/SelfieCamera";
 import { SocialLinkField } from "@/components/SocialLinkField";
 import { SIGNUP_STEPS, SlideShell } from "@/components/SlideShell";
+import { SewingButton, buttonLook } from "@/components/SewingButton";
 import { btn, chip, input, meta, tagLabel } from "@/lib/ui";
 
 const MAX_WORDS = 250;
 const GENDER_ICON = { male: Mars, female: Venus, non_binary: NonBinary } as const;
 // Which screen each field is asked on, so a server error sends the user back to it.
 const FIELD_STEP: Record<string, number> = {
-  name: 1, selfie_path: 2, photo_url: 2, gender: 3, dob: 4, phone: 5, city: 6, area: 6, bio: 7, interests: 8, social_url: 9,
+  name: 1, selfie_path: 2, photo_url: 2, gender: 3, dob: 4, phone: 5, city: 6, area: 6, social_url: 7, bio: 8, interests: 9,
 };
 
 function maxDob() {
@@ -35,10 +36,11 @@ const isJpg = (f: File) => f.type === "image/jpeg" || /\.jpe?g$/i.test(f.name);
 
 // New-member sign-up, one question per screen (the name screen is on the welcome page).
 // The live selfie is required; if they skip the optional upload, the selfie becomes their profile photo.
-export function SignupSlides({ userId, draft, hasSelfie = false }: { userId: string; draft: SignupDraft | null; hasSelfie?: boolean }) {
+// `startAt` is for the dev-only /preview page.
+export function SignupSlides({ userId, draft, hasSelfie = false, startAt }: { userId: string; draft: SignupDraft | null; hasSelfie?: boolean; startAt?: number }) {
   const router = useRouter();
   const supabase = createClient();
-  const [step, setStep] = useState(draft?.name ? 2 : 1);
+  const [step, setStep] = useState(startAt ?? (draft?.name ? 2 : 1));
   const [name, setName] = useState(draft?.name ?? "");
   const [selfiePath, setSelfiePath] = useState("");
   const selfieBlob = useRef<Blob | null>(null);
@@ -121,9 +123,9 @@ export function SignupSlides({ userId, draft, hasSelfie = false }: { userId: str
 
   const toggle = (t: Tag) => setInterests((p) => (p.includes(t) ? p.filter((x) => x !== t) : [...p, t]));
 
-  async function create(skipSocial = false) {
-    const socialUrl = skipSocial ? "" : toSocialUrl(platform, social);
-    if (socialUrl && !isValidSocialUrl(socialUrl)) return setErrors({ social_url: SOCIAL_ERROR });
+  async function create() {
+    const socialUrl = toSocialUrl(platform, social);
+    if (socialUrl && !isValidSocialUrl(socialUrl)) return go(7);
     setBusy(true);
     setErrors({});
     let res: Awaited<ReturnType<typeof saveProfile>>;
@@ -280,9 +282,32 @@ export function SignupSlides({ userId, draft, hasSelfie = false }: { userId: str
       <SlideShell
         {...common}
         greeting={greeting}
+        question="Add a social profile?"
+        hint="Optional. It helps people see you're real. We never read your account."
+        onNext={() => {
+          const url = toSocialUrl(platform, social);
+          if (url && !isValidSocialUrl(url)) return setErrors({ social_url: SOCIAL_ERROR });
+          go(8);
+        }}
+        error={errors.social_url}
+        secondary={
+          <button type="button" onClick={() => { setSocial(""); go(8); }} className={`${btn.ghost} self-center text-ink-2`}>
+            Skip for now
+          </button>
+        }
+      >
+        <SocialLinkField bare platform={platform} value={social} onPlatform={setPlatform} onValue={setSocial} />
+      </SlideShell>
+    );
+
+  if (step === 8)
+    return (
+      <SlideShell
+        {...common}
+        greeting={greeting}
         question="Tell people about you"
         hint="What you do, what you love, what you're up for. 250 words max."
-        onNext={() => (!bio.trim() ? setErrors({ bio: "Write a few lines about yourself" }) : words(bio) > MAX_WORDS ? setErrors({ bio: "Keep it to 250 words or less" }) : go(8))}
+        onNext={() => (!bio.trim() ? setErrors({ bio: "Write a few lines about yourself" }) : words(bio) > MAX_WORDS ? setErrors({ bio: "Keep it to 250 words or less" }) : go(9))}
         error={err("bio")}
       >
         <label htmlFor="bio" className="sr-only">About you</label>
@@ -301,15 +326,16 @@ export function SignupSlides({ userId, draft, hasSelfie = false }: { userId: str
       </SlideShell>
     );
 
-  if (step === 8)
+  if (step === 9)
     return (
       <SlideShell
         {...common}
         question="What are you into?"
         hint="Pick a few. We'll show you plans you'll like first."
-        onNext={() => go(9)}
-        cta={interests.length ? `Next · ${interests.length} picked` : "Next"}
-        error={err("interests")}
+        onNext={() => create()}
+        cta={interests.length ? `Create my profile · ${interests.length} picked` : "Create my profile"}
+        busy={busy}
+        error={errors.interests ?? errors.form}
       >
         {bio.trim() && suggested.length === 0 && (
           <button type="button" onClick={suggest} disabled={busy} className={`${btn.small} self-center`}>
@@ -325,8 +351,8 @@ export function SignupSlides({ userId, draft, hasSelfie = false }: { userId: str
             ))}
           </div>
         )}
-        <div className="grid grid-cols-3 gap-2">
-          {TAGS.map((t) => {
+        <div className="grid grid-cols-3 gap-x-2 gap-y-4 pt-1">
+          {TAGS.map((t, i) => {
             const on = interests.includes(t);
             return (
               <button
@@ -334,13 +360,19 @@ export function SignupSlides({ userId, draft, hasSelfie = false }: { userId: str
                 type="button"
                 onClick={() => toggle(t)}
                 aria-pressed={on}
-                className={`relative flex aspect-square flex-col items-center justify-center gap-1.5 rounded-field border p-2 text-center text-meta transition duration-base ease-press active:scale-[0.96] ${
-                  on ? "border-ink bg-ink text-on-ink" : "border-line bg-sunk text-ink hover:border-ink-3"
-                }`}
+                className="group flex flex-col items-center gap-1.5 text-center text-meta text-ink transition duration-base ease-press active:scale-[0.94]"
               >
-                <span className="text-title" aria-hidden>{TAG_EMOJI[t]}</span>
-                {tagLabel(t)}
-                {on && <Check size={14} className="absolute right-2 top-2" />}
+                <span className={`relative transition duration-base ease-spring ${on ? "-translate-y-0.5 scale-105" : "group-hover:-translate-y-0.5"}`}>
+                  <SewingButton {...buttonLook(i)} sewn={on} size={68} />
+                  {on && (
+                    <span className="absolute -right-1 -top-1 flex size-5 items-center justify-center rounded-full bg-ink text-on-ink shadow-card">
+                      <Check size={12} />
+                    </span>
+                  )}
+                </span>
+                <span className={on ? "font-medium" : "text-ink-2"}>
+                  <span aria-hidden>{TAG_EMOJI[t]}</span> {tagLabel(t)}
+                </span>
               </button>
             );
           })}
@@ -348,23 +380,5 @@ export function SignupSlides({ userId, draft, hasSelfie = false }: { userId: str
       </SlideShell>
     );
 
-  return (
-    <SlideShell
-      {...common}
-      greeting={greeting}
-      question="Add a social profile?"
-      hint="Optional. It helps people see you're real. We never read your account."
-      cta="Create my profile"
-      onNext={() => create()}
-      busy={busy}
-      error={errors.social_url ?? errors.form}
-      secondary={
-        <button type="button" onClick={() => create(true)} disabled={busy} className={`${btn.ghost} self-center text-ink-2`}>
-          Skip and create my profile
-        </button>
-      }
-    >
-      <SocialLinkField bare platform={platform} value={social} onPlatform={setPlatform} onValue={setSocial} />
-    </SlideShell>
-  );
+  return null;
 }

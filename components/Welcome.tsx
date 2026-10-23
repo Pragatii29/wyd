@@ -89,7 +89,7 @@ export function Welcome() {
   // Splash and intro share the hazy espresso stage; the logo twirls in, then the line and button rise.
   return (
     <main className="relative mx-auto flex min-h-dvh w-full max-w-[480px] flex-col overflow-hidden bg-brand text-on-brand">
-      <Haze />
+      <Haze sphere={false} />
       <div className="relative flex justify-end px-3 pt-3">{phase === "intro" && <ThemeIconButton className="text-on-brand" />}</div>
       <div className="relative flex flex-1 flex-col items-center justify-center px-6 text-center">
         <Logo className="animate-twirl-in h-28 w-auto drop-shadow-[0_10px_40px_rgba(0,0,0,0.25)]" spark twinkle />

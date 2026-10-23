@@ -13,6 +13,8 @@ import { ProfileCard } from "@/components/ProfileCard";
 import { RequestDecision } from "@/components/RequestDecision";
 import { RequestRow, type IncomingRequest } from "@/components/RequestRow";
 import { WydCard, type FeedWyd } from "@/components/WydCard";
+import { Welcome } from "@/components/Welcome";
+import { SignupSlides } from "@/components/SignupSlides";
 import type { Profile } from "@/lib/profile";
 import { card, meta, page, timeAgo } from "@/lib/ui";
 
@@ -77,11 +79,14 @@ function Back({ to, title }: { to: Screen; title: string }) {
   );
 }
 
-export default async function Preview({ searchParams }: { searchParams: Promise<{ screen?: string; tab?: string; who?: string }> }) {
+export default async function Preview({ searchParams }: { searchParams: Promise<{ screen?: string; tab?: string; who?: string; step?: string }> }) {
   if (process.env.NODE_ENV !== "development") notFound();
   const sp = await searchParams;
   const screen: Screen = sp.tab === "requests" ? "requests" : SCREENS.find((s) => s === sp.screen) ?? "home";
   const shown = PEOPLE[sp.who ?? "ria"] ?? ME;
+  // Sign-up screens, viewable without signing out: ?screen=welcome or ?screen=slide&step=6.
+  if (sp.screen === "welcome") return <Welcome />;
+  if (sp.screen === "slide") return <SignupSlides userId="preview" draft={{ email: "", name: "Ria Sharma", phone: "", social_url: "" }} startAt={Number(sp.step) || 2} />;
 
   return (
     <div className="min-h-dvh pb-[calc(80px+env(safe-area-inset-bottom))]">

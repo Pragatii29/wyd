@@ -4,6 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { Bell, House, LayoutList, MessageCircle, Plus } from "lucide-react";
+import { SewingButton } from "@/components/SewingButton";
 
 // Icon-only bottom bar (Home · My WYDs · Notifications · Chats · Profile) plus a floating "+" to drop a WYD.
 export function BottomNav({
@@ -35,9 +36,11 @@ export function BottomNav({
         <Link
           href="/wyd/new"
           aria-label="Drop a WYD"
-          className="fixed bottom-[calc(96px+env(safe-area-inset-bottom))] right-[max(20px,calc(50%-220px))] z-30 flex size-14 items-center justify-center rounded-full bg-ink text-on-ink shadow-float transition duration-fast ease-out active:scale-[0.97] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink"
+          className="fixed bottom-[calc(92px+env(safe-area-inset-bottom))] right-[max(16px,calc(50%-224px))] z-30 flex size-16 items-center justify-center rounded-full transition duration-fast ease-out hover:-rotate-12 active:scale-[0.94] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink"
         >
-          <Plus size={28} strokeWidth={2.5} />
+          {/* A big cocoa sewing button with a cream "+" stitched in the middle. */}
+          <SewingButton colour={1} holes={0} size={64} className="absolute inset-0" />
+          <Plus size={24} strokeWidth={3} className="relative text-candle" />
         </Link>
       )}
       <nav

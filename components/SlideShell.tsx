@@ -2,9 +2,10 @@
 
 import { ArrowLeft, Loader2 } from "lucide-react";
 import { Logo } from "@/components/Logo";
+import { SewingButton, buttonLook } from "@/components/SewingButton";
 import { btn } from "@/lib/ui";
 
-// Sign-up questions, in order: name · photos · gender · birthday · phone · city · about · interests · social.
+// Sign-up questions, in order: name · photos · gender · birthday · phone · city · social · about · interests.
 export const SIGNUP_STEPS = 9;
 
 // One sign-up question per screen: back · logo · "3/9" on top, the question in large type,
@@ -62,10 +63,17 @@ export function SlideShell({
           {step}/{total}
         </span>
       </header>
-      <div className="flex gap-1" aria-hidden>
-        {Array.from({ length: total }, (_, i) => (
-          <span key={i} className={`h-0.5 flex-1 rounded-pill transition duration-slow ease-spring ${i < step ? "bg-ink" : "bg-line"}`} />
-        ))}
+      {/* Progress as a row of buttons: the ones you've done are sewn on. */}
+      <div className="flex items-center justify-between px-1" aria-hidden>
+        {Array.from({ length: total }, (_, i) =>
+          i < step ? (
+            <SewingButton key={i} {...buttonLook(i)} shape="round" holes={4} sewn size={22} />
+          ) : (
+            <span key={i} className="flex size-[22px] items-center justify-center">
+              <span className="size-3.5 rounded-full border border-dashed border-ink-3" />
+            </span>
+          ),
+        )}
       </div>
 
       {/* key: each new question slides in */}
@@ -75,7 +83,7 @@ export function SlideShell({
           <h1 className="font-display text-title text-ink">{question}</h1>
           {hint && <p className="mt-2 max-w-xs text-body text-ink-2">{hint}</p>}
         </div>
-        <div className="flex flex-col gap-3 rounded-card border border-line bg-surface p-5 shadow-card">{children}</div>
+        <div className="stitch stitch-loose flex flex-col gap-3 rounded-card border border-line bg-surface p-5 shadow-card">{children}</div>
         {error && (
           <p role="alert" className="mt-3 text-center font-mono text-meta text-danger">
             {error}

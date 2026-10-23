@@ -71,6 +71,27 @@ body {
   backdrop-filter: blur(24px) saturate(1.15);
 }
 
+/* Button-box theme: a dashed "stitch" line just inside the edge, like a sewn-on patch or a
+   button's thread. Used on buttons, chips and cards. */
+.stitch { position: relative; }
+.stitch::after {
+  content: "";
+  position: absolute;
+  inset: 4px;
+  border: 1.5px dashed currentColor;
+  border-radius: inherit;
+  opacity: 0.28;
+  pointer-events: none;
+}
+.stitch-loose::after { inset: 7px; opacity: 0.18; }
+
+/* Floating sewing buttons on brand screens. */
+@keyframes bob {
+  0%, 100% { transform: translateY(0) rotate(var(--r, 0deg)); }
+  50% { transform: translateY(-8px) rotate(calc(var(--r, 0deg) + 6deg)); }
+}
+.animate-bob { animation: bob var(--d, 6s) ease-in-out var(--delay, 0s) infinite; }
+
 .text-shine {
   background-image: var(--shine);
   -webkit-background-clip: text;
@@ -159,6 +180,7 @@ body {
   .animate-toast-in { animation-name: fade-in; }
   .animate-marquee,
   .animate-twirl-in,
+  .animate-bob,
   .haze-orb,
   .haze-sphere,
   .animate-twinkle { animation: none; }

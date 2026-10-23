@@ -1,4 +1,5 @@
 import { useId } from "react";
+import { SewingButton, type ButtonShape } from "@/components/SewingButton";
 
 // The four-point sparkle cut into the D (centre 82,24).
 const SPARKLE = "M82 13.5 Q83.6 22.4 92.5 24 Q83.6 25.6 82 34.5 Q80.4 25.6 71.5 24 Q80.4 22.4 82 13.5 Z";
@@ -65,9 +66,18 @@ export function Logo({
 }
 
 // The hazy backdrop from the luxury references: big soft blush, sand and cocoa light drifting
-// slowly, an optional glossy blush sphere, and a fine film grain. Put it inside a
+// slowly, an optional glossy blush sphere, a fine film grain and a few floating sewing buttons. Put it inside a
 // `relative overflow-hidden` box on a --brand background.
-export function Haze({ className = "", sphere = true }: { className?: string; sphere?: boolean }) {
+// A few sewing buttons drifting near the edges (the button-box theme), kept clear of the centre text.
+const FLOATERS: { left: string; top: string; size: number; shape: ButtonShape; colour: number; r: string; d: string; delay: string }[] = [
+  { left: "6%", top: "9%", size: 46, shape: "round", colour: 0, r: "-14deg", d: "7s", delay: "0s" },
+  { left: "78%", top: "14%", size: 38, shape: "flower", colour: 2, r: "10deg", d: "8s", delay: "-2s" },
+  { left: "-3%", top: "62%", size: 54, shape: "round", colour: 1, r: "8deg", d: "9s", delay: "-4s" },
+  { left: "84%", top: "70%", size: 42, shape: "heart", colour: 3, r: "-8deg", d: "7.5s", delay: "-1s" },
+  { left: "14%", top: "84%", size: 30, shape: "star", colour: 7, r: "16deg", d: "6.5s", delay: "-3s" },
+];
+
+export function Haze({ className = "", sphere = true, buttons = true }: { className?: string; sphere?: boolean; buttons?: boolean }) {
   return (
     <div className={`pointer-events-none absolute inset-0 overflow-hidden ${className}`} aria-hidden>
       <div className="haze-orb -right-24 -top-24 size-80" style={{ background: "var(--haze-1)" }} />
@@ -75,6 +85,16 @@ export function Haze({ className = "", sphere = true }: { className?: string; sp
       <div className="haze-orb -bottom-24 right-0 size-72" style={{ background: "var(--haze-3)", animationDelay: "-20s" }} />
       {sphere && <div className="haze-sphere -right-20 top-[58%] size-40 opacity-70" />}
       <div className="haze-grain" />
+      {buttons &&
+        FLOATERS.map((f, i) => (
+          <span
+            key={i}
+            className="animate-bob absolute opacity-90 drop-shadow-[0_10px_18px_rgba(0,0,0,0.25)]"
+            style={{ left: f.left, top: f.top, ["--r" as string]: f.r, ["--d" as string]: f.d, ["--delay" as string]: f.delay }}
+          >
+            <SewingButton shape={f.shape} colour={f.colour} size={f.size} holes={f.shape === "heart" ? 2 : 4} />
+          </span>
+        ))}
     </div>
   );
 }

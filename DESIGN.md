@@ -474,7 +474,28 @@ The front door is now a sequence of screens, never a long form:
    4. birthday
    5. phone
    6. city and area
-   7. about you
-   8. interests, as emoji tiles, with suggestions from the About text
-   9. social link (optional, with "Skip and create my profile")
+   7. social link (optional, with "Skip for now")
+   8. about you
+   9. interests, as sewing buttons (§16), ending with "Create my profile"
 4. From the gender screen on, a "Hey [photo] Name" greeting sits above the question.
+
+## 16. Button-box theme (current)
+
+Based on a reference sheet of sewing buttons: glossy round, flower, heart and star buttons in candy
+pink, cocoa, cream, hot pink, caramel, blush, dark chocolate and mustard. Fonts, logo, glass and
+features stay the same.
+
+- **`<SewingButton />`** (`components/SewingButton.tsx`): a pure-SVG button with a rim, a raised face,
+  a recessed centre, 2 or 4 holes and a gloss highlight. `sewn` stitches a thread cross through the
+  holes, which is the "picked" state. `buttonLook(i)` gives each grid position a fixed shape and
+  colour, so a grid looks hand-picked.
+- **Interests:** each interest is a sewing button with its emoji and name underneath. Picking one sews
+  it on (thread cross, a slight lift, a small tick).
+- **Stitching:** `.stitch` draws a dashed thread line just inside the edge. It's on every solid and
+  outline button, chips, cards, WYD cards and the sign-up panel. `.stitch-loose` sets it further in
+  and fainter, for big cards.
+- **Sign-up progress** is a row of small buttons: finished steps are sewn-on buttons, and later steps
+  are dashed outlines.
+- **The + button** is a large cocoa sewing button with a cream "+".
+- **Brand screens** (intro, empty states): a few sewing buttons bob slowly near the edges, away from
+  the text. They stop under reduced motion.
