@@ -33,7 +33,7 @@ export async function submitContact(input: { name: string; email: string; messag
   if (error) return { ok: false, errors: { form: "We couldn't send your message. Please try again." } };
 
   if (!emailReady()) return { ok: true, emailed: false };
-  const owner = process.env.CONTACT_OWNER_EMAIL || process.env.GMAIL_USER!;
+  const owner = process.env.CONTACT_OWNER_EMAIL?.trim() || process.env.GMAIL_USER!.trim();
   try {
     await Promise.all([
       sendMail(

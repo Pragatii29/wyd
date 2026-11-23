@@ -3,20 +3,23 @@ import nodemailer from "nodemailer";
 
 // Contact-form email through Gmail with an app password (no domain needed).
 // Server only: GMAIL_USER / GMAIL_APP_PASSWORD never reach the browser.
+// Google shows app passwords as "abcd efgh ijkl mnop": tolerate the spaces (and stray quotes) people
+// paste along with it.
+const clean = (v: string | undefined) => (v ?? "").trim().replace(/^["']|["']$/g, "");
+const user = () => clean(process.env.GMAIL_USER);
+const pass = () => clean(process.env.GMAIL_APP_PASSWORD).replace(/\s+/g, "");
+
 export function emailReady() {
-  return !!process.env.GMAIL_USER && !!process.env.GMAIL_APP_PASSWORD;
+  return !!user() && !!pass();
 }
 
 function transport() {
-  return nodemailer.createTransport({
-    service: "gmail",
-    auth: { user: process.env.GMAIL_USER, pass: process.env.GMAIL_APP_PASSWORD },
-  });
+  return nodemailer.createTransport({ service: "gmail", auth: { user: user(), pass: pass() } });
 }
 
 export async function sendMail(to: string, subject: string, text: string, replyTo?: string) {
   await transport().sendMail({
-    from: `"WYD?" <${process.env.GMAIL_USER}>`,
+    from: `"WYD?" <${user()}>`,
     to,
     subject,
     text,
