@@ -43,7 +43,7 @@ export default async function AdminPage() {
 
   const admin = createAdminClient();
   const since = isoHoursAgo(7 * 24);
-  const [{ data: pending }, { data: review }, { data: reports }, { count: approvedCount }, { data: recent }] = await Promise.all([
+  const [{ data: pending }, { data: review }, { data: reports }, { count: approvedCount }, { data: recent }, { data: questions }] = await Promise.all([
     admin.from("profiles").select("*, private:profile_private(phone, selfie_path)").eq("status", "pending").order("created_at"),
     admin
       .from("threads")
@@ -61,6 +61,8 @@ export default async function AdminPage() {
       .gt("created_at", since)
       .order("created_at", { ascending: false })
       .limit(30),
+    // Contact form submissions (insert-only for the public; read here with the service role).
+    admin.from("contact_messages").select("*").order("created_at", { ascending: false }).limit(50),
   ]);
 
   // Verification selfies live in a private bucket: hand the admin short-lived signed links.
@@ -190,6 +192,22 @@ export default async function AdminPage() {
                 <button className={btn.primary}>Publish</button>
               </form>
             </div>
+          </li>
+        ))}
+      </ul>
+
+      <h2 className="mt-10 text-h2">Contact messages ({questions?.length ?? 0})</h2>
+      {!questions?.length && <p className="mt-2 text-body text-ink-2">No messages yet.</p>}
+      <ul className="mt-4 flex flex-col gap-3">
+        {questions?.map((q) => (
+          <li key={q.id} className={`${card} flex flex-col gap-2`}>
+            <p className="text-label">
+              {q.name} <span className={meta}>· {timeAgo(q.created_at)}</span>
+            </p>
+            <a href={`mailto:${q.email}`} className={`${btn.ghost} self-start px-0`}>
+              {q.email}
+            </a>
+            <p className="whitespace-pre-wrap text-body text-ink">{q.message}</p>
           </li>
         ))}
       </ul>

@@ -55,6 +55,30 @@ export type Database = {
           { foreignKeyName: "messages_sender_id_fkey"; columns: ["sender_id"]; isOneToOne: false; referencedRelation: "profiles"; referencedColumns: ["id"] },
         ]
       }
+      contact_messages: {
+        Row: {
+          created_at: string
+          email: string
+          id: string
+          message: string
+          name: string
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          id?: string
+          message: string
+          name: string
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          id?: string
+          message?: string
+          name?: string
+        }
+        Relationships: []
+      }
       notifications: {
         Row: { body: string; read: boolean; sent_at: string; thread_id: string; title: string; user_id: string }
         Insert: { body: string; read?: boolean; sent_at?: string; thread_id: string; title: string; user_id: string }

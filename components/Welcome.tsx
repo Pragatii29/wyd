@@ -118,6 +118,9 @@ export function Welcome() {
             </Link>
             .
           </p>
+          <Link href="/contact" className={`${meta} text-center text-on-brand/70 underline`}>
+            Questions? Contact us
+          </Link>
         </div>
       )}
     </main>
