@@ -17,8 +17,9 @@ function transport() {
   return nodemailer.createTransport({ service: "gmail", auth: { user: user(), pass: pass() } });
 }
 
+// Resolves with Gmail's answer (which recipients it accepted), so callers can log delivery.
 export async function sendMail(to: string, subject: string, text: string, replyTo?: string) {
-  await transport().sendMail({
+  return transport().sendMail({
     from: `"WYD?" <${user()}>`,
     to,
     subject,

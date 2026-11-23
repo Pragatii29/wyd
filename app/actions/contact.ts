@@ -34,23 +34,25 @@ export async function submitContact(input: { name: string; email: string; messag
 
   if (!emailReady()) return { ok: true, emailed: false };
   const owner = process.env.CONTACT_OWNER_EMAIL?.trim() || process.env.GMAIL_USER!.trim();
-  try {
-    await Promise.all([
-      sendMail(
-        owner,
-        `New WYD? question from ${name}`,
-        `${name} <${email}> sent a question through the WYD? contact form:\n\n${message}\n\nReply to this email to answer them.`,
-        email,
-      ),
-      sendMail(
-        email,
-        "We got your message — WYD?",
-        `Hi ${name.split(" ")[0]},\n\nThanks for reaching out to WYD?. We've received your question and will get back to you soon.\n\nYour message:\n"${message}"\n\n— The WYD? team`,
-      ),
-    ]);
-    return { ok: true, emailed: true };
-  } catch (e) {
-    console.error("contact email failed", e);
-    return { ok: true, emailed: false };
-  }
+  // Sent separately, so one failing (e.g. a mistyped address) never stops the other, and each
+  // outcome is logged (without addresses) for checking in Vercel → Logs.
+  const [alert, reply] = await Promise.allSettled([
+    sendMail(
+      owner,
+      `New WYD? question from ${name}`,
+      `${name} <${email}> sent a question through the WYD? contact form:\n\n${message}\n\nReply to this email to answer them.`,
+      email,
+    ),
+    sendMail(
+      email,
+      "We got your message — WYD?",
+      `Hi ${name.split(" ")[0]},\n\nThanks for reaching out to WYD?. We've received your question and will get back to you soon.\n\nYour message:\n"${message}"\n\n— The WYD? team`,
+    ),
+  ]);
+  const outcome = (r: PromiseSettledResult<{ accepted: unknown[]; rejected: unknown[]; response: string }>) =>
+    r.status === "fulfilled"
+      ? `sent (accepted ${r.value.accepted.length}, rejected ${r.value.rejected.length}: ${r.value.response})`
+      : `failed: ${r.reason instanceof Error ? r.reason.message : String(r.reason)}`;
+  console.log(`contact emails · owner alert ${outcome(alert)} · auto-reply ${outcome(reply)}`);
+  return { ok: true, emailed: reply.status === "fulfilled" };
 }
